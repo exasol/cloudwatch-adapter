@@ -1,0 +1,7 @@
+#cloudwatch-adapter 0.1.0, released 2021-01-??
+
+## Code name:
+
+## Features / Enhancements
+
+* #1: Implemented basic adapter
