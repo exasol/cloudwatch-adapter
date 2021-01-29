@@ -73,11 +73,11 @@ Covers:
 
 Needs: dsn
 
-## Avoid loosing data
+## Avoid Loosing Data
 
 `req~avoid-loosing-points~1`
 
-Since Cloudwatch aggregates the points to statistics, no point must be reported twice. Reporting a point multiple times would change the value of the sum statistic.
+CWA tries with best effort to report all points.
 
 Covers:
 
