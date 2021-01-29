@@ -52,8 +52,7 @@ class AdapterConfigurationTest {
     void testDeploymentNameMissing() {
         final NullPointerException exception = assertThrows(NullPointerException.class,
                 CONFIGURATION::getDeploymentName);
-        assertThat(exception.getMessage(), equalTo(
-                "E-CWA-7: EXASOL_DEPLOYMENT_NAME environment variable was not set. Set the EXASOL_DEPLOYMENT_NAME environment variable in your lambda settings to a name describing the exasol installation you want to monitor."));
+        assertThat(exception.getMessage(), containsString("E-CWA-7"));
     }
 
     @Test
@@ -61,8 +60,7 @@ class AdapterConfigurationTest {
         withEnvironmentVariable("EXASOL_DEPLOYMENT_NAME", "").execute(() -> {
             final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                     CONFIGURATION::getDeploymentName);
-            assertThat(exception.getMessage(), equalTo(
-                    "E-CWA-8: The EXASOL_DEPLOYMENT_NAME was empty. Set the EXASOL_DEPLOYMENT_NAME environment variable in your lambda settings to a name describing the exasol installation you want to monitor."));
+            assertThat(exception.getMessage(), containsString("E-CWA-8"));
         });
     }
 }
