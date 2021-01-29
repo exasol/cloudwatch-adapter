@@ -1,6 +1,6 @@
-# Design of the Exasol CloudWatch adapter
+# Design of the Exasol CloudWatch Adapter
 
-## Metric selection using environment variable
+## Metric Selection Using Environment Variable
 
 `dsn~env-var-for-metrics-selection~1`
 
@@ -14,7 +14,7 @@ Covers:
 
 Needs: impl, utest, itest
 
-### Report only Minute Before Event
+### Report Only Minute Before Event
 
 `dsn~report-minute-before-event~1`
 

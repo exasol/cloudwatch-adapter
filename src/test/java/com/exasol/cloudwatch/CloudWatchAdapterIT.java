@@ -37,7 +37,7 @@ import software.amazon.awssdk.services.cloudwatch.paginators.GetMetricDataIterab
 class CloudWatchAdapterIT {
 
     @Container
-    private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>("7.0.4")
+    private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>("7.0.5")
             .withReuse(true);
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudWatchAdapterIT.class);
     private static Connection connection;

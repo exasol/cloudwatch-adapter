@@ -1,20 +1,29 @@
 # Requirements for the Cloudwatch-Adapter
 
+This file describes the features and requirements for the Exasol – CloudWatch adapter (CWA).
+
 ## Features:
 
 ### Configuration
 
 `feat~configuration~1`
 
-Users can configure this adapter intuitively.
+CWA provides configuration options.
 
 Needs: req
 
-### Consistency
+### Reliability
 
-`feat~consistency~1`
+`feat~reliability~1`
 
-The adapter should never ever produce wrong data in CloudWatch. As far as possible it should transfer all available data. (Both is impossible).
+The CWA reliably delivers metrics to CloudWatch.
+
+That means:
+
+* Each point is only reported once
+* Each point is reported
+
+Having both of these requirements is difficult in distributed systems. If not both are fully possible, the first one is more important.
 
 Rationale:
 
@@ -28,7 +37,7 @@ Needs: req
 
 `req~secure-store-exasol-credentials~1`
 
-Users want the credentials of their Exasol database to be stored securely.
+CWA allows users to securely store the Exasol database credentials
 
 Covers:
 
@@ -40,7 +49,7 @@ Needs: dsn
 
 `req~configure-transfered-metrics~1`
 
-Users want to define which metrics to report.
+CWA allows users to define which metrics the adapter transfers to CloudWatch.
 
 Covers:
 
@@ -48,15 +57,19 @@ Covers:
 
 Needs: dsn
 
-## No-Double-Reporting
+## At Most Once Reporting
 
 `req~no-double-reporting~1`
 
-Since Cloudwatch aggregates the points to statistics, no point must be reported twice. Reporting a point multiple times would change the value of the sum statistic.
+CWA delivers each metric point at most once.
+
+Rationale:
+
+Reporting a metric multiple times changes the sum value of the statistics.
 
 Covers:
 
-* [feat~consistency~1](#Consistency)
+* [feat~reliability~1](#Reliability)
 
 Needs: dsn
 
@@ -68,6 +81,6 @@ Since Cloudwatch aggregates the points to statistics, no point must be reported 
 
 Covers:
 
-* [feat~consistency~1](#Consistency)
+* [feat~reliability~1](#Reliability)
 
 Needs: dsn
