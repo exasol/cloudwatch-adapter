@@ -15,22 +15,22 @@ public class AdapterConfiguration {
     /**
      * Get the value of EXASOL_DEPLOYMENT_NAME.
      * 
-     * @return value of EXASOL_DEPLOYMENT_NAME
+     * @return Exasol deployment name value
      */
     public String getDeploymentName() {
         final String name = Objects.requireNonNull(System.getenv("EXASOL_DEPLOYMENT_NAME"),
-                ExaError.messageBuilder("E-CWA-7").message("EXASOL_DEPLOYMENT_NAME environment variable was not set.")
+                ExaError.messageBuilder("E-CWA-7").message("EXASOL_DEPLOYMENT_NAME environment variable is not set.")
                         .mitigation(DEPLOYMENT_NAME_MITIGATION).toString());
         if (name.isBlank()) {
             throw new IllegalArgumentException(
-                    ExaError.messageBuilder("E-CWA-8").message("The EXASOL_DEPLOYMENT_NAME was empty.")
+                    ExaError.messageBuilder("E-CWA-8").message("The EXASOL_DEPLOYMENT_NAME is empty.")
                             .mitigation(DEPLOYMENT_NAME_MITIGATION).toString());
         }
         return name;
     }
 
     /**
-     * Get a list of enabled enabled by METRICS.
+     * Get a list of enabled METRICS.
      * 
      * @return list of metrics
      */

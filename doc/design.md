@@ -6,7 +6,7 @@
 
 Users configure which metric the adapter should report using an environment variable that they can set in the Lambda configuration.
 
-Even so, the metrics are distributed over multiple system tables a single name fits, since the column names are unique over all tables.
+Even so the metrics are distributed over multiple system tables, a single name fits, since the column names are unique over all tables.
 
 Covers:
 
@@ -40,7 +40,7 @@ In this first implementation we decided not to implement any mechanisms that pre
 
 Covers:
 
-* req~avoid-loosing-points~1
+* `req~avoid-loosing-points~1`
 
 Rationale:
 
@@ -53,7 +53,7 @@ AWS Lambda can write an entry to a dead letter queue and then retry the executio
 Pros:
 
 * Simple
-* Can scale / Parallel running Lambdas are still possible
+* Can scale / parallel running Lambdas are still possible
 
 Cons:
 
@@ -84,7 +84,8 @@ Pros:
 Cons:
 
 * More complex
-* Requires sequential execution; --> Some locking mechanism is needed to ensure that it's not possible that two Lambdas report the same data in simultaneous.
+* Requires sequential execution
+* A locking mechanism is needed to ensure that two Lambdas do not report the same data simultaneously.
 
 ### Store Credentials
 

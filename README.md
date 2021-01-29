@@ -21,7 +21,7 @@ You can configure the adapter using the following environment variables:
 
 ## Information for Users
 
-The design of this adapter ensures that now points are written twice, which would lead to wrong statistics. It does, however not assure that all points are written. In case of temporary errors with the Exasol database or the CloudWatch API, it can occur that data points are missing.
+The design of this adapter ensures that points are never written twice, which would lead to wrong statistics. It does, however not assure that all points are written. In case of temporary errors with the Exasol database or the CloudWatch API, it can occur that data points are missing.
 
 * [Changelog](doc/changes/changelog.md)
 

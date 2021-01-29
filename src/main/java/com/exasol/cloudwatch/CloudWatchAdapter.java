@@ -39,7 +39,6 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
     CloudWatchAdapter(final String exasolStatisticsSchemaOverride) {
         this.configuration = new AdapterConfiguration();
         this.exasolStatisticsSchemaOverride = exasolStatisticsSchemaOverride;
-
     }
 
     @Override
