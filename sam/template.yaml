@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: ExasolCloudWatchAdapter
+    Description: This adapter transfers the statistics from the Exasol database to AWS CloudWatch metrics. This adapter runs independently of the Exasol database in an AWS Lambda function.
+    Author: Exasol AG
+    SpdxLicenseId: MIT
+    LicenseUrl: ../LICENSE
+    ReadmeUrl: ../README.md
+    HomePageUrl: https://github.com/exasol/cloudwatch-adapter
+    SemanticVersion: 0.1.0
+    SourceCodeUrl: https://github.com/exasol/cloudwatch-adapter
+
+Globals:
+  Function:
+    Timeout: 100
+
+Parameters:
+  Metrics:
+    Type: 'String'
+    Description: "Comma separated list of the metrics to report. See https://github.com/exasol/cloudwatch-adapter for all available metrics."
+  ExaolDeploymentName:
+    Type: 'String'
+    Description: "A name describing the Exasol installation you want to monitor. The adapter adds this name as a dimension to the metrics in cloudwatch. This will help you to distinguish the data if you monitor more than one Exasol deployment."
+
+Resources:
+  ExasolCloudWatchAdapter:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../
+      Handler: com.exasol.cloudwatch.CloudWatchAdapter
+      Runtime: java11
+      Environment:
+        Variables:
+          EXASOL_DEPLOYMENT_NAME: !Ref ExaolDeploymentName
+          EXASOL_HOST: ""
+          EXASOL_USER: ""
+          EXASOL_PASS: ""
+          METRICS: !Ref Metrics
+      Events:
+        MinutelyTrigger:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 minute)
+            Description: Minutely trigger for the CloudWatch adapter
+            Enabled: True

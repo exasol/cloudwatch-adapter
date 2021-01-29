@@ -2,7 +2,32 @@
 
 This adapter transfers the statistics from the Exasol database to [AWS CloudWatch](https://aws.amazon.com/de/cloudwatch/) metrics. This adapter runs independently of the Exasol database in an AWS Lambda function.
 
-## Configuration
+## Setup
+
+### Create an Exasol User
+
+The CloudWatch adapter accesses your Exasol database via its SQL interface. For that it needs credentials. We recommend creating a dedicated user for that purpose:
+
+```sql
+CREATE USER CLOUDWATCH_ADAPTER IDENTIFIED BY "<PASSWORD>";
+
+GRANT CREATE SESSION TO CLOUDWATCH_ADAPTER;
+```
+
+Don't forget to use a strong, randomly generated password instead of `<PASSWORD>`.
+
+### Store Credentials in AWS Secrets Manager
+
+### Setup CloudWatch Adapter
+
+* Open the [AWS Lambda Console](https://console.aws.amazon.com/lambda/)
+* Click "Create Function"
+* Select "Browse serverless application repository"
+* Search for "ExasolCloudWatchAdapter"
+* Fill out the application settings as described in the next section
+* Click on "Deploy"
+
+### Configuration
 
 You can configure the adapter using the following environment variables:
 
@@ -16,8 +41,6 @@ You can configure the adapter using the following environment variables:
   , [`REMOTE_WRITE_SIZE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_MONITOR_LAST_DAY), [`REMOTE_WRITE_DURATION`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_MONITOR_LAST_DAY), [`USERS`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_USAGE_LAST_DAY), [`QUERIES`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_USAGE_LAST_DAY)
 
   For a reference check the [Exasol documentation](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm).
-
-  For technical reasons `QUERIES` is always included. You can't disable it.
 
 ## Information for Users
 

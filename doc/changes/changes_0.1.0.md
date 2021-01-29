@@ -5,3 +5,4 @@
 ## Features / Enhancements
 
 * #1: Implemented basic adapter
+* #3: Added SAM deployment
