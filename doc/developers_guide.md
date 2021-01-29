@@ -1,4 +1,4 @@
-# Cloud-Watch adapter Developers Guide
+# Cloud-Watch Adapter Developers Guide
 
 This guide contains information for developers of this adapter.
 
