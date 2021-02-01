@@ -32,7 +32,11 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.exasol.containers.ExasolContainer;
 
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
+import software.amazon.awssdk.services.cloudwatch.CloudWatchClientBuilder;
 import software.amazon.awssdk.services.cloudwatch.model.*;
 import software.amazon.awssdk.services.cloudwatch.paginators.GetMetricDataIterable;
 
@@ -55,8 +59,9 @@ class CloudWatchAdapterIT {
     @BeforeAll
     static void beforeAll() throws SQLException {
         connection = EXASOL.createConnection();
-        cloudWatch = CloudWatchClient.builder().endpointOverride(LOCAL_STACK_CONTAINER.getEndpointOverride(CLOUDWATCH))
-                .build();
+        final CloudWatchClientBuilder cloudWatchClientBuilder = CloudWatchClient.builder();
+        configureCloudWatch(cloudWatchClientBuilder);
+        cloudWatch = cloudWatchClientBuilder.region(Region.EU_CENTRAL_1).build();
         localstackCloudWatchBackdoor = new LocalstackCloudWatchBackdoor(LOCAL_STACK_CONTAINER);
     }
 
@@ -170,6 +175,13 @@ class CloudWatchAdapterIT {
         return cloudWatch.listMetrics(listRequest).metrics();
     }
 
+    private static void configureCloudWatch(final CloudWatchClientBuilder builder) {
+        builder.endpointOverride(LOCAL_STACK_CONTAINER.getEndpointOverride(CLOUDWATCH));
+        builder.region(Region.EU_CENTRAL_1);
+        builder.credentialsProvider(
+                StaticCredentialsProvider.create(AwsBasicCredentials.create("someUser", "ignoredAnyway")));
+    }
+
     private void runAdapter(final String schemaOverride, final String metrics, final Instant forMinute)
             throws Exception {
         withEnvironmentVariable("EXASOL_HOST", EXASOL.getHost())
@@ -179,7 +191,7 @@ class CloudWatchAdapterIT {
                     final ScheduledEvent event = new ScheduledEvent();
                     event.setTime(new DateTime(forMinute.toEpochMilli()));
                     final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride,
-                            LOCAL_STACK_CONTAINER.getEndpointOverride(CLOUDWATCH));
+                            CloudWatchAdapterIT::configureCloudWatch);
                     adapter.handleRequest(event, mock(Context.class));
                 });
     }
