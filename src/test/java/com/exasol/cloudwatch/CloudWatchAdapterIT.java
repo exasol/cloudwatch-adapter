@@ -7,7 +7,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
+import static org.testcontainers.containers.localstack.LocalStackContainer.Service.CLOUDWATCH;
 
+import java.io.IOException;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -18,11 +21,15 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONTokener;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
@@ -39,6 +46,9 @@ class CloudWatchAdapterIT {
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>("7.0.5")
             .withReuse(true);
+    @Container
+    private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalStackContainer(
+            DockerImageName.parse("localstack/localstack:0.12.5")).withServices(CLOUDWATCH);
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudWatchAdapterIT.class);
     private static Connection connection;
     private static CloudWatchClient cloudWatch;
@@ -47,7 +57,9 @@ class CloudWatchAdapterIT {
     @BeforeAll
     static void beforeAll() throws SQLException {
         connection = EXASOL.createConnection();
-        cloudWatch = CloudWatchClient.builder().build();
+        cloudWatch = CloudWatchClient.builder().endpointOverride(LOCAL_STACK_CONTAINER.getEndpointOverride(CLOUDWATCH))
+                .build();
+        // cloudWatch = CloudWatchClient.builder().build();
     }
 
     @AfterAll
@@ -152,6 +164,23 @@ class CloudWatchAdapterIT {
         return result;
     }
 
+    @Test
+    void test() throws IOException {
+        final Instant now = Instant.now();
+
+        final PutMetricDataRequest putRequest = PutMetricDataRequest.builder().namespace("Exasol")
+                .metricData(MetricDatum.builder().metricName("USERS").timestamp(now.minus(Duration.ofMinutes(2)))
+                        .value(1.2).build())
+                .build();
+        cloudWatch.putMetricData(putRequest);
+
+        final URI backdoorApi = LOCAL_STACK_CONTAINER.getEndpointOverride(CLOUDWATCH)
+                .resolve("/cloudwatch/metrics/raw");
+        final JSONTokener jsonTokener = new JSONTokener(backdoorApi.toURL().openStream());
+        final JSONArray result = new JSONArray(jsonTokener);
+        System.out.println(result);
+    }
+
     private Dimension[] expectedDimensions() {
         return new Dimension[] {
                 Dimension.builder().name(DEPLOYMENT_DIMENSION_KEY).value(this.uniqueDeploymentName).build(),
@@ -185,7 +214,8 @@ class CloudWatchAdapterIT {
                 .and("METRICS", metrics).execute(() -> {
                     final ScheduledEvent event = new ScheduledEvent();
                     event.setTime(new DateTime(forMinute.toEpochMilli()));
-                    final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride);
+                    final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride,
+                            LOCAL_STACK_CONTAINER.getEndpointOverride(CLOUDWATCH));
                     adapter.handleRequest(event, mock(Context.class));
                 });
     }
