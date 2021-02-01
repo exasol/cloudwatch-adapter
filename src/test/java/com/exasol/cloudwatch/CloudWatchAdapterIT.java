@@ -4,13 +4,12 @@ import static com.exasol.cloudwatch.CloudWatchPointWriter.CLUSTER_NAME_DIMENSION
 import static com.exasol.cloudwatch.CloudWatchPointWriter.DEPLOYMENT_DIMENSION_KEY;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.CLOUDWATCH;
 
-import java.io.IOException;
-import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -21,8 +20,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.joda.time.DateTime;
-import org.json.JSONArray;
-import org.json.JSONTokener;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,18 +45,19 @@ class CloudWatchAdapterIT {
             .withReuse(true);
     @Container
     private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalStackContainer(
-            DockerImageName.parse("localstack/localstack:0.12.5")).withServices(CLOUDWATCH);
+            DockerImageName.parse("localstack/localstack:latest")).withServices(CLOUDWATCH);
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudWatchAdapterIT.class);
     private static Connection connection;
     private static CloudWatchClient cloudWatch;
     private String uniqueDeploymentName;
+    private static LocalstackCloudWatchBackdoor localstackCloudWatchBackdoor;
 
     @BeforeAll
     static void beforeAll() throws SQLException {
         connection = EXASOL.createConnection();
         cloudWatch = CloudWatchClient.builder().endpointOverride(LOCAL_STACK_CONTAINER.getEndpointOverride(CLOUDWATCH))
                 .build();
-        // cloudWatch = CloudWatchClient.builder().build();
+        localstackCloudWatchBackdoor = new LocalstackCloudWatchBackdoor(LOCAL_STACK_CONTAINER);
     }
 
     @AfterAll
@@ -81,7 +79,6 @@ class CloudWatchAdapterIT {
             statisticsTable.addRows(Stream.of(new ExaStatisticsTableMock.Row(
                     now.minus(Duration.ofMinutes(1)).minus(Duration.ofSeconds(1)), "MASTER", 10, 1)));
             runAdapter(ExaStatisticsTableMock.SCHEMA, "QUERIES", now);
-            waitForCloudWatchToSync();
             final List<Metric> metrics = listCurrentDeploymentsMetrics();
             final Metric firstMetric = metrics.get(0);
             final List<Dimension> dimensions = firstMetric.dimensions();
@@ -100,14 +97,14 @@ class CloudWatchAdapterIT {
             final Instant now = Instant.now();
             mockLogs(statisticsTable, now, 5, 0);
             runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now);
-            waitForCloudWatchToSync();
-            final TreeMap<Instant, Double> averageResults = readCloudwatchResultAsTreeMap(
-                    buildCloudWatchQueryForLast5Minutes(now, "Average"));
+            final SortedMap<Instant, Double> writtenPoints = localstackCloudWatchBackdoor.readMetrics("USERS",
+                    expectedDimensions());
             assertAll(//
-                    () -> assertThat(averageResults.size(), equalTo(1)),
-                    () -> assertThat(averageResults.firstKey(),
-                            equalTo(now.truncatedTo(ChronoUnit.MINUTES).minus(Duration.ofMinutes(1)))),
-                    () -> assertThat(averageResults.firstEntry().getValue(), equalTo(1.0))//
+                    () -> assertThat(writtenPoints.size(), equalTo(1)),
+                    () -> assertThat("single written point is the one of the previous minute",
+                            writtenPoints.firstKey().truncatedTo(ChronoUnit.SECONDS),
+                            equalTo(now.minus(Duration.ofMinutes(1)).truncatedTo(ChronoUnit.SECONDS))),
+                    () -> assertThat(writtenPoints.get(writtenPoints.firstKey()), equalTo(1.0))//
             );
         }
     }
@@ -121,13 +118,9 @@ class CloudWatchAdapterIT {
             runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now.minus(Duration.ofMinutes(2)));
             runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now.minus(Duration.ofMinutes(1)));
             runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now);
-            waitForCloudWatchToSync();
-            final TreeMap<Instant, Double> sumResults = readCloudwatchResultAsTreeMap(
-                    buildCloudWatchQueryForLast5Minutes(now, "Sum"));
-            assertAll(//
-                    () -> assertThat("no points were reported twice", sumResults.values(), everyItem(equalTo(1.0))),
-                    () -> assertThat("new points are reported", sumResults.size(), equalTo(3))//
-            );
+            final SortedMap<Instant, Double> writtenPoints = localstackCloudWatchBackdoor.readMetrics("USERS",
+                    expectedDimensions());
+            assertThat(writtenPoints.size(), equalTo(3));
         }
     }
 
@@ -164,39 +157,10 @@ class CloudWatchAdapterIT {
         return result;
     }
 
-    @Test
-    void test() throws IOException {
-        final Instant now = Instant.now();
-
-        final PutMetricDataRequest putRequest = PutMetricDataRequest.builder().namespace("Exasol")
-                .metricData(MetricDatum.builder().metricName("USERS").timestamp(now.minus(Duration.ofMinutes(2)))
-                        .value(1.2).build())
-                .build();
-        cloudWatch.putMetricData(putRequest);
-
-        final URI backdoorApi = LOCAL_STACK_CONTAINER.getEndpointOverride(CLOUDWATCH)
-                .resolve("/cloudwatch/metrics/raw");
-        final JSONTokener jsonTokener = new JSONTokener(backdoorApi.toURL().openStream());
-        final JSONArray result = new JSONArray(jsonTokener);
-        System.out.println(result);
-    }
-
     private Dimension[] expectedDimensions() {
         return new Dimension[] {
                 Dimension.builder().name(DEPLOYMENT_DIMENSION_KEY).value(this.uniqueDeploymentName).build(),
                 Dimension.builder().name(CLUSTER_NAME_DIMENSION_KEY).value("MASTER").build() };
-    }
-
-    /**
-     * Since cloud watch is not transactional we need to wait after putting values so that the values are available.
-     * 
-     * @throws InterruptedException if interrupted
-     */
-    @SuppressWarnings("java:S2925")
-    private void waitForCloudWatchToSync() throws InterruptedException {
-        final int duration = 10;
-        LOGGER.info("Waiting {} seconds for coudwatch to sync.", duration);
-        Thread.sleep(duration * 1000);
     }
 
     private List<Metric> listCurrentDeploymentsMetrics() {
