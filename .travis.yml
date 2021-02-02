@@ -6,20 +6,10 @@ jdk:
 addons:
   sonarcloud:
     organization: exasol
-  apt:
-    packages:
-      - build-essential
-
-install:
-  - . .ci/install_sam.sh
-  - cd sam/ && sam validate # remove!!!
-  - travis_retry mvn dependency:resolve
 
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
-  - cd sam/ && sam validate
 
 cache:
   directories:
     - "$HOME/.m2"
-    - "/home/linuxbrew/"
