@@ -6,3 +6,7 @@
 
 * #1: Implemented basic adapter
 * #3: Added SAM deployment
+
+## Refactoring
+
+* #11: Changed integration tests to use localstack instead of online API

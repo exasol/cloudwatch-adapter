@@ -21,12 +21,13 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
     private static final Logger logger = LoggerFactory.getLogger(CloudWatchAdapter.class);
     private final String exasolStatisticsSchemaOverride;
     private final AdapterConfiguration configuration;
+    private final CloudWatchPointWriter.CloudwatchConfigurator coludwatchConfigurator;
 
     /**
      * Create a new instance of {@link CloudWatchAdapter}.
      */
     public CloudWatchAdapter() {
-        this(null);
+        this(null, null);
     }
 
     /**
@@ -35,8 +36,11 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
      * @param exasolStatisticsSchemaOverride if null EXA_STATISITCS is used. This parameter allows you to test this
      *                                       connector with a * predefined SCHEMA instead of the unmodifiable live
      *                                       statistics.
+     * @param cloudwatchConfigurator         callback that allows tests to use alternate cloudwatch configuration
      */
-    CloudWatchAdapter(final String exasolStatisticsSchemaOverride) {
+    CloudWatchAdapter(final String exasolStatisticsSchemaOverride,
+            final CloudWatchPointWriter.CloudwatchConfigurator cloudwatchConfigurator) {
+        this.coludwatchConfigurator = cloudwatchConfigurator;
         this.configuration = new AdapterConfiguration();
         this.exasolStatisticsSchemaOverride = exasolStatisticsSchemaOverride;
     }
@@ -58,7 +62,8 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
     private void runSynchronization(final Instant minuteToReport, final Connection exasolConnection) {
         final ExasolStatisticsTableMetricReader metricReader = new ExasolStatisticsTableMetricReader(exasolConnection,
                 this.exasolStatisticsSchemaOverride);
-        final CloudWatchPointWriter pointWriter = new CloudWatchPointWriter(this.configuration.getDeploymentName());
+        final CloudWatchPointWriter pointWriter = new CloudWatchPointWriter(this.configuration.getDeploymentName(),
+                this.coludwatchConfigurator);
         final List<SystemTableDataPoint> systemTableDataPoints = metricReader
                 .readMetrics(this.configuration.getEnabledMetrics(), minuteToReport);
         logger.info("Writing {} points.", systemTableDataPoints.size());
