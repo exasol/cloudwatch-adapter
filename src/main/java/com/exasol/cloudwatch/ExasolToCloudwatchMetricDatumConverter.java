@@ -4,6 +4,10 @@ import com.exasol.errorreporting.ExaError;
 
 import software.amazon.awssdk.services.cloudwatch.model.*;
 
+/**
+ * This class converts exasol metric data to cloudwatch metric data. For some metric types it has to convert the value,
+ * since Exasol and CloudWatch use different units. For example MiB -> MB.
+ */
 public class ExasolToCloudwatchMetricDatumConverter {
 
     public static final String CLUSTER_NAME_DIMENSION_KEY = "Cluster Name";
