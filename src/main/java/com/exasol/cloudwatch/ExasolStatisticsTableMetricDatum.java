@@ -6,22 +6,22 @@ import java.util.Objects;
 /**
  * This class represents one single measurement for a {@link ExasolStatisticsTableMetric}.
  */
-public class SystemTableDataPoint {
+public class ExasolStatisticsTableMetricDatum {
     private final ExasolStatisticsTableMetric metric;
     private final Instant timestamp;
     private final double value;
     private final String clusterName;
 
     /**
-     * Create a new instance of {@link SystemTableDataPoint}.
+     * Create a new instance of {@link ExasolStatisticsTableMetricDatum}.
      * 
      * @param metric      metric the datapoint belongs to
      * @param timestamp   timestamp of the measurement
      * @param value       value
      * @param clusterName name of the cluster
      */
-    public SystemTableDataPoint(final ExasolStatisticsTableMetric metric, final Instant timestamp, final double value,
-            final String clusterName) {
+    public ExasolStatisticsTableMetricDatum(final ExasolStatisticsTableMetric metric, final Instant timestamp,
+            final double value, final String clusterName) {
         this.metric = metric;
         this.timestamp = timestamp;
         this.value = value;
@@ -66,8 +66,8 @@ public class SystemTableDataPoint {
 
     @Override
     public String toString() {
-        return "SystemTableDataPoint{" + "metric=" + this.metric + ", timestamp=" + this.timestamp + ", value="
-                + this.value + '}';
+        return "ExasolStatisticsTableMetricDatum{" + "metric=" + this.metric + ", timestamp=" + this.timestamp
+                + ", value=" + this.value + '}';
     }
 
     @Override
@@ -75,10 +75,10 @@ public class SystemTableDataPoint {
         if (this == other) {
             return true;
         }
-        if (!(other instanceof SystemTableDataPoint)) {
+        if (!(other instanceof ExasolStatisticsTableMetricDatum)) {
             return false;
         }
-        final SystemTableDataPoint that = (SystemTableDataPoint) other;
+        final ExasolStatisticsTableMetricDatum that = (ExasolStatisticsTableMetricDatum) other;
         return this.timestamp.equals(that.timestamp) && this.value == that.value && this.metric.equals(that.metric)
                 && this.clusterName.equals(that.clusterName);
     }

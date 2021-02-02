@@ -1,6 +1,7 @@
 package com.exasol.cloudwatch;
 
 import static com.exasol.cloudwatch.ExasolStatisticsTable.*;
+import static com.exasol.cloudwatch.ExasolUnit.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,44 +9,42 @@ import java.util.stream.Collectors;
 
 import com.exasol.errorreporting.ExaError;
 
-import software.amazon.awssdk.services.cloudwatch.model.StandardUnit;
-
 /**
  * Enum with the relevant columns of the EXA_STATISTICS tables.
  */
 public enum ExasolStatisticsTableMetric {
 
-    RAW_OBJECT_SIZE(EXA_DB_SIZE_LAST_DAY, StandardUnit.GIGABYTES), // GiB
-    MEM_OBJECT_SIZE(EXA_DB_SIZE_LAST_DAY, StandardUnit.GIGABYTES),
-    AUXILIARY_SIZE(EXA_DB_SIZE_LAST_DAY, StandardUnit.GIGABYTES),
-    STATISTICS_SIZE(EXA_DB_SIZE_LAST_DAY, StandardUnit.GIGABYTES),
-    RECOMMENDED_DB_RAM_SIZE(EXA_DB_SIZE_LAST_DAY, StandardUnit.GIGABYTES),
-    STORAGE_SIZE(EXA_DB_SIZE_LAST_DAY, StandardUnit.GIGABYTES), //
-    USE(EXA_DB_SIZE_LAST_DAY, StandardUnit.PERCENT), //
-    TEMP_SIZE(EXA_DB_SIZE_LAST_DAY, StandardUnit.GIGABYTES), //
-    OBJECT_COUNT(EXA_DB_SIZE_LAST_DAY, StandardUnit.COUNT), //
-    LOAD(EXA_MONITOR_LAST_DAY, StandardUnit.NONE), //
-    CPU(EXA_MONITOR_LAST_DAY, StandardUnit.PERCENT), //
-    TEMP_DB_RAM(EXA_MONITOR_LAST_DAY, StandardUnit.MEGABYTES),
-    PERSISTENT_DB_RAM(EXA_MONITOR_LAST_DAY, StandardUnit.MEGABYTES),
-    HDD_READ(EXA_MONITOR_LAST_DAY, StandardUnit.MEGABYTES_SECOND), // MiB
-    HDD_WRITE(EXA_MONITOR_LAST_DAY, StandardUnit.MEGABYTES_SECOND),
-    LOCAL_READ_SIZE(EXA_MONITOR_LAST_DAY, StandardUnit.MEGABYTES),
-    LOCAL_READ_DURATION(EXA_MONITOR_LAST_DAY, StandardUnit.SECONDS),
-    LOCAL_WRITE_DURATION(EXA_MONITOR_LAST_DAY, StandardUnit.SECONDS),
-    CACHE_READ_SIZE(EXA_MONITOR_LAST_DAY, StandardUnit.MEGABYTES),
-    CACHE_READ_DURATION(EXA_MONITOR_LAST_DAY, StandardUnit.SECONDS),
-    CACHE_WRITE_SIZE(EXA_MONITOR_LAST_DAY, StandardUnit.MEGABYTES),
-    CACHE_WRITE_DURATION(EXA_MONITOR_LAST_DAY, StandardUnit.SECONDS),
-    REMOTE_READ_SIZE(EXA_MONITOR_LAST_DAY, StandardUnit.MEGABYTES),
-    REMOTE_READ_DURATION(EXA_MONITOR_LAST_DAY, StandardUnit.SECONDS),
-    REMOTE_WRITE_SIZE(EXA_MONITOR_LAST_DAY, StandardUnit.MEGABYTES),
-    REMOTE_WRITE_DURATION(EXA_MONITOR_LAST_DAY, StandardUnit.SECONDS), //
-    USERS(EXA_USAGE_LAST_DAY, StandardUnit.COUNT), //
-    QUERIES(EXA_USAGE_LAST_DAY, StandardUnit.COUNT);
+    RAW_OBJECT_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
+    MEM_OBJECT_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
+    AUXILIARY_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
+    STATISTICS_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
+    RECOMMENDED_DB_RAM_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
+    STORAGE_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
+    USE(EXA_DB_SIZE_LAST_DAY, PERCENT), //
+    TEMP_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
+    OBJECT_COUNT(EXA_DB_SIZE_LAST_DAY, COUNT), //
+    LOAD(EXA_MONITOR_LAST_DAY, NONE), //
+    CPU(EXA_MONITOR_LAST_DAY, PERCENT), //
+    TEMP_DB_RAM(EXA_MONITOR_LAST_DAY, MEBIBYTES), //
+    PERSISTENT_DB_RAM(EXA_MONITOR_LAST_DAY, MEBIBYTES), //
+    HDD_READ(EXA_MONITOR_LAST_DAY, MEBIBYTES_PER_SECOND), //
+    HDD_WRITE(EXA_MONITOR_LAST_DAY, MEBIBYTES_PER_SECOND), //
+    LOCAL_READ_SIZE(EXA_MONITOR_LAST_DAY, MEBIBYTES), //
+    LOCAL_READ_DURATION(EXA_MONITOR_LAST_DAY, SECONDS), //
+    LOCAL_WRITE_DURATION(EXA_MONITOR_LAST_DAY, SECONDS), //
+    CACHE_READ_SIZE(EXA_MONITOR_LAST_DAY, MEBIBYTES), //
+    CACHE_READ_DURATION(EXA_MONITOR_LAST_DAY, SECONDS), //
+    CACHE_WRITE_SIZE(EXA_MONITOR_LAST_DAY, MEBIBYTES), //
+    CACHE_WRITE_DURATION(EXA_MONITOR_LAST_DAY, SECONDS), //
+    REMOTE_READ_SIZE(EXA_MONITOR_LAST_DAY, MEBIBYTES), //
+    REMOTE_READ_DURATION(EXA_MONITOR_LAST_DAY, SECONDS), //
+    REMOTE_WRITE_SIZE(EXA_MONITOR_LAST_DAY, MEBIBYTES), //
+    REMOTE_WRITE_DURATION(EXA_MONITOR_LAST_DAY, SECONDS), //
+    USERS(EXA_USAGE_LAST_DAY, COUNT), //
+    QUERIES(EXA_USAGE_LAST_DAY, COUNT);
 
     private final ExasolStatisticsTable table;
-    private final StandardUnit unit;
+    private final ExasolUnit unit;
 
     /**
      * Create a new instance of {@link ExasolStatisticsTableMetric}.
@@ -53,7 +52,7 @@ public enum ExasolStatisticsTableMetric {
      * @param tableName name of the table that contains the metric
      * @param unit      unit of this metric
      */
-    private ExasolStatisticsTableMetric(final ExasolStatisticsTable tableName, final StandardUnit unit) {
+    private ExasolStatisticsTableMetric(final ExasolStatisticsTable tableName, final ExasolUnit unit) {
         this.table = tableName;
         this.unit = unit;
     }
@@ -94,7 +93,7 @@ public enum ExasolStatisticsTableMetric {
      *
      * @return unit of this metric
      */
-    public StandardUnit getUnit() {
+    public ExasolUnit getUnit() {
         return this.unit;
     }
 }

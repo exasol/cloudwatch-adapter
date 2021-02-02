@@ -1,43 +1,41 @@
 package com.exasol.cloudwatch;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClientBuilder;
-import software.amazon.awssdk.services.cloudwatch.model.*;
+import software.amazon.awssdk.services.cloudwatch.model.MetricDatum;
+import software.amazon.awssdk.services.cloudwatch.model.PutMetricDataRequest;
 
 /**
  * This class writes measurement point to AWS cloud watch using the AWS SDK v2.
  */
 public class CloudWatchPointWriter {
     public static final String CLOUDWATCH_NAMESPACE = "Exasol";
-    public static final String CLUSTER_NAME_DIMENSION_KEY = "Cluster Name";
-    public static final String DEPLOYMENT_DIMENSION_KEY = "Deployment";
     private static final int CHUNK_SIZE = 20;
-    private final Dimension deploymentDimension;
     private final CloudwatchConfigurator cloudwatchConfigurator;
 
     /**
      * Create a new instance of {@link CloudWatchPointWriter}.
-     * 
-     * @param deploymentName         name of the Exasol deployment (used as dimension for the metrics)
+     *
      * @param cloudwatchConfigurator callback that allows tests to use alternate cloudwatch configuration
      */
-    public CloudWatchPointWriter(final String deploymentName, final CloudwatchConfigurator cloudwatchConfigurator) {
-        this.deploymentDimension = Dimension.builder().name(DEPLOYMENT_DIMENSION_KEY).value(deploymentName).build();
+    public CloudWatchPointWriter(final CloudwatchConfigurator cloudwatchConfigurator) {
         this.cloudwatchConfigurator = cloudwatchConfigurator;
     }
 
     /**
      * Write a list of points to AWS CloudWatch.
      * 
-     * @param systemTableDataPoints points to write
+     * @param exasolStatisticsTableMetricData points to write
      */
-    public void putPointsInChunks(final List<SystemTableDataPoint> systemTableDataPoints) {
+    public void putPointsInChunks(final List<MetricDatum> exasolStatisticsTableMetricData) {
         try (final CloudWatchClient cloudwatch = buildCloudWatchClient()) {
-            for (int chunkCounter = 0; chunkCounter * CHUNK_SIZE < systemTableDataPoints.size(); chunkCounter++) {
-                final Stream<SystemTableDataPoint> chuck = systemTableDataPoints.stream()
+            for (int chunkCounter = 0; chunkCounter * CHUNK_SIZE < exasolStatisticsTableMetricData
+                    .size(); chunkCounter++) {
+                final Stream<MetricDatum> chuck = exasolStatisticsTableMetricData.stream()
                         .skip((long) chunkCounter * CHUNK_SIZE).limit(CHUNK_SIZE);
                 putPoints(cloudwatch, chuck);
             }
@@ -57,16 +55,9 @@ public class CloudWatchPointWriter {
         void apply(CloudWatchClientBuilder builder);
     }
 
-    private void putPoints(final CloudWatchClient cloudwatch,
-            final Stream<SystemTableDataPoint> systemTableDataPoints) {
-        final MetricDatum[] metricData = systemTableDataPoints.map(point -> MetricDatum.builder()
-                .metricName(point.getMetric().name()).value(point.getValue()).unit(point.getMetric().getUnit())
-                .timestamp(point.getTimestamp())
-                .dimensions(this.deploymentDimension,
-                        Dimension.builder().name(CLUSTER_NAME_DIMENSION_KEY).value(point.getClusterName()).build())
-                .build()).toArray(MetricDatum[]::new);
+    private void putPoints(final CloudWatchClient cloudwatch, final Stream<MetricDatum> points) {
         final PutMetricDataRequest putRequest = PutMetricDataRequest.builder().namespace(CLOUDWATCH_NAMESPACE)
-                .metricData(metricData).build();
+                .metricData(points.collect(Collectors.toList())).build();
         cloudwatch.putMetricData(putRequest);
     }
 }

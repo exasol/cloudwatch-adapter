@@ -64,19 +64,19 @@ class ExasolStatisticsTableMetricReaderTest {
     @Test
     // [utest->dsn~report-minute-before-event~1]
     void testWithMockTable() throws SQLException {
-        final List<SystemTableDataPoint> result = runQueryForMinuteOnMockTable(Instant.ofEpochSecond(61));
-        assertThat(result,
-                containsInAnyOrder(new SystemTableDataPoint(USERS, Instant.ofEpochSecond(60), 1, CLUSTER_NAME),
-                        new SystemTableDataPoint(QUERIES, Instant.ofEpochSecond(60), 10, CLUSTER_NAME),
-                        new SystemTableDataPoint(USERS, Instant.ofEpochSecond(60 + 59), 2, CLUSTER_NAME),
-                        new SystemTableDataPoint(QUERIES, Instant.ofEpochSecond(60 + 59), 20, CLUSTER_NAME)));
+        final List<ExasolStatisticsTableMetricDatum> result = runQueryForMinuteOnMockTable(Instant.ofEpochSecond(61));
+        assertThat(result, containsInAnyOrder(
+                new ExasolStatisticsTableMetricDatum(USERS, Instant.ofEpochSecond(60), 1, CLUSTER_NAME),
+                new ExasolStatisticsTableMetricDatum(QUERIES, Instant.ofEpochSecond(60), 10, CLUSTER_NAME),
+                new ExasolStatisticsTableMetricDatum(USERS, Instant.ofEpochSecond(60 + 59), 2, CLUSTER_NAME),
+                new ExasolStatisticsTableMetricDatum(QUERIES, Instant.ofEpochSecond(60 + 59), 20, CLUSTER_NAME)));
     }
 
     @Test
     void testWithMockTableDuringBackwardTimeShift(final Capturable stdOutStream) throws SQLException {
         final Instant minuteToQuery = LocalDateTime.parse("2020-10-25T01:10:00").atZone(ZoneId.of("UTC")).toInstant();
         stdOutStream.capture();
-        final List<SystemTableDataPoint> result = runQueryForMinuteOnMockTable(minuteToQuery);
+        final List<ExasolStatisticsTableMetricDatum> result = runQueryForMinuteOnMockTable(minuteToQuery);
         assertAll(//
                 () -> assertThat(result, empty()),
                 () -> assertThat(stdOutStream.getCapturedData(), containsString("W-CWA-12"))//
@@ -86,17 +86,20 @@ class ExasolStatisticsTableMetricReaderTest {
     @Test
     void testWithMockTableDuringForwardTimeShift() throws SQLException {
         final Instant minuteToQuery = LocalDateTime.parse("2020-03-29T01:10:00").atZone(ZoneId.of("UTC")).toInstant();
-        final List<SystemTableDataPoint> result = runQueryForMinuteOnMockTable(minuteToQuery);
-        assertThat(result, containsInAnyOrder(new SystemTableDataPoint(QUERIES, minuteToQuery, 0, CLUSTER_NAME),
-                new SystemTableDataPoint(USERS, minuteToQuery, 0, CLUSTER_NAME)));
+        final List<ExasolStatisticsTableMetricDatum> result = runQueryForMinuteOnMockTable(minuteToQuery);
+        assertThat(result,
+                containsInAnyOrder(new ExasolStatisticsTableMetricDatum(QUERIES, minuteToQuery, 0, CLUSTER_NAME),
+                        new ExasolStatisticsTableMetricDatum(USERS, minuteToQuery, 0, CLUSTER_NAME)));
     }
 
     @Test
     void testWithMockTableWithRecentEntry() throws SQLException {
         final Instant previousMinute = Instant.now().truncatedTo(ChronoUnit.SECONDS).minus(Duration.ofMinutes(1));
-        final List<SystemTableDataPoint> result = runQueryForMinuteOnMockTableWithRowForSameMinute(previousMinute);
-        assertThat(result, containsInAnyOrder(new SystemTableDataPoint(QUERIES, previousMinute, 0, CLUSTER_NAME),
-                new SystemTableDataPoint(USERS, previousMinute, 0, CLUSTER_NAME)));
+        final List<ExasolStatisticsTableMetricDatum> result = runQueryForMinuteOnMockTableWithRowForSameMinute(
+                previousMinute);
+        assertThat(result,
+                containsInAnyOrder(new ExasolStatisticsTableMetricDatum(QUERIES, previousMinute, 0, CLUSTER_NAME),
+                        new ExasolStatisticsTableMetricDatum(USERS, previousMinute, 0, CLUSTER_NAME)));
     }
 
     @Test
@@ -107,8 +110,8 @@ class ExasolStatisticsTableMetricReaderTest {
         assertThat(exception.getMessage(), containsString("E-CWA-11"));
     }
 
-    private List<SystemTableDataPoint> runQueryForMinuteOnMockTableWithRowForSameMinute(final Instant minute)
-            throws SQLException {
+    private List<ExasolStatisticsTableMetricDatum> runQueryForMinuteOnMockTableWithRowForSameMinute(
+            final Instant minute) throws SQLException {
         try (final ExaStatisticsTableMock exaStatisticsTableMock = new ExaStatisticsTableMock(connection)) {
             exaStatisticsTableMock.addRows(Stream.of(new ExaStatisticsTableMock.Row(minute, CLUSTER_NAME, 0, 0)));
             final ExasolStatisticsTableMetricReader exasolStatisticsTableMetricReader = new ExasolStatisticsTableMetricReader(
@@ -126,8 +129,9 @@ class ExasolStatisticsTableMetricReaderTest {
                 Instant.now().minus(Duration.ofMinutes(10))));
     }
 
-    private List<SystemTableDataPoint> runQueryForMinuteOnMockTable(final Instant minuteToQuery) throws SQLException {
-        final List<SystemTableDataPoint> systemTableDataPoints;
+    private List<ExasolStatisticsTableMetricDatum> runQueryForMinuteOnMockTable(final Instant minuteToQuery)
+            throws SQLException {
+        final List<ExasolStatisticsTableMetricDatum> exasolStatisticsTableMetricData;
         try (final ExaStatisticsTableMock exaStatisticsTableMock = new ExaStatisticsTableMock(connection)) {
             exaStatisticsTableMock
                     .addRows(Stream.of(new ExaStatisticsTableMock.Row("1970-01-01 01:00:00", CLUSTER_NAME, 0, 0),
@@ -138,10 +142,10 @@ class ExasolStatisticsTableMetricReaderTest {
                             ROW_AFTER_TIME_GAP_AT_FORWARD_TIME_SHIFT));
             final ExasolStatisticsTableMetricReader exasolStatisticsTableMetricReader = new ExasolStatisticsTableMetricReader(
                     connection, ExaStatisticsTableMock.SCHEMA);
-            systemTableDataPoints = exasolStatisticsTableMetricReader.readMetrics(List.of(USERS, QUERIES),
+            exasolStatisticsTableMetricData = exasolStatisticsTableMetricReader.readMetrics(List.of(USERS, QUERIES),
                     minuteToQuery);
 
         }
-        return systemTableDataPoints;
+        return exasolStatisticsTableMetricData;
     }
 }
