@@ -4,6 +4,7 @@ import java.sql.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.exasol.errorreporting.ExaError;
+
+import software.amazon.awssdk.services.cloudwatch.model.MetricDatum;
 
 /**
  * This class is the entry point for the Lambda function of the cloud watch adapter.
@@ -62,12 +65,15 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
     private void runSynchronization(final Instant minuteToReport, final Connection exasolConnection) {
         final ExasolStatisticsTableMetricReader metricReader = new ExasolStatisticsTableMetricReader(exasolConnection,
                 this.exasolStatisticsSchemaOverride);
-        final CloudWatchPointWriter pointWriter = new CloudWatchPointWriter(this.configuration.getDeploymentName(),
-                this.coludwatchConfigurator);
-        final List<SystemTableDataPoint> systemTableDataPoints = metricReader
+        final ExasolToCloudwatchMetricDatumConverter converter = new ExasolToCloudwatchMetricDatumConverter(
+                this.configuration.getDeploymentName());
+        final CloudWatchPointWriter pointWriter = new CloudWatchPointWriter(this.coludwatchConfigurator);
+        final List<ExasolStatisticsTableMetricDatum> exasolMetricData = metricReader
                 .readMetrics(this.configuration.getEnabledMetrics(), minuteToReport);
-        logger.info("Writing {} points.", systemTableDataPoints.size());
-        pointWriter.putPointsInChunks(systemTableDataPoints);
+        final List<MetricDatum> cloudwatchMetricData = exasolMetricData.stream().map(converter::convert)
+                .collect(Collectors.toList());
+        logger.info("Writing {} points.", cloudwatchMetricData.size());
+        pointWriter.putPointsInChunks(cloudwatchMetricData);
     }
 
     private Connection connectToExasol() {

@@ -13,4 +13,5 @@
 
 ## Bugfixes
 
-#14: Fixed SAM CI
+* #8: Fixed wrong metrics
+* #14: Fixed SAM CI
