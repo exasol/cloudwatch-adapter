@@ -22,3 +22,4 @@ script:
 cache:
   directories:
     - "$HOME/.m2"
+    - "/home/linuxbrew/"
