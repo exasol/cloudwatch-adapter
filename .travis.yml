@@ -8,7 +8,8 @@ addons:
     organization: exasol
 
 install:
-  - pip install awscli aws-sam-cli
+  - .ci/install_sam.sh
+  - cd sam/ && sam validate # remove!!!
   - travis_retry mvn dependency:resolve
 
 script:

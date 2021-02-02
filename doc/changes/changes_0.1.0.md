@@ -10,3 +10,7 @@
 ## Refactoring
 
 * #11: Changed integration tests to use localstack instead of online API
+
+## Bugfixes
+
+#14: Fixed SAM CI
