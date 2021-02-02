@@ -6,6 +6,9 @@ jdk:
 addons:
   sonarcloud:
     organization: exasol
+  apt:
+    packages:
+      - build-essential
 
 install:
   - .ci/install_sam.sh
