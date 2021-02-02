@@ -13,11 +13,15 @@ import org.testcontainers.containers.localstack.LocalStackContainer;
 
 import software.amazon.awssdk.services.cloudwatch.model.Dimension;
 
-public class LocalstackCloudWatchBackdoor {
+/**
+ * This class provides an Java API for a backdoor API in localstack that gives access to the un-aggregated cloudwatch
+ * metric data. This API is for testing only!
+ */
+public class LocalstackCloudWatchRaw {
     private static final String BACKDOOR_API_PATH = "/cloudwatch/metrics/raw";
     private final URI backdoorApi;
 
-    public LocalstackCloudWatchBackdoor(final LocalStackContainer localStackContainer) {
+    public LocalstackCloudWatchRaw(final LocalStackContainer localStackContainer) {
         this.backdoorApi = localStackContainer.getEndpointOverride(CLOUDWATCH).resolve(BACKDOOR_API_PATH);
     }
 
@@ -36,7 +40,6 @@ public class LocalstackCloudWatchBackdoor {
                 final Instant instant = readTimestamp(timestampString);
                 final double metricValue = metric.getDouble("v");
                 result.put(instant, metricValue);
-
             }
         }
         return result;

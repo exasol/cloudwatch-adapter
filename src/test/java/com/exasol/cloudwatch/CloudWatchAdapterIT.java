@@ -54,7 +54,7 @@ class CloudWatchAdapterIT {
     private static Connection connection;
     private static CloudWatchClient cloudWatch;
     private String uniqueDeploymentName;
-    private static LocalstackCloudWatchBackdoor localstackCloudWatchBackdoor;
+    private static LocalstackCloudWatchRaw localstackCloudWatchRaw;
 
     @BeforeAll
     static void beforeAll() throws SQLException {
@@ -62,7 +62,7 @@ class CloudWatchAdapterIT {
         final CloudWatchClientBuilder cloudWatchClientBuilder = CloudWatchClient.builder();
         configureCloudWatch(cloudWatchClientBuilder);
         cloudWatch = cloudWatchClientBuilder.region(Region.EU_CENTRAL_1).build();
-        localstackCloudWatchBackdoor = new LocalstackCloudWatchBackdoor(LOCAL_STACK_CONTAINER);
+        localstackCloudWatchRaw = new LocalstackCloudWatchRaw(LOCAL_STACK_CONTAINER);
     }
 
     @AfterAll
@@ -102,7 +102,7 @@ class CloudWatchAdapterIT {
             final Instant now = Instant.now();
             mockLogs(statisticsTable, now, 5, 0);
             runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now);
-            final SortedMap<Instant, Double> writtenPoints = localstackCloudWatchBackdoor.readMetrics("USERS",
+            final SortedMap<Instant, Double> writtenPoints = localstackCloudWatchRaw.readMetrics("USERS",
                     expectedDimensions());
             assertAll(//
                     () -> assertThat(writtenPoints.size(), equalTo(1)),
@@ -123,7 +123,7 @@ class CloudWatchAdapterIT {
             runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now.minus(Duration.ofMinutes(2)));
             runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now.minus(Duration.ofMinutes(1)));
             runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now);
-            final SortedMap<Instant, Double> writtenPoints = localstackCloudWatchBackdoor.readMetrics("USERS",
+            final SortedMap<Instant, Double> writtenPoints = localstackCloudWatchRaw.readMetrics("USERS",
                     expectedDimensions());
             assertThat(writtenPoints.size(), equalTo(3));
         }
