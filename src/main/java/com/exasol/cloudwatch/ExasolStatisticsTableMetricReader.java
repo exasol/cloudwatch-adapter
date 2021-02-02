@@ -48,14 +48,14 @@ public class ExasolStatisticsTableMetricReader {
     }
 
     /**
-     * Read the {@link SystemTableDataPoint} for given metrics and a given minute.
+     * Read the {@link ExasolStatisticsTableMetricDatum} for given metrics and a given minute.
      * 
      * @param metrics  list of metrics to fetch the data for.
      * @param ofMinute minute to read the data for
      * @return found
      */
     // [impl->dsn~report-minute-before-event~1]
-    public List<SystemTableDataPoint> readMetrics(final List<ExasolStatisticsTableMetric> metrics,
+    public List<ExasolStatisticsTableMetricDatum> readMetrics(final List<ExasolStatisticsTableMetric> metrics,
             final Instant ofMinute) {
         final Instant start = ofMinute.truncatedTo(ChronoUnit.MINUTES);
         final Instant end = start.plus(Duration.ofMinutes(1));
@@ -89,7 +89,7 @@ public class ExasolStatisticsTableMetricReader {
         }
     }
 
-    private List<SystemTableDataPoint> loadMetricsForTable(final List<ExasolStatisticsTableMetric> metrics,
+    private List<ExasolStatisticsTableMetricDatum> loadMetricsForTable(final List<ExasolStatisticsTableMetric> metrics,
             final Instant start, final Instant end, final ExasolStatisticsTable statisticsTable) {
         final List<ExasolStatisticsTableMetric> currentTablesMetrics = metrics.stream()
                 .filter(metric -> metric.getTable().equals(statisticsTable)).collect(Collectors.toList());
@@ -127,14 +127,14 @@ public class ExasolStatisticsTableMetricReader {
                 + "AND MEASURE_TIME < CONVERT_TZ(?, 'UTC', DBTIMEZONE, 'INVALID REJECT AMBIGUOUS REJECT');";
     }
 
-    private List<SystemTableDataPoint> executeSystemTableQuery(
+    private List<ExasolStatisticsTableMetricDatum> executeSystemTableQuery(
             final List<ExasolStatisticsTableMetric> currentTablesMetrics, final PreparedStatement statement)
             throws SQLException {
         try (final ResultSet resultSet = statement.executeQuery()) {
-            final List<SystemTableDataPoint> result = new ArrayList<>();
+            final List<ExasolStatisticsTableMetricDatum> result = new ArrayList<>();
             while (resultSet.next()) {
                 for (final ExasolStatisticsTableMetric metric : currentTablesMetrics) {
-                    result.add(new SystemTableDataPoint(metric,
+                    result.add(new ExasolStatisticsTableMetricDatum(metric,
                             resultSet.getTimestamp("UTC_MEASURE_TIME", this.utcCalendar).toInstant(),
                             resultSet.getDouble(metric.name()), resultSet.getString("CLUSTER_NAME")));
                 }

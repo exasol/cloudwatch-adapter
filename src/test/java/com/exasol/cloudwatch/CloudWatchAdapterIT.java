@@ -1,7 +1,7 @@
 package com.exasol.cloudwatch;
 
-import static com.exasol.cloudwatch.CloudWatchPointWriter.CLUSTER_NAME_DIMENSION_KEY;
-import static com.exasol.cloudwatch.CloudWatchPointWriter.DEPLOYMENT_DIMENSION_KEY;
+import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.CLUSTER_NAME_DIMENSION_KEY;
+import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.DEPLOYMENT_DIMENSION_KEY;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
