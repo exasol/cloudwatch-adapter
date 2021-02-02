@@ -14,3 +14,4 @@
 ## Bugfixes
 
 * #8: Fixed wrong metrics
+* #14: Removed failing SAM validate CI, since it requires AWS access
