@@ -6,6 +6,13 @@ jdk:
 addons:
   sonarcloud:
     organization: exasol
+    token:
+      secure: rCBjxnQ2NhU+Gax1V1kQHMBeWNfSFa34Zls8H0iW2gUI09OI4NxZp5xY7AQ1kCv92FWomIZEQ5vNmrBQ4ptT7Ovr43Zu5l504jNzqgWH0mGgHQXMT/tEob4xTJoHQLoo0Xj2qxHqOyuV7mZk6998qVl1QvCcLXxmB2e0rH/P/P9issOC7h5g0RHXTfQjGXSKhd4q2P6KKVOxtLFQOlRWmQVDwuhjDpersSN6vBXW0M+79rHjAqeNceQA+pAR+NJtBiqCATOKhF/iun/mOHLcFR9MU+Wlw7uAVZFghxUCG7lbxuhFG1wnGmmlH1uiZdRiHrEUX797MTkPiBSq+JV2cp/1OGKI/8D65NibTIqipnqt1pkC6GdTNoc5LZiQeEGYeW6e53Xi3vXq13HYRizRiz3LslUSmEX/n0SjeT9dmIjosP90SIl54dHmKdioKOajooeUQkwkx1qGJPRQnoodKoAkzzwiv4jN4DyMLWmZLmqFF+KKDC6UEGCOhnUyaQt/OZrJDDsRKj2IlHX4jJJch7yONcheBIobuRUggxQFNiGTJahqxDKlN2fQdx8J1n/7ZtS/+FjpO4qc7/KF9u2TlOo2T9flxf3HdUpU2m2VU8cdHXZ4wzJRKxqhZxLPTrS4XVhgDroEr2TonQYCsPulEVLXhkA8U9g2pODa4wWtUds=
+
+install:
+  - pip install awscli aws-sam-cli
+  - travis_retry mvn dependency:resolve
+  - echo "testcontainers.reuse.enable=true" >> ~/.testcontainers.properties
 
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
