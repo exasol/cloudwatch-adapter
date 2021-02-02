@@ -11,7 +11,7 @@ addons:
       - build-essential
 
 install:
-  - .ci/install_sam.sh
+  - . .ci/install_sam.sh
   - cd sam/ && sam validate # remove!!!
   - travis_retry mvn dependency:resolve
 
