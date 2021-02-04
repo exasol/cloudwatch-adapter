@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
-import software.amazon.awssdk.services.cloudwatch.CloudWatchClientBuilder;
 import software.amazon.awssdk.services.cloudwatch.model.MetricDatum;
 import software.amazon.awssdk.services.cloudwatch.model.PutMetricDataRequest;
 
@@ -15,15 +14,15 @@ import software.amazon.awssdk.services.cloudwatch.model.PutMetricDataRequest;
 public class CloudWatchPointWriter {
     public static final String CLOUDWATCH_NAMESPACE = "Exasol";
     private static final int CHUNK_SIZE = 20;
-    private final CloudwatchConfigurator cloudwatchConfigurator;
+    private final AwsClientFactory awsClientFactory;
 
     /**
      * Create a new instance of {@link CloudWatchPointWriter}.
      *
-     * @param cloudwatchConfigurator callback that allows tests to use alternate cloudwatch configuration
+     * @param awsClientConfigurator callback that allows tests to use alternate cloudwatch configuration
      */
-    public CloudWatchPointWriter(final CloudwatchConfigurator cloudwatchConfigurator) {
-        this.cloudwatchConfigurator = cloudwatchConfigurator;
+    public CloudWatchPointWriter(final AwsClientFactory awsClientConfigurator) {
+        this.awsClientFactory = awsClientConfigurator;
     }
 
     /**
@@ -32,7 +31,7 @@ public class CloudWatchPointWriter {
      * @param exasolStatisticsTableMetricData points to write
      */
     public void putPointsInChunks(final List<MetricDatum> exasolStatisticsTableMetricData) {
-        try (final CloudWatchClient cloudwatch = buildCloudWatchClient()) {
+        try (final CloudWatchClient cloudwatch = this.awsClientFactory.getCloudWatchClient()) {
             for (int chunkCounter = 0; chunkCounter * CHUNK_SIZE < exasolStatisticsTableMetricData
                     .size(); chunkCounter++) {
                 final Stream<MetricDatum> chuck = exasolStatisticsTableMetricData.stream()
@@ -40,19 +39,6 @@ public class CloudWatchPointWriter {
                 putPoints(cloudwatch, chuck);
             }
         }
-    }
-
-    private CloudWatchClient buildCloudWatchClient() {
-        final CloudWatchClientBuilder builder = CloudWatchClient.builder();
-        if (this.cloudwatchConfigurator != null) {
-            this.cloudwatchConfigurator.apply(builder);
-        }
-        return builder.build();
-    }
-
-    @FunctionalInterface
-    interface CloudwatchConfigurator {
-        void apply(CloudWatchClientBuilder builder);
     }
 
     private void putPoints(final CloudWatchClient cloudwatch, final Stream<MetricDatum> points) {

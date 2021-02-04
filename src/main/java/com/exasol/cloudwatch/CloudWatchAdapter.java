@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
+import com.exasol.cloudwatch.configuration.*;
 import com.exasol.errorreporting.ExaError;
 
 import software.amazon.awssdk.services.cloudwatch.model.MetricDatum;
@@ -24,13 +25,13 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
     private static final Logger logger = LoggerFactory.getLogger(CloudWatchAdapter.class);
     private final String exasolStatisticsSchemaOverride;
     private final AdapterConfiguration configuration;
-    private final CloudWatchPointWriter.CloudwatchConfigurator coludwatchConfigurator;
+    private final AwsClientFactory awsClientFactory;
 
     /**
      * Create a new instance of {@link CloudWatchAdapter}.
      */
     public CloudWatchAdapter() {
-        this(null, null);
+        this(null, new DefaultAwsClientFactory());
     }
 
     /**
@@ -39,12 +40,11 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
      * @param exasolStatisticsSchemaOverride if null EXA_STATISITCS is used. This parameter allows you to test this
      *                                       connector with a * predefined SCHEMA instead of the unmodifiable live
      *                                       statistics.
-     * @param cloudwatchConfigurator         callback that allows tests to use alternate cloudwatch configuration
+     * @param awsClientConfigurator          callback that allows tests to use alternate cloudwatch configuration
      */
-    CloudWatchAdapter(final String exasolStatisticsSchemaOverride,
-            final CloudWatchPointWriter.CloudwatchConfigurator cloudwatchConfigurator) {
-        this.coludwatchConfigurator = cloudwatchConfigurator;
-        this.configuration = new AdapterConfiguration();
+    CloudWatchAdapter(final String exasolStatisticsSchemaOverride, final AwsClientFactory awsClientConfigurator) {
+        this.awsClientFactory = awsClientConfigurator;
+        this.configuration = new AdapterConfigurationReader(this.awsClientFactory).readConfiguration();
         this.exasolStatisticsSchemaOverride = exasolStatisticsSchemaOverride;
     }
 
@@ -67,7 +67,7 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
                 this.exasolStatisticsSchemaOverride);
         final ExasolToCloudwatchMetricDatumConverter converter = new ExasolToCloudwatchMetricDatumConverter(
                 this.configuration.getDeploymentName());
-        final CloudWatchPointWriter pointWriter = new CloudWatchPointWriter(this.coludwatchConfigurator);
+        final CloudWatchPointWriter pointWriter = new CloudWatchPointWriter(this.awsClientFactory);
         final List<ExasolStatisticsTableMetricDatum> exasolMetricData = metricReader
                 .readMetrics(this.configuration.getEnabledMetrics(), minuteToReport);
         final List<MetricDatum> cloudwatchMetricData = exasolMetricData.stream().map(converter::convert)
@@ -78,11 +78,10 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
 
     private Connection connectToExasol() {
         try {
-            return DriverManager
-                    .getConnection(
-                            "jdbc:exa:" + this.configuration.getExasolHost() + ":" + this.configuration.getExasolPort()
-                                    + ";schema=SYS",
-                            this.configuration.getExasolUser(), this.configuration.getExasolPass());
+            final ExasolCredentials exasolCredentials = this.configuration.getExasolCredentials();
+            return DriverManager.getConnection(
+                    "jdbc:exa:" + exasolCredentials.getHost() + ":" + exasolCredentials.getPort() + ";schema=SYS",
+                    exasolCredentials.getUser(), exasolCredentials.getPass());
         } catch (final SQLException exception) {
             throw new IllegalStateException(
                     ExaError.messageBuilder("E-CWA-2").message("Failed to connect to the Exasol database.").toString(),
