@@ -31,12 +31,12 @@ Don't forget to use a strong, randomly generated password instead of `<PASSWORD>
 
 You can configure the adapter using the following properties:
 
-* `ExaolDeploymentName`: A name describing the Exasol installation you want to monitor. The adapter adds this name as a [dimension](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension) to the metrics in cloudwatch. This will help you to distinguish the data if you monitor more than one Exasol deployment.
+* `ExaolDeploymentName`: A name describing the Exasol installation you want to monitor. The adapter adds this name as a [dimension](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension) to the metrics in Cloudwatch. This will help you to distinguish the data if you monitor more than one Exasol deployment.
 
 * `ExasolConnectionSecretArn`: [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of a secret in [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) with the following values:
     * `host`: Hostname of the Exasol database to connect to
-    * `port`: Exasol SQL-Port (default: 8563)
-    * `username`: Username of an Exasol user account with `CREATE SESSION` privileges
+    * `port`: Exasol JDBC port (default: 8563)
+    * `username`: Name of an Exasol user account with `CREATE SESSION` privileges
     * `password`: Password for the account
 
 

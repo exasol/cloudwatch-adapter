@@ -17,7 +17,7 @@ class EnvironmentConfigurationReader {
     /**
      * Read {@code EXASOL_DEPLOYMENT_NAME}.
      * 
-     * @return name of the exasol installation
+     * @return name of the Exasol installation
      */
     String readDeploymentName() {
         final String name = Objects.requireNonNull(System.getenv(EXASOL_DEPLOYMENT_NAME),
