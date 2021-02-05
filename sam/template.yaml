@@ -31,7 +31,7 @@ Resources:
   ExasolCloudWatchAdapter:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ../
+      CodeUri: ../target/exasol-cloudwatch-adapter.jar
       Handler: com.exasol.cloudwatch.CloudWatchAdapter
       Runtime: java11
       Environment:
@@ -39,6 +39,10 @@ Resources:
           EXASOL_DEPLOYMENT_NAME: !Ref ExaolDeploymentName
           EXASOL_CONNECTION_SECRET_ARN: !Ref ExasolConnectionSecretArn
           METRICS: !Ref Metrics
+      Policies:
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !Ref ExasolConnectionSecretArn
+        - CloudWatchPutMetricPolicy: { }
       Events:
         MinutelyTrigger:
           Type: Schedule
