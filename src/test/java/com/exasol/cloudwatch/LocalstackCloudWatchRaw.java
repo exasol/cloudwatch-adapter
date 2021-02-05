@@ -2,13 +2,15 @@ package com.exasol.cloudwatch;
 
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.CLOUDWATCH;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import org.json.*;
+import javax.json.*;
+
 import org.testcontainers.containers.localstack.LocalStackContainer;
 
 import software.amazon.awssdk.services.cloudwatch.model.Dimension;
@@ -27,22 +29,25 @@ public class LocalstackCloudWatchRaw {
 
     public SortedMap<Instant, Double> readMetrics(final String expectedMetricName, final Dimension... dimensionFilter)
             throws IOException {
-        final JSONTokener jsonTokener = new JSONTokener(this.backdoorApi.toURL().openStream());
-        final JSONObject response = new JSONObject(jsonTokener);
-        final JSONArray metrics = response.getJSONArray("metrics");
-        final SortedMap<Instant, Double> result = new TreeMap<>();
-        for (final Object arrayItem : metrics) {
-            final JSONObject metric = (JSONObject) arrayItem;
-            final String timestampString = metric.getString("t");
-            final Map<String, String> result1 = readDimensions(metric);
-            final String metricName = metric.getString("n");
-            if (expectedMetricName.equals(metricName) && testIfDimensionsMatch(result1, dimensionFilter)) {
-                final Instant instant = readTimestamp(timestampString);
-                final double metricValue = metric.getDouble("v");
-                result.put(instant, metricValue);
+        try (final InputStream jsonStream = this.backdoorApi.toURL().openStream();
+                final JsonReader reader = Json
+                        .createReader(new InputStreamReader(jsonStream, StandardCharsets.UTF_8));) {
+            final JsonObject response = reader.readObject();
+            final JsonArray metrics = response.getJsonArray("metrics");
+            final SortedMap<Instant, Double> result = new TreeMap<>();
+            for (final Object arrayItem : metrics) {
+                final JsonObject metric = (JsonObject) arrayItem;
+                final String timestampString = metric.getString("t");
+                final Map<String, String> result1 = readDimensions(metric);
+                final String metricName = metric.getString("n");
+                if (expectedMetricName.equals(metricName) && testIfDimensionsMatch(result1, dimensionFilter)) {
+                    final Instant instant = readTimestamp(timestampString);
+                    final double metricValue = metric.getJsonNumber("v").doubleValue();
+                    result.put(instant, metricValue);
+                }
             }
+            return result;
         }
-        return result;
     }
 
     private Instant readTimestamp(final String timestampString) {
@@ -63,11 +68,11 @@ public class LocalstackCloudWatchRaw {
         return true;
     }
 
-    private Map<String, String> readDimensions(final JSONObject metric) {
-        final JSONArray dimensionsJson = metric.getJSONArray("d");
+    private Map<String, String> readDimensions(final JsonObject metric) {
+        final JsonArray dimensionsJson = metric.getJsonArray("d");
         final Map<String, String> dimensions = new HashMap<>();
         for (final Object arrayItem : dimensionsJson) {
-            final JSONObject dimension = (JSONObject) arrayItem;
+            final JsonObject dimension = (JsonObject) arrayItem;
             dimensions.put(dimension.getString("n"), dimension.getString("v"));
         }
         return dimensions;

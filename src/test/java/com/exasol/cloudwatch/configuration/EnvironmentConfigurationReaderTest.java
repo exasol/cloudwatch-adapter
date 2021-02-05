@@ -1,34 +1,36 @@
-package com.exasol.cloudwatch;
+package com.exasol.cloudwatch.configuration;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-class AdapterConfigurationTest {
+import com.exasol.cloudwatch.ExasolStatisticsTableMetric;
 
-    private static final AdapterConfiguration CONFIGURATION = new AdapterConfiguration();
+class EnvironmentConfigurationReaderTest {
+    private static final EnvironmentConfigurationReader READER = new EnvironmentConfigurationReader();
 
     @Test
     // [utest->dsn~env-var-for-metrics-selection~1]
     void testMetrics() throws Exception {
         withEnvironmentVariable("METRICS", "CPU, USERS").execute(() -> {
-            assertThat(CONFIGURATION.getEnabledMetrics(),
-                    containsInAnyOrder(ExasolStatisticsTableMetric.CPU, ExasolStatisticsTableMetric.USERS));
+            assertThat(READER.readEnabledMetrics(),
+                    Matchers.containsInAnyOrder(ExasolStatisticsTableMetric.CPU, ExasolStatisticsTableMetric.USERS));
         });
     }
 
     @Test
     void testMetricsNotSet() {
-        assertThat(CONFIGURATION.getEnabledMetrics(), containsInAnyOrder(ExasolStatisticsTableMetric.values()));
+        assertThat(READER.readEnabledMetrics(), containsInAnyOrder(ExasolStatisticsTableMetric.values()));
     }
 
     @Test
     void testMetricsEmpty() throws Exception {
         withEnvironmentVariable("METRICS", "").execute(() -> {
-            assertThat(CONFIGURATION.getEnabledMetrics(), containsInAnyOrder());
+            assertThat(READER.readEnabledMetrics(), containsInAnyOrder());
         });
     }
 
@@ -36,7 +38,7 @@ class AdapterConfigurationTest {
     void testUnknownMetric() throws Exception {
         withEnvironmentVariable("METRICS", "UNKNOWN").execute(() -> {
             final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                    CONFIGURATION::getEnabledMetrics);
+                    READER::readEnabledMetrics);
             assertThat(exception.getMessage(), startsWith("E-CWA-9"));
         });
     }
@@ -44,14 +46,13 @@ class AdapterConfigurationTest {
     @Test
     void testDeploymentName() throws Exception {
         withEnvironmentVariable("EXASOL_DEPLOYMENT_NAME", "MyExasol").execute(() -> {
-            assertThat(CONFIGURATION.getDeploymentName(), equalTo("MyExasol"));
+            assertThat(READER.readDeploymentName(), equalTo("MyExasol"));
         });
     }
 
     @Test
     void testDeploymentNameMissing() {
-        final NullPointerException exception = assertThrows(NullPointerException.class,
-                CONFIGURATION::getDeploymentName);
+        final NullPointerException exception = assertThrows(NullPointerException.class, READER::readDeploymentName);
         assertThat(exception.getMessage(), containsString("E-CWA-7"));
     }
 
@@ -59,7 +60,7 @@ class AdapterConfigurationTest {
     void testEmptyDeploymentName() throws Exception {
         withEnvironmentVariable("EXASOL_DEPLOYMENT_NAME", "").execute(() -> {
             final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                    CONFIGURATION::getDeploymentName);
+                    READER::readDeploymentName);
             assertThat(exception.getMessage(), containsString("E-CWA-8"));
         });
     }

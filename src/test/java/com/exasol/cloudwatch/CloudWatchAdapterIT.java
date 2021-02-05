@@ -9,7 +9,9 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.CLOUDWATCH;
+import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -32,13 +34,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.exasol.containers.ExasolContainer;
 
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
-import software.amazon.awssdk.services.cloudwatch.CloudWatchClientBuilder;
 import software.amazon.awssdk.services.cloudwatch.model.*;
-import software.amazon.awssdk.services.cloudwatch.paginators.GetMetricDataIterable;
 
 @Testcontainers
 // [itest->dsn~env-var-for-metrics-selection~1]
@@ -48,25 +45,29 @@ class CloudWatchAdapterIT {
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>("7.0.5")
             .withReuse(true);
     @Container
-    private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalStackContainer(
-            DockerImageName.parse("localstack/localstack:latest")).withServices(CLOUDWATCH);
+    private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalstackContainerWithReuse(
+            DockerImageName.parse("localstack/localstack:latest")).withServices(CLOUDWATCH, SECRETSMANAGER);
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudWatchAdapterIT.class);
     private static Connection connection;
     private static CloudWatchClient cloudWatch;
+    private static LocalStackTestInterface localStackTestInterface;
     private String uniqueDeploymentName;
     private static LocalstackCloudWatchRaw localstackCloudWatchRaw;
+    private static String secretArn;
 
     @BeforeAll
-    static void beforeAll() throws SQLException {
+    static void beforeAll() throws SQLException, IOException {
         connection = EXASOL.createConnection();
-        final CloudWatchClientBuilder cloudWatchClientBuilder = CloudWatchClient.builder();
-        configureCloudWatch(cloudWatchClientBuilder);
-        cloudWatch = cloudWatchClientBuilder.region(Region.EU_CENTRAL_1).build();
+        localStackTestInterface = new LocalStackTestInterface(LOCAL_STACK_CONTAINER);
+        cloudWatch = localStackTestInterface.getCloudWatchClient();
         localstackCloudWatchRaw = new LocalstackCloudWatchRaw(LOCAL_STACK_CONTAINER);
+        secretArn = localStackTestInterface.putExasolCredentials(EXASOL.getHost(),
+                EXASOL.getFirstMappedPort().toString(), EXASOL.getUsername(), EXASOL.getPassword());
     }
 
     @AfterAll
     static void afterAll() throws SQLException {
+        localStackTestInterface.deleteSecret(secretArn);
         connection.close();
         cloudWatch.close();
     }
@@ -138,30 +139,6 @@ class CloudWatchAdapterIT {
                                 1)));
     }
 
-    private GetMetricDataIterable buildCloudWatchQueryForLast5Minutes(final Instant now,
-            final String statisticsFunction) {
-        final MetricDataQuery metricDataQuery = MetricDataQuery.builder().id("myQuery")
-                .metricStat(MetricStat.builder().stat(statisticsFunction).period(60).metric(Metric.builder()
-                        .namespace("Exasol").metricName("USERS").dimensions(expectedDimensions()).build()).build())
-                .build();
-        return cloudWatch.getMetricDataPaginator(GetMetricDataRequest.builder().metricDataQueries(metricDataQuery)
-                .startTime(now.minus(Duration.ofMinutes(5))).endTime(now).build());
-    }
-
-    private TreeMap<Instant, Double> readCloudwatchResultAsTreeMap(final GetMetricDataIterable metricDataPaginator) {
-        final TreeMap<Instant, Double> result = new TreeMap<>();
-        for (final GetMetricDataResponse getMetricDataResponse : metricDataPaginator) {
-            for (final MetricDataResult metricDataResult : getMetricDataResponse.metricDataResults()) {
-                final List<Instant> timestamps = metricDataResult.timestamps();
-                final List<Double> values = metricDataResult.values();
-                for (int index = 0; index < timestamps.size(); index++) {
-                    result.put(timestamps.get(index), values.get(index));
-                }
-            }
-        }
-        return result;
-    }
-
     private Dimension[] expectedDimensions() {
         return new Dimension[] {
                 Dimension.builder().name(DEPLOYMENT_DIMENSION_KEY).value(this.uniqueDeploymentName).build(),
@@ -175,23 +152,13 @@ class CloudWatchAdapterIT {
         return cloudWatch.listMetrics(listRequest).metrics();
     }
 
-    private static void configureCloudWatch(final CloudWatchClientBuilder builder) {
-        builder.endpointOverride(LOCAL_STACK_CONTAINER.getEndpointOverride(CLOUDWATCH));
-        builder.region(Region.EU_CENTRAL_1);
-        builder.credentialsProvider(
-                StaticCredentialsProvider.create(AwsBasicCredentials.create("someUser", "ignoredAnyway")));
-    }
-
     private void runAdapter(final String schemaOverride, final String metrics, final Instant forMinute)
             throws Exception {
-        withEnvironmentVariable("EXASOL_HOST", EXASOL.getHost())
-                .and("EXASOL_PORT", EXASOL.getFirstMappedPort().toString()).and("EXASOL_USER", EXASOL.getUsername())
-                .and("EXASOL_PASS", EXASOL.getPassword()).and("EXASOL_DEPLOYMENT_NAME", this.uniqueDeploymentName)
-                .and("METRICS", metrics).execute(() -> {
+        withEnvironmentVariable("EXASOL_CONNECTION_SECRET_ARN", secretArn)
+                .and("EXASOL_DEPLOYMENT_NAME", this.uniqueDeploymentName).and("METRICS", metrics).execute(() -> {
                     final ScheduledEvent event = new ScheduledEvent();
                     event.setTime(new DateTime(forMinute.toEpochMilli()));
-                    final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride,
-                            CloudWatchAdapterIT::configureCloudWatch);
+                    final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride, localStackTestInterface);
                     adapter.handleRequest(event, mock(Context.class));
                 });
     }

@@ -24,16 +24,23 @@ Don't forget to use a strong, randomly generated password instead of `<PASSWORD>
 * Click "Create Function"
 * Select "Browse serverless application repository"
 * Search for "ExasolCloudWatchAdapter"
-* Fill out the application settings as described in the next section
+* Fill out the application settings (see [configuration section](#configuration))
 * Click on "Deploy"
 
-### Configuration
+## Configuration
 
-You can configure the adapter using the following environment variables:
+You can configure the adapter using the following properties:
 
-* `EXASOL_DEPLOYMENT_NAME`: A name describing the Exasol installation you want to monitor. The adapter adds this name as a [dimension](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension) to the metrics in cloudwatch. This will help you to distinguish the data if you monitor more than one Exasol deployment.
+* `ExaolDeploymentName`: A name describing the Exasol installation you want to monitor. The adapter adds this name as a [dimension](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension) to the metrics in Cloudwatch. This will help you to distinguish the data if you monitor more than one Exasol deployment.
 
-* `METRICS`: A comma-separated list of metrics. If empty, the adapter reports all metrics. Available metrics:
+* `ExasolConnectionSecretArn`: [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of a secret in [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) with the following values:
+    * `host`: Hostname of the Exasol database to connect to
+    * `port`: Exasol JDBC port (default: 8563)
+    * `username`: Name of an Exasol user account with `CREATE SESSION` privileges
+    * `password`: Password for the account
+
+
+* `Metrics`: A comma-separated list of metrics. If empty, the adapter reports all metrics. Available metrics:
   <!-- DON'T CHANGE THIS BY HAND! Use ReadmeGenerator#printMetrics() instead! -->
   [`RAW_OBJECT_SIZE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_DB_SIZE_LAST_DAY), [`MEM_OBJECT_SIZE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_DB_SIZE_LAST_DAY), [`AUXILIARY_SIZE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_DB_SIZE_LAST_DAY), [`STATISTICS_SIZE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_DB_SIZE_LAST_DAY), [`RECOMMENDED_DB_RAM_SIZE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_DB_SIZE_LAST_DAY), [`STORAGE_SIZE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_DB_SIZE_LAST_DAY), [`USE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_DB_SIZE_LAST_DAY), [`TEMP_SIZE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_DB_SIZE_LAST_DAY)
   , [`OBJECT_COUNT`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_DB_SIZE_LAST_DAY), [`LOAD`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_MONITOR_LAST_DAY), [`CPU`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_MONITOR_LAST_DAY), [`TEMP_DB_RAM`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_MONITOR_LAST_DAY), [`PERSISTENT_DB_RAM`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_MONITOR_LAST_DAY), [`HDD_READ`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_MONITOR_LAST_DAY), [`HDD_WRITE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_MONITOR_LAST_DAY), [`LOCAL_READ_SIZE`](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_MONITOR_LAST_DAY)

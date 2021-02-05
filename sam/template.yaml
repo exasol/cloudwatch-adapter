@@ -23,6 +23,9 @@ Parameters:
   ExaolDeploymentName:
     Type: 'String'
     Description: "A name describing the Exasol installation you want to monitor. The adapter adds this name as a dimension to the metrics in cloudwatch. This will help you to distinguish the data if you monitor more than one Exasol deployment."
+  ExasolConnectionSecretArn:
+    Type: 'String'
+    Description: "ARN of a SecretsManager secret with username, password, port and host of the Exasol database."
 
 Resources:
   ExasolCloudWatchAdapter:
@@ -34,9 +37,7 @@ Resources:
       Environment:
         Variables:
           EXASOL_DEPLOYMENT_NAME: !Ref ExaolDeploymentName
-          EXASOL_HOST: ""
-          EXASOL_USER: ""
-          EXASOL_PASS: ""
+          EXASOL_CONNECTION_SECRET_ARN: !Ref ExasolConnectionSecretArn
           METRICS: !Ref Metrics
       Events:
         MinutelyTrigger:
