@@ -40,10 +40,10 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
      * @param exasolStatisticsSchemaOverride if null EXA_STATISITCS is used. This parameter allows you to test this
      *                                       connector with a * predefined SCHEMA instead of the unmodifiable live
      *                                       statistics.
-     * @param awsClientConfigurator          callback that allows tests to use alternate cloudwatch configuration
+     * @param awsClientFactory               dependency injection of AWS clients
      */
-    CloudWatchAdapter(final String exasolStatisticsSchemaOverride, final AwsClientFactory awsClientConfigurator) {
-        this.awsClientFactory = awsClientConfigurator;
+    CloudWatchAdapter(final String exasolStatisticsSchemaOverride, final AwsClientFactory awsClientFactory) {
+        this.awsClientFactory = awsClientFactory;
         this.configuration = new AdapterConfigurationReader(this.awsClientFactory).readConfiguration();
         this.exasolStatisticsSchemaOverride = exasolStatisticsSchemaOverride;
     }
