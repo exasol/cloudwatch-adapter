@@ -34,6 +34,7 @@ Resources:
       CodeUri: ../target/exasol-cloudwatch-adapter.jar
       Handler: com.exasol.cloudwatch.CloudWatchAdapter
       Runtime: java11
+      MemorySize: 512
       Environment:
         Variables:
           EXASOL_DEPLOYMENT_NAME: !Ref ExaolDeploymentName
