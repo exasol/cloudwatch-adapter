@@ -9,6 +9,11 @@
 * #4: Use AWS Secrets Manager for storing the Exasol credentials
 * #7: Added additional metrics: `NET`, `SWAP`, `DB_RAM_SIZE`, `NODES`
 
+## Documentation
+
+* #28: Added documentation on VPC
+* #22: Added a guide for manual deployment
+
 ## Refactoring
 
 * #11: Changed integration tests to use localstack instead of online API
