@@ -1,6 +1,7 @@
 package com.exasol.cloudwatch.configuration;
 
 import static com.exasol.cloudwatch.ExasolStatisticsTableMetric.USERS;
+import static com.exasol.cloudwatch.TestConstants.LOCAL_STACK_IMAGE;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -23,7 +24,7 @@ class AdapterConfigurationReaderIT {
 
     @Container
     private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalstackContainerWithReuse(
-            DockerImageName.parse("localstack/localstack:latest")).withServices(SECRETSMANAGER);
+            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices(SECRETSMANAGER);
     private static LocalStackTestInterface localStackTestInterface;
 
     @BeforeAll

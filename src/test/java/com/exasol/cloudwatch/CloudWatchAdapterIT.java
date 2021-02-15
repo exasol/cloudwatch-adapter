@@ -2,6 +2,8 @@ package com.exasol.cloudwatch;
 
 import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.CLUSTER_NAME_DIMENSION_KEY;
 import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.DEPLOYMENT_DIMENSION_KEY;
+import static com.exasol.cloudwatch.TestConstants.EXASOL_DOCKER_DB_VERSION;
+import static com.exasol.cloudwatch.TestConstants.LOCAL_STACK_IMAGE;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -40,13 +42,12 @@ import software.amazon.awssdk.services.cloudwatch.model.*;
 @Testcontainers
 // [itest->dsn~env-var-for-metrics-selection~1]
 class CloudWatchAdapterIT {
-
     @Container
-    private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>("7.0.5")
-            .withReuse(true);
+    private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
+            EXASOL_DOCKER_DB_VERSION).withReuse(true);
     @Container
     private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalstackContainerWithReuse(
-            DockerImageName.parse("localstack/localstack:latest")).withServices(CLOUDWATCH, SECRETSMANAGER);
+            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices(CLOUDWATCH, SECRETSMANAGER);
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudWatchAdapterIT.class);
     private static Connection connection;
     private static CloudWatchClient cloudWatch;
