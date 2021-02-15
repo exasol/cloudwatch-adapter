@@ -12,6 +12,7 @@
 ## Refactoring
 
 * #11: Changed integration tests to use localstack instead of online API
+* #12: Changed localstack version from latest to 0.12.6
 
 ## Bugfixes
 

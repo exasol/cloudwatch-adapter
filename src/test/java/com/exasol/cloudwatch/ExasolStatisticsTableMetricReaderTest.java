@@ -2,6 +2,7 @@ package com.exasol.cloudwatch;
 
 import static com.exasol.cloudwatch.ExasolStatisticsTableMetric.QUERIES;
 import static com.exasol.cloudwatch.ExasolStatisticsTableMetric.USERS;
+import static com.exasol.cloudwatch.TestConstants.EXASOL_DOCKER_DB_VERSION;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,8 +31,8 @@ import com.exasol.containers.ExasolContainer;
 @ExtendWith(SystemOutGuard.class)
 class ExasolStatisticsTableMetricReaderTest {
     @Container
-    private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>("7.0.5")
-            .withReuse(true);
+    private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
+            EXASOL_DOCKER_DB_VERSION).withReuse(true);
     private static final String CLUSTER_NAME = "MASTER";
     private static final ExaStatisticsTableMock.Row ROW_IN_TIME_GAP_AT_FORWARD_TIME_SHIFT = new ExaStatisticsTableMock.Row(
             "2020-03-29 02:10:00", CLUSTER_NAME, 0, 0);
