@@ -36,13 +36,14 @@ Create a new secret in the [AWS Secrets Manager](https://aws.amazon.com/secrets-
 
 #### VPC configuration
 
-If your Exasol database runs on AWS and in a VPC you should run this adapter in the same VPC. By that it can access the Exasol database using a local IP address.
+You should run CloudWatch adapter in the same AWS VPC that runs Exasol database. By that it can access the Exasol database using a local IP address.
+If your database does not run on AWS you can skip this step an access your Exasol using its public IP address.
 
-To do so, first finish the configuration with the local IP of the exasol database. Next open the settings for the deployed Lambda function, go to its settings / VPC / Edit. There you can add the VPC configuration of your Exasol database.
+To do so, first finish the configuration with the local IP of the Exasol database. Next open the settings for the deployed Lambda function, go to its settings / VPC / Edit. There you can add the VPC configuration of your Exasol database.
 
 ### Create a Dashboard
 
-Now the adapter should transmit the metrics to CloudWatch. To visualize them you have to create a CloudWatch dashboard. You could now start from scratch and build your own dashboard. We, however, recommend you to start with our [example dashboard](https://github.com/exasol/cloudwatch-dashboard-examples/). This comes with lots of preconfigured widgets, designed by the best practices of our monitoring experts.
+Now the adapter should transmit the metrics to CloudWatch. To visualize them you have to create a CloudWatch dashboard. You could start from scratch and build your own dashboard. We, however, recommend you to start with our [example dashboard](https://github.com/exasol/cloudwatch-dashboard-examples/). This comes with lots of preconfigured widgets, designed by the best practices of our monitoring experts.
 
 ## Configuration
 
