@@ -20,14 +20,14 @@ Don't forget to use a strong, randomly generated password instead of `<PASSWORD>
 
 Create a new secret in the [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) with the following values:
 
-* `host`: VPC-local ip address of your Exasol database
+* `host`: VPC internal ip address of your Exasol database
 * `port`: Exasol JDBC port (default: 8563)
 * `username`: Name of an Exasol user account with `CREATE SESSION` privileges
 * `password`: Password for the account
 
 ### VPC Setup
 
-The CloudWatch adapter must run in the same AWS VPC than the Exasol database. By that it can access the Exasol database using a local IP address.
+The CloudWatch adapter must run in the same AWS VPC that the Exasol database runs. By that it can access the Exasol database using a internal IP address.
 
 From within the VPC it can however not access the default Endpoints for AWS CloudWatch and SecretsManager.
 
@@ -78,5 +78,4 @@ The design of this adapter ensures that points are never written twice, which wo
 ## Information for Developers
 
 You can also modify this adapter and deploy it directly. To do so, [install the AWS SAM cli](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html), go to the `sam/` directory and run `sam deploy --guided`.
-
 
