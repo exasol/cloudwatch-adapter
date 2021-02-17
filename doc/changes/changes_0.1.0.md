@@ -14,6 +14,7 @@
 
 * #28: Added documentation on VPC
 * #22: Added a guide for manual deployment
+* #33: Added documentation on VPC API endpoints
 
 ## Refactoring
 

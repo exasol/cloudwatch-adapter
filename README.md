@@ -20,10 +20,25 @@ Don't forget to use a strong, randomly generated password instead of `<PASSWORD>
 
 Create a new secret in the [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) with the following values:
 
-* `host`: Hostname of the Exasol database to connect to (this can either be a public, or a VPC local ip address)
+* `host`: VPC internal ip address of your Exasol database
 * `port`: Exasol JDBC port (default: 8563)
 * `username`: Name of an Exasol user account with `CREATE SESSION` privileges
 * `password`: Password for the account
+
+### VPC Setup
+
+The CloudWatch adapter must run in the same AWS VPC that the Exasol database runs. By that it can access the Exasol database using a internal IP address.
+
+From within the VPC it can however not access the default Endpoints for AWS CloudWatch and SecretsManager.
+
+To add them, go to the [AWS VPC Console](https://console.aws.amazon.com/vpc/) / Endpoints. There create endpoints for the following AWS services:
+
+* com.amazonaws.eu-central-1.monitoring
+* com.amazonaws.eu-central-1.secretsmanager
+
+Make sure that you select the VPC, Subnet and Security group of your Exasol database.
+
+It is important to enable DNS for the endpoint. If it's not possible, you might have to enable DNS in your VPC.
 
 ### Setup CloudWatch Adapter
 
@@ -31,29 +46,19 @@ Create a new secret in the [AWS Secrets Manager](https://aws.amazon.com/secrets-
 * Click "Create Function"
 * Select "Browse serverless application repository"
 * Search for "ExasolCloudWatchAdapter"
-* Fill out the application settings (see [configuration section](#configuration))
+* Fill out the application settings
+    * `ExaolDeploymentName`: A name describing the Exasol installation you want to monitor. The adapter adds this name as a [dimension](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension) to the metrics in Cloudwatch. This will help you to distinguish the data if you monitor more than one Exasol deployment.
+
+    * `ExasolConnectionSecretArn`: [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of Secrets Manager secret you created in a previous step.
+
+    * `Metrics`: A comma-separated list of metrics. If empty, the adapter reports all metrics. [List of supported metrics](doc/supported_metrics.md).
+    * `SubnetId`: ID of the VPC subnet of the Exasol database.
+    * `SecurityGroup`: ID of the security group of the Exasol database.
 * Click on "Deploy"
-
-#### VPC configuration
-
-You should run CloudWatch adapter in the same AWS VPC that runs Exasol database. By that it can access the Exasol database using a local IP address.
-If your database does not run on AWS you can skip this step an access your Exasol using its public IP address.
-
-To do so, first finish the configuration with the local IP of the Exasol database. Next open the settings for the deployed Lambda function, go to its settings / VPC / Edit. There you can add the VPC configuration of your Exasol database.
 
 ### Create a Dashboard
 
 Now the adapter should transmit the metrics to CloudWatch. To visualize them you have to create a CloudWatch dashboard. You could start from scratch and build your own dashboard. We, however, recommend you to start with our [example dashboard](https://github.com/exasol/cloudwatch-dashboard-examples/). This comes with lots of preconfigured widgets, designed by the best practices of our monitoring experts.
-
-## Configuration
-
-You can configure the adapter using the following properties:
-
-* `ExaolDeploymentName`: A name describing the Exasol installation you want to monitor. The adapter adds this name as a [dimension](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension) to the metrics in Cloudwatch. This will help you to distinguish the data if you monitor more than one Exasol deployment.
-
-* `ExasolConnectionSecretArn`: [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of Secrets Manager secret you created in a previous step.
-
-* `Metrics`: A comma-separated list of metrics. If empty, the adapter reports all metrics. [List of supported metrics](doc/supported_metrics.md).
 
 ## Troubleshooting
 
@@ -63,7 +68,7 @@ If the adapter does not work properly, first check its log output. For that go t
 
 * In case your Exasol database uses a timezone with time-shift as `DBTIMEZONE`, this adapter will **not report** the hour when the time is shifted back, since Exasol stores the statistics entries in the `DBTIMEZONE` and by that, the log entries are ambiguous in that hour (see [#2](https://github.com/exasol/cloudwatch-adapter/issues/2)).
 
-## Information for Users
+## Additional Information
 
 The design of this adapter ensures that points are never written twice, which would lead to wrong statistics. It does, however not assure that all points are written. In case of temporary errors with the Exasol database or the CloudWatch API, it can occur that data points are missing.
 
@@ -73,5 +78,4 @@ The design of this adapter ensures that points are never written twice, which wo
 ## Information for Developers
 
 You can also modify this adapter and deploy it directly. To do so, [install the AWS SAM cli](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html), go to the `sam/` directory and run `sam deploy --guided`.
-
 

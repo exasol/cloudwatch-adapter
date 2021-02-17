@@ -31,11 +31,11 @@ Parameters:
     MinLength: 1
   SubnetId:
     Type: "String"
-    Description: "ID of the VPC subnet of the Exasol database"
+    Description: "ID of the VPC subnet of the Exasol database."
     MinLength: 1
   SecurityGroup:
     Type: "String"
-    Description: "ID of the security group of the Exasol database"
+    Description: "ID of the security group of the Exasol database."
     MinLength: 1
 
 Resources:
