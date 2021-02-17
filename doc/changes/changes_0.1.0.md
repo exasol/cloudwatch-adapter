@@ -8,6 +8,7 @@
 * #3: Added SAM deployment
 * #4: Use AWS Secrets Manager for storing the Exasol credentials
 * #7: Added additional metrics: `NET`, `SWAP`, `DB_RAM_SIZE`, `NODES`
+* #30: Added configuration for VPC
 
 ## Documentation
 

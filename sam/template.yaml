@@ -20,12 +20,23 @@ Parameters:
   Metrics:
     Type: 'String'
     Description: "Comma separated list of the metrics to report. See https://github.com/exasol/cloudwatch-adapter for all available metrics."
+    Default: "RAW_OBJECT_SIZE, MEM_OBJECT_SIZE, AUXILIARY_SIZE, STATISTICS_SIZE, RECOMMENDED_DB_RAM_SIZE, STORAGE_SIZE, USE, TEMP_SIZE , OBJECT_COUNT, LOAD, CPU, TEMP_DB_RAM, PERSISTENT_DB_RAM, HDD_READ, HDD_WRITE, LOCAL_READ_SIZE , LOCAL_READ_DURATION, LOCAL_WRITE_DURATION, CACHE_READ_SIZE, CACHE_READ_DURATION, CACHE_WRITE_SIZE, CACHE_WRITE_DURATION, REMOTE_READ_SIZE, REMOTE_READ_DURATION , REMOTE_WRITE_SIZE, REMOTE_WRITE_DURATION, NET, SWAP, USERS, QUERIES, NODES, DB_RAM_SIZE"
   ExaolDeploymentName:
     Type: 'String'
     Description: "A name describing the Exasol installation you want to monitor. The adapter adds this name as a dimension to the metrics in cloudwatch. This will help you to distinguish the data if you monitor more than one Exasol deployment."
+    MinLength: 1
   ExasolConnectionSecretArn:
     Type: 'String'
     Description: "ARN of a SecretsManager secret with username, password, port and host of the Exasol database."
+    MinLength: 1
+  SubnetId:
+    Type: "String"
+    Description: "ID of the VPC subnet of the Exasol database"
+    MinLength: 1
+  SecurityGroup:
+    Type: "String"
+    Description: "ID of the security group of the Exasol database"
+    MinLength: 1
 
 Resources:
   ExasolCloudWatchAdapter:
@@ -35,6 +46,11 @@ Resources:
       Handler: com.exasol.cloudwatch.CloudWatchAdapter
       Runtime: java11
       MemorySize: 512
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroup
+        SubnetIds:
+          - !Ref SubnetId
       Environment:
         Variables:
           EXASOL_DEPLOYMENT_NAME: !Ref ExaolDeploymentName
@@ -44,6 +60,7 @@ Resources:
         - AWSSecretsManagerGetSecretValuePolicy:
             SecretArn: !Ref ExasolConnectionSecretArn
         - CloudWatchPutMetricPolicy: { }
+        - VPCAccessPolicy: { }
       Events:
         MinutelyTrigger:
           Type: Schedule
