@@ -68,6 +68,3 @@ Resources:
             Schedule: rate(1 minute)
             Description: Minutely trigger for the CloudWatch adapter
             Enabled: True
-            RetryPolicy:
-              MaximumRetryAttempts: 0
-              MaximumEventAgeInSeconds: 60
