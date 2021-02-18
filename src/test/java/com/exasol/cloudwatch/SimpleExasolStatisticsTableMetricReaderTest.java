@@ -29,7 +29,7 @@ import com.exasol.containers.ExasolContainer;
 
 @Testcontainers
 @ExtendWith(SystemOutGuard.class)
-class ExasolStatisticsTableMetricReaderTest {
+class SimpleExasolStatisticsTableMetricReaderTest {
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
@@ -57,7 +57,7 @@ class ExasolStatisticsTableMetricReaderTest {
     }
 
     /**
-     * This test checks that the {@link ExasolStatisticsTableMetricReader} only reads the points of the configured
+     * This test checks that the {@link SimpleExasolStatisticsTableMetricReader} only reads the points of the configured
      * minute.
      * 
      * @throws SQLException if something goes wrong
@@ -65,19 +65,19 @@ class ExasolStatisticsTableMetricReaderTest {
     @Test
     // [utest->dsn~report-minute-before-event~1]
     void testWithMockTable() throws SQLException {
-        final List<ExasolStatisticsTableMetricDatum> result = runQueryForMinuteOnMockTable(Instant.ofEpochSecond(61));
-        assertThat(result, containsInAnyOrder(
-                new ExasolStatisticsTableMetricDatum(USERS, Instant.ofEpochSecond(60), 1, CLUSTER_NAME),
-                new ExasolStatisticsTableMetricDatum(QUERIES, Instant.ofEpochSecond(60), 10, CLUSTER_NAME),
-                new ExasolStatisticsTableMetricDatum(USERS, Instant.ofEpochSecond(60 + 59), 2, CLUSTER_NAME),
-                new ExasolStatisticsTableMetricDatum(QUERIES, Instant.ofEpochSecond(60 + 59), 20, CLUSTER_NAME)));
+        final List<ExasolMetricDatum> result = runQueryForMinuteOnMockTable(Instant.ofEpochSecond(61));
+        assertThat(result,
+                containsInAnyOrder(new ExasolMetricDatum(USERS, Instant.ofEpochSecond(60), 1, CLUSTER_NAME),
+                        new ExasolMetricDatum(QUERIES, Instant.ofEpochSecond(60), 10, CLUSTER_NAME),
+                        new ExasolMetricDatum(USERS, Instant.ofEpochSecond(60 + 59), 2, CLUSTER_NAME),
+                        new ExasolMetricDatum(QUERIES, Instant.ofEpochSecond(60 + 59), 20, CLUSTER_NAME)));
     }
 
     @Test
     void testWithMockTableDuringBackwardTimeShift(final Capturable stdOutStream) throws SQLException {
         final Instant minuteToQuery = LocalDateTime.parse("2020-10-25T01:10:00").atZone(ZoneId.of("UTC")).toInstant();
         stdOutStream.capture();
-        final List<ExasolStatisticsTableMetricDatum> result = runQueryForMinuteOnMockTable(minuteToQuery);
+        final List<ExasolMetricDatum> result = runQueryForMinuteOnMockTable(minuteToQuery);
         assertAll(//
                 () -> assertThat(result, empty()),
                 () -> assertThat(stdOutStream.getCapturedData(), containsString("W-CWA-12"))//
@@ -87,20 +87,17 @@ class ExasolStatisticsTableMetricReaderTest {
     @Test
     void testWithMockTableDuringForwardTimeShift() throws SQLException {
         final Instant minuteToQuery = LocalDateTime.parse("2020-03-29T01:10:00").atZone(ZoneId.of("UTC")).toInstant();
-        final List<ExasolStatisticsTableMetricDatum> result = runQueryForMinuteOnMockTable(minuteToQuery);
-        assertThat(result,
-                containsInAnyOrder(new ExasolStatisticsTableMetricDatum(QUERIES, minuteToQuery, 0, CLUSTER_NAME),
-                        new ExasolStatisticsTableMetricDatum(USERS, minuteToQuery, 0, CLUSTER_NAME)));
+        final List<ExasolMetricDatum> result = runQueryForMinuteOnMockTable(minuteToQuery);
+        assertThat(result, containsInAnyOrder(new ExasolMetricDatum(QUERIES, minuteToQuery, 0, CLUSTER_NAME),
+                new ExasolMetricDatum(USERS, minuteToQuery, 0, CLUSTER_NAME)));
     }
 
     @Test
     void testWithMockTableWithRecentEntry() throws SQLException {
         final Instant previousMinute = Instant.now().truncatedTo(ChronoUnit.SECONDS).minus(Duration.ofMinutes(1));
-        final List<ExasolStatisticsTableMetricDatum> result = runQueryForMinuteOnMockTableWithRowForSameMinute(
-                previousMinute);
-        assertThat(result,
-                containsInAnyOrder(new ExasolStatisticsTableMetricDatum(QUERIES, previousMinute, 0, CLUSTER_NAME),
-                        new ExasolStatisticsTableMetricDatum(USERS, previousMinute, 0, CLUSTER_NAME)));
+        final List<ExasolMetricDatum> result = runQueryForMinuteOnMockTableWithRowForSameMinute(previousMinute);
+        assertThat(result, containsInAnyOrder(new ExasolMetricDatum(QUERIES, previousMinute, 0, CLUSTER_NAME),
+                new ExasolMetricDatum(USERS, previousMinute, 0, CLUSTER_NAME)));
     }
 
     @Test
@@ -111,11 +108,11 @@ class ExasolStatisticsTableMetricReaderTest {
         assertThat(exception.getMessage(), containsString("E-CWA-11"));
     }
 
-    private List<ExasolStatisticsTableMetricDatum> runQueryForMinuteOnMockTableWithRowForSameMinute(
-            final Instant minute) throws SQLException {
+    private List<ExasolMetricDatum> runQueryForMinuteOnMockTableWithRowForSameMinute(final Instant minute)
+            throws SQLException {
         try (final ExaStatisticsTableMock exaStatisticsTableMock = new ExaStatisticsTableMock(connection)) {
             exaStatisticsTableMock.addRows(Stream.of(new ExaStatisticsTableMock.Row(minute, CLUSTER_NAME, 0, 0)));
-            final ExasolStatisticsTableMetricReader exasolStatisticsTableMetricReader = new ExasolStatisticsTableMetricReader(
+            final AbstractExasolStatisticsTableMetricReader exasolStatisticsTableMetricReader = new SimpleExasolStatisticsTableMetricReader(
                     connection, ExaStatisticsTableMock.SCHEMA);
             return exasolStatisticsTableMetricReader.readMetrics(List.of(USERS, QUERIES), minute);
         }
@@ -124,15 +121,14 @@ class ExasolStatisticsTableMetricReaderTest {
     @ParameterizedTest
     @MethodSource("getAllMetrics")
     void testReadAllMetrics(final ExasolStatisticsTableMetric metric) {
-        final ExasolStatisticsTableMetricReader exasolStatisticsTableMetricReader = new ExasolStatisticsTableMetricReader(
+        final AbstractExasolStatisticsTableMetricReader exasolStatisticsTableMetricReader = new SimpleExasolStatisticsTableMetricReader(
                 connection, null);
         assertDoesNotThrow(() -> exasolStatisticsTableMetricReader.readMetrics(List.of(metric),
                 Instant.now().minus(Duration.ofMinutes(10))));
     }
 
-    private List<ExasolStatisticsTableMetricDatum> runQueryForMinuteOnMockTable(final Instant minuteToQuery)
-            throws SQLException {
-        final List<ExasolStatisticsTableMetricDatum> exasolStatisticsTableMetricData;
+    private List<ExasolMetricDatum> runQueryForMinuteOnMockTable(final Instant minuteToQuery) throws SQLException {
+        final List<ExasolMetricDatum> exasolStatisticsTableMetricData;
         try (final ExaStatisticsTableMock exaStatisticsTableMock = new ExaStatisticsTableMock(connection)) {
             exaStatisticsTableMock
                     .addRows(Stream.of(new ExaStatisticsTableMock.Row("1970-01-01 01:00:00", CLUSTER_NAME, 0, 0),
@@ -141,7 +137,7 @@ class ExasolStatisticsTableMetricReaderTest {
                             new ExaStatisticsTableMock.Row("1970-01-01 01:02:00", CLUSTER_NAME, 3, 30),
                             ROW_WITH_BACKWARD_TIME_SHIFT, ROW_IN_TIME_GAP_AT_FORWARD_TIME_SHIFT,
                             ROW_AFTER_TIME_GAP_AT_FORWARD_TIME_SHIFT));
-            final ExasolStatisticsTableMetricReader exasolStatisticsTableMetricReader = new ExasolStatisticsTableMetricReader(
+            final AbstractExasolStatisticsTableMetricReader exasolStatisticsTableMetricReader = new SimpleExasolStatisticsTableMetricReader(
                     connection, ExaStatisticsTableMock.SCHEMA);
             exasolStatisticsTableMetricData = exasolStatisticsTableMetricReader.readMetrics(List.of(USERS, QUERIES),
                     minuteToQuery);

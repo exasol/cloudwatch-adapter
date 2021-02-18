@@ -12,7 +12,7 @@ import com.exasol.errorreporting.ExaError;
 /**
  * Enum with the relevant columns of the EXA_STATISTICS tables.
  */
-public enum ExasolStatisticsTableMetric {
+public enum ExasolStatisticsTableMetric implements ExasolMetric {
 
     RAW_OBJECT_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
     MEM_OBJECT_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
@@ -92,12 +92,13 @@ public enum ExasolStatisticsTableMetric {
         return this.table;
     }
 
-    /**
-     * Get the unit of this metric.
-     *
-     * @return unit of this metric
-     */
+    @Override
     public ExasolUnit getUnit() {
         return this.unit;
+    }
+
+    @Override
+    public String getName() {
+        return name();
     }
 }

@@ -63,12 +63,12 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
     }
 
     private void runSynchronization(final Instant minuteToReport, final Connection exasolConnection) {
-        final ExasolStatisticsTableMetricReader metricReader = new ExasolStatisticsTableMetricReader(exasolConnection,
+        final ExasolMetricReader metricReader = new MainExasolMetricReader(exasolConnection,
                 this.exasolStatisticsSchemaOverride);
         final ExasolToCloudwatchMetricDatumConverter converter = new ExasolToCloudwatchMetricDatumConverter(
                 this.configuration.getDeploymentName());
         final CloudWatchPointWriter pointWriter = new CloudWatchPointWriter(this.awsClientFactory);
-        final List<ExasolStatisticsTableMetricDatum> exasolMetricData = metricReader
+        final List<ExasolMetricDatum> exasolMetricData = metricReader
                 .readMetrics(this.configuration.getEnabledMetrics(), minuteToReport);
         final List<MetricDatum> cloudwatchMetricData = exasolMetricData.stream().map(converter::convert)
                 .collect(Collectors.toList());
