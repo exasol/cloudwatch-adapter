@@ -9,8 +9,7 @@ import com.exasol.errorreporting.ExaError;
 
 /**
  * This class reads the value of {@link ExasolStatisticsTableMetric}s from the Exasol database for tables like
- * {@code EXA_SYSTEM_EVENTS}. Such tables don't have recurring snapshots of the data.
- * 
+ * {@code EXA_SYSTEM_EVENTS}. This is required because such tables do not provide the recurring snapshots of the data.
  */
 public class LastValueExasolStatisticsTableMetricReader extends AbstractExasolStatisticsTableMetricReader {
 
@@ -53,7 +52,7 @@ public class LastValueExasolStatisticsTableMetricReader extends AbstractExasolSt
     }
 
     /**
-     * Build a metric query for the latest report(row) of each cluster.
+     * Build a metric query for the latest report of each cluster.
      * 
      * @param statisticsTable statistics table
      * @return sql query

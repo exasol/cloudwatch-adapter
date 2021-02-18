@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import com.exasol.errorreporting.ExaError;
 
 /**
- * This class is an abstract basis for {@link ExasolMetricReader} that read from the {@code EXA_STATISTICS} tables.
+ * This class is an abstract basis for {@link ExasolMetricReader} that reads metrics from the {@code EXA_STATISTICS} tables.
  */
 public abstract class AbstractExasolStatisticsTableMetricReader implements ExasolMetricReader {
     protected static final TimeZone UTC_ZONE = TimeZone.getTimeZone("UTC");
@@ -52,7 +52,7 @@ public abstract class AbstractExasolStatisticsTableMetricReader implements Exaso
      * @param metrics         list of metrics to read.
      * @param start           start of the timeframe
      * @param end             end of the timeframe
-     * @param statisticsTable EAX_STATISTICS table
+     * @param statisticsTable EXA_STATISTICS table
      * @return read metrics
      */
     protected abstract List<ExasolMetricDatum> loadMetricsForTable(final List<ExasolStatisticsTableMetric> metrics,
