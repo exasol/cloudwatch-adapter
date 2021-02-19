@@ -25,7 +25,7 @@ public class LastValueExasolStatisticsTableMetricReader extends AbstractExasolSt
     }
 
     @Override
-    protected List<ExasolMetricDatum> loadMetricsForTable(final List<ExasolStatisticsTableMetric> metrics,
+    protected List<ExasolMetricDatum> readMetricsFromTable(final List<ExasolStatisticsTableMetric> metrics,
             final Instant start, final Instant end, final ExasolStatisticsTable statisticsTable) {
         final String query = buildMetricsQuery(statisticsTable);
         try (final PreparedStatement statement = this.connection.prepareStatement(query);

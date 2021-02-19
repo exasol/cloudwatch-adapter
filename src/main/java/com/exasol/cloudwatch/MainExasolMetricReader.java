@@ -6,8 +6,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * This class combines the different {@link ExasolMetricReader}s into one. It groups the metrics by the readers that can
- * read them and then uses the other reads to read them in one chuck.
+ * This class combines the different {@link ExasolMetricReader}s into one. It groups the metrics by the corresponding
+ * reader and reads them in one chunk using the corresponding reader for the group.
  */
 public class MainExasolMetricReader implements ExasolMetricReader {
 
@@ -15,7 +15,7 @@ public class MainExasolMetricReader implements ExasolMetricReader {
     private final LastValueExasolStatisticsTableMetricReader lastValueExasolStatisticsTableMetricReader;
 
     /**
-     * Create a new instance of {@link MainExasolMetricReader}.
+     * loadMetricsForTable Create a new instance of {@link MainExasolMetricReader}.
      *
      * @param connection     connection to the exasol database
      * @param schemaOverride if null EXA_STATISTICS is used. This parameter allows you to test this connector with a

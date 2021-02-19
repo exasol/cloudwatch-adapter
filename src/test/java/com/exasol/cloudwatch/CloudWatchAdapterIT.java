@@ -84,7 +84,7 @@ class CloudWatchAdapterIT {
         try (final ExaStatisticsTableMock statisticsTable = new ExaStatisticsTableMock(connection)) {
             final Instant now = Instant.now();
             statisticsTable.addRows(Stream.of(new ExaStatisticsTableMock.Row(
-                    now.minus(Duration.ofMinutes(1)).minus(Duration.ofSeconds(1)), "MASTER", 10, 1)));
+                    now.minus(Duration.ofMinutes(1)).minus(Duration.ofSeconds(1)), "MAIN", 10, 1)));
             runAdapter(ExaStatisticsTableMock.SCHEMA, "QUERIES", now);
             final List<Metric> metrics = listCurrentDeploymentsMetrics();
             final Metric firstMetric = metrics.get(0);
@@ -93,7 +93,7 @@ class CloudWatchAdapterIT {
                     () -> assertThat(metrics.size(), equalTo(1)),
                     () -> assertThat(firstMetric.metricName(), equalTo("QUERIES")),
                     () -> assertThat(firstMetric.namespace(), equalTo("Exasol")), () -> assertThat(dimensions,
-                            hasItem(Dimension.builder().name("Cluster Name").value("MASTER").build()))//
+                            hasItem(Dimension.builder().name("Cluster Name").value("MAIN").build()))//
             );
         }
     }
@@ -134,16 +134,17 @@ class CloudWatchAdapterIT {
     private void mockLogs(final ExaStatisticsTableMock statisticsTable, final Instant now,
             final int startInMinutesBeforeNow, final int endInMinutesBeforeNow) {
         statisticsTable
-                .addRows(IntStream.range(0, startInMinutesBeforeNow - endInMinutesBeforeNow)
-                        .mapToObj(counter -> new ExaStatisticsTableMock.Row(
-                                now.minus(Duration.ofSeconds((endInMinutesBeforeNow + counter) * 60L)), "MASTER", 1,
-                                1)));
+                .addRows(
+                        IntStream.range(0, startInMinutesBeforeNow - endInMinutesBeforeNow)
+                                .mapToObj(counter -> new ExaStatisticsTableMock.Row(
+                                        now.minus(Duration.ofSeconds((endInMinutesBeforeNow + counter) * 60L)), "MAIN",
+                                        1, 1)));
     }
 
     private Dimension[] expectedDimensions() {
         return new Dimension[] {
                 Dimension.builder().name(DEPLOYMENT_DIMENSION_KEY).value(this.uniqueDeploymentName).build(),
-                Dimension.builder().name(CLUSTER_NAME_DIMENSION_KEY).value("MASTER").build() };
+                Dimension.builder().name(CLUSTER_NAME_DIMENSION_KEY).value("MAIN").build() };
     }
 
     private List<Metric> listCurrentDeploymentsMetrics() {

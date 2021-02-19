@@ -29,7 +29,7 @@ public class SimpleExasolStatisticsTableMetricReader extends AbstractExasolStati
     }
 
     @Override
-    protected List<ExasolMetricDatum> loadMetricsForTable(final List<ExasolStatisticsTableMetric> metrics,
+    protected List<ExasolMetricDatum> readMetricsFromTable(final List<ExasolStatisticsTableMetric> metrics,
             final Instant start, final Instant end, final ExasolStatisticsTable statisticsTable) {
         final List<ExasolStatisticsTableMetric> currentTablesMetrics = metrics.stream()
                 .filter(metric -> metric.getTable().equals(statisticsTable)).collect(Collectors.toList());

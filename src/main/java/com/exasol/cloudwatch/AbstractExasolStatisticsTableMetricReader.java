@@ -11,7 +11,8 @@ import java.util.stream.Stream;
 import com.exasol.errorreporting.ExaError;
 
 /**
- * This class is an abstract basis for {@link ExasolMetricReader} that reads metrics from the {@code EXA_STATISTICS} tables.
+ * This class is an abstract basis for {@link ExasolMetricReader} that reads metrics from the {@code EXA_STATISTICS}
+ * tables.
  */
 public abstract class AbstractExasolStatisticsTableMetricReader implements ExasolMetricReader {
     protected static final TimeZone UTC_ZONE = TimeZone.getTimeZone("UTC");
@@ -42,7 +43,7 @@ public abstract class AbstractExasolStatisticsTableMetricReader implements Exaso
         assertIntervalIsInThePastForTheDatabaseTime(end);
         final Stream<ExasolStatisticsTable> requestedTables = metrics.stream()
                 .map(ExasolStatisticsTableMetric::getTable).distinct();
-        return requestedTables.flatMap(table -> loadMetricsForTable(metrics, start, end, table).stream())
+        return requestedTables.flatMap(table -> readMetricsFromTable(metrics, start, end, table).stream())
                 .collect(Collectors.toList());
     }
 
@@ -55,7 +56,7 @@ public abstract class AbstractExasolStatisticsTableMetricReader implements Exaso
      * @param statisticsTable EXA_STATISTICS table
      * @return read metrics
      */
-    protected abstract List<ExasolMetricDatum> loadMetricsForTable(final List<ExasolStatisticsTableMetric> metrics,
+    protected abstract List<ExasolMetricDatum> readMetricsFromTable(final List<ExasolStatisticsTableMetric> metrics,
             final Instant start, final Instant end, final ExasolStatisticsTable statisticsTable);
 
     private void assertIntervalIsInThePastForTheDatabaseTime(final Instant end) {
@@ -91,8 +92,8 @@ public abstract class AbstractExasolStatisticsTableMetricReader implements Exaso
     }
 
     /**
-     * Get the injection free schema name. Typically this is {@code EXA_STATISTICS}. Only if in the constructor
-     * {@link #schemaOverride} was set this schema is returned.
+     * Get the injection free schema name. Typically this is {@code EXA_STATISTICS}, it is different only when
+     * {@link #schemaOverride} is set in the constructor.
      * 
      * @return schema name
      */

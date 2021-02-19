@@ -33,7 +33,7 @@ class SimpleExasolStatisticsTableMetricReaderTest {
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
-    private static final String CLUSTER_NAME = "MASTER";
+    private static final String CLUSTER_NAME = "MAIN";
     private static final ExaStatisticsTableMock.Row ROW_IN_TIME_GAP_AT_FORWARD_TIME_SHIFT = new ExaStatisticsTableMock.Row(
             "2020-03-29 02:10:00", CLUSTER_NAME, 0, 0);
     private static final ExaStatisticsTableMock.Row ROW_AFTER_TIME_GAP_AT_FORWARD_TIME_SHIFT = new ExaStatisticsTableMock.Row(

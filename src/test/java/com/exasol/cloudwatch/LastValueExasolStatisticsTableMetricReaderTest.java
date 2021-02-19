@@ -45,9 +45,9 @@ class LastValueExasolStatisticsTableMetricReaderTest {
     void testLatestIsReported() throws Exception {
         try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable()) {
             final Instant someWhen = Instant.ofEpochSecond(10000);
-            mockTable.insert(someWhen, 10, 2, "MASTER");
-            mockTable.insert(someWhen.plus(Duration.ofHours(1)), 100, 4, "MASTER");
-            mockTable.insert(someWhen.minus(Duration.ofHours(1)), 5, 1, "MASTER");
+            mockTable.insert(someWhen, 10, 2, "MAIN");
+            mockTable.insert(someWhen.plus(Duration.ofHours(1)), 100, 4, "MAIN");
+            mockTable.insert(someWhen.minus(Duration.ofHours(1)), 5, 1, "MAIN");
             final List<ExasolMetricDatum> result = runReader(someWhen);
             final ExasolMetricDatum first = result.get(0);
             assertAll(//
@@ -61,12 +61,12 @@ class LastValueExasolStatisticsTableMetricReaderTest {
     void testMultipleClusters() throws Exception {
         try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable()) {
             final Instant someWhen = Instant.ofEpochSecond(10000);
-            mockTable.insert(someWhen, 10, 2, "MASTER");
+            mockTable.insert(someWhen, 10, 2, "MAIN");
             mockTable.insert(someWhen, 100, 4, "OTHER");
             final List<ExasolMetricDatum> result = runReader(someWhen);
             final List<String> clusterNames = result.stream().map(ExasolMetricDatum::getClusterName)
                     .collect(Collectors.toList());
-            assertThat(clusterNames, containsInAnyOrder("MASTER", "OTHER"));
+            assertThat(clusterNames, containsInAnyOrder("MAIN", "OTHER"));
         }
     }
 
