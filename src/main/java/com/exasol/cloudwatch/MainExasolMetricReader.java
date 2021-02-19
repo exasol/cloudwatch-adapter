@@ -15,7 +15,7 @@ public class MainExasolMetricReader implements ExasolMetricReader {
     private final LastValueExasolStatisticsTableMetricReader lastValueExasolStatisticsTableMetricReader;
 
     /**
-     * loadMetricsForTable Create a new instance of {@link MainExasolMetricReader}.
+     * Create a new instance of {@link MainExasolMetricReader}.
      *
      * @param connection     connection to the exasol database
      * @param schemaOverride if null EXA_STATISTICS is used. This parameter allows you to test this connector with a
