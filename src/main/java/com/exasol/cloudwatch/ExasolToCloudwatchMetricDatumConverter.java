@@ -25,7 +25,7 @@ public class ExasolToCloudwatchMetricDatumConverter {
         this.deploymentDimension = Dimension.builder().name(DEPLOYMENT_DIMENSION_KEY).value(deploymentName).build();
     }
 
-    public MetricDatum convert(final ExasolStatisticsTableMetricDatum point) {
+    public MetricDatum convert(final ExasolMetricDatum point) {
         switch (point.getMetric().getUnit()) {
         case COUNT:
             return buildMetricDatum(point, StandardUnit.COUNT, 1.0);
@@ -48,8 +48,8 @@ public class ExasolToCloudwatchMetricDatumConverter {
         }
     }
 
-    private MetricDatum buildMetricDatum(final ExasolStatisticsTableMetricDatum point,
-            final StandardUnit cloudwatchUnit, final double factor) {
+    private MetricDatum buildMetricDatum(final ExasolMetricDatum point, final StandardUnit cloudwatchUnit,
+            final double factor) {
         return MetricDatum.builder().metricName(point.getMetric().name())//
                 .timestamp(point.getTimestamp())//
                 .dimensions(this.deploymentDimension,

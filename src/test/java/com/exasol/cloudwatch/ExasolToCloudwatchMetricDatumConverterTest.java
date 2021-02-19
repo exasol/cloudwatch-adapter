@@ -28,8 +28,7 @@ class ExasolToCloudwatchMetricDatumConverterTest {
             "LOCAL_READ_SIZE, 1.04858", //
     })
     void testValueConversion(final ExasolStatisticsTableMetric metric, final double expectedResult) {
-        final MetricDatum result = CONVERTER
-                .convert(new ExasolStatisticsTableMetricDatum(metric, Instant.now(), 1.0, "MAIN"));
+        final MetricDatum result = CONVERTER.convert(new ExasolMetricDatum(metric, Instant.now(), 1.0, "MAIN"));
         assertThat(result.value(), closeTo(expectedResult, 0.0001));
     }
 
@@ -44,8 +43,7 @@ class ExasolToCloudwatchMetricDatumConverterTest {
             "LOCAL_READ_SIZE, MEGABYTES", //
     })
     void testUnitConversion(final ExasolStatisticsTableMetric metric, final StandardUnit expectedCloudWatchUnit) {
-        final MetricDatum result = CONVERTER
-                .convert(new ExasolStatisticsTableMetricDatum(metric, Instant.now(), 1.0, "MAIN"));
+        final MetricDatum result = CONVERTER.convert(new ExasolMetricDatum(metric, Instant.now(), 1.0, "MAIN"));
         assertThat(result.unit(), equalTo(expectedCloudWatchUnit));
     }
 }
