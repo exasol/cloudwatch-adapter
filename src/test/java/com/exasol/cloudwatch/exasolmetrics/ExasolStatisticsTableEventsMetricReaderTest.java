@@ -1,6 +1,5 @@
-package com.exasol.cloudwatch;
+package com.exasol.cloudwatch.exasolmetrics;
 
-import static com.exasol.cloudwatch.ExasolStatisticsTableMetric.NODES;
 import static com.exasol.cloudwatch.TestConstants.EXASOL_DOCKER_DB_VERSION;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -20,7 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.exasol.containers.ExasolContainer;
 
 @Testcontainers
-class LastValueExasolStatisticsTableMetricReaderTest {
+class ExasolStatisticsTableEventsMetricReaderTest {
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
@@ -71,9 +70,9 @@ class LastValueExasolStatisticsTableMetricReaderTest {
     }
 
     private List<ExasolMetricDatum> runReader(final Instant someWhen) {
-        final LastValueExasolStatisticsTableMetricReader reader = new LastValueExasolStatisticsTableMetricReader(
+        final ExasolStatisticsTableEventsMetricReader reader = new ExasolStatisticsTableEventsMetricReader(
                 exasolConnection, MOCK_SCHEMA);
-        return reader.readMetrics(List.of(NODES), someWhen.plus(Duration.ofHours(100)));
+        return reader.readMetrics(List.of("NODES"), someWhen.plus(Duration.ofHours(100)));
     }
 
     private static class ExaSystemEventsMockTable implements AutoCloseable {

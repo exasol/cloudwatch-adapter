@@ -5,41 +5,34 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import com.exasol.cloudwatch.ExasolStatisticsTableMetric;
-
 class EnvironmentConfigurationReaderTest {
     private static final EnvironmentConfigurationReader READER = new EnvironmentConfigurationReader();
+    private static final List<String> AVAILABLE_METRICS = List.of("MY_METRIC");
 
     @Test
     // [utest->dsn~env-var-for-metrics-selection~1]
     void testMetrics() throws Exception {
         withEnvironmentVariable("METRICS", "CPU, USERS").execute(() -> {
-            assertThat(READER.readEnabledMetrics(),
-                    Matchers.containsInAnyOrder(ExasolStatisticsTableMetric.CPU, ExasolStatisticsTableMetric.USERS));
+            assertThat(READER.readEnabledMetrics(AVAILABLE_METRICS), Matchers.containsInAnyOrder("CPU", "USERS"));
         });
     }
 
     @Test
     void testMetricsNotSet() {
-        assertThat(READER.readEnabledMetrics(), containsInAnyOrder(ExasolStatisticsTableMetric.values()));
+        assertThat(READER.readEnabledMetrics(AVAILABLE_METRICS),
+                containsInAnyOrder(AVAILABLE_METRICS.toArray(String[]::new)));
     }
 
     @Test
     void testMetricsEmpty() throws Exception {
         withEnvironmentVariable("METRICS", "").execute(() -> {
-            assertThat(READER.readEnabledMetrics(), containsInAnyOrder());
-        });
-    }
-
-    @Test
-    void testUnknownMetric() throws Exception {
-        withEnvironmentVariable("METRICS", "UNKNOWN").execute(() -> {
-            final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                    READER::readEnabledMetrics);
-            assertThat(exception.getMessage(), startsWith("E-CWA-9"));
+            assertThat(READER.readEnabledMetrics(AVAILABLE_METRICS),
+                    containsInAnyOrder(AVAILABLE_METRICS.toArray(String[]::new)));
         });
     }
 

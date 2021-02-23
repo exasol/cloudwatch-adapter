@@ -1,18 +1,12 @@
-package com.exasol.cloudwatch;
+package com.exasol.cloudwatch.exasolmetrics;
 
-import static com.exasol.cloudwatch.ExasolStatisticsTable.*;
-import static com.exasol.cloudwatch.ExasolUnit.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.exasol.errorreporting.ExaError;
+import static com.exasol.cloudwatch.exasolmetrics.ExasolStatisticsTable.*;
+import static com.exasol.cloudwatch.exasolmetrics.ExasolUnit.*;
 
 /**
  * Enum with the relevant columns of the EXA_STATISTICS tables.
  */
-public enum ExasolStatisticsTableMetric implements ExasolMetric {
+enum ExasolStatisticsTableRegularMetric {
 
     RAW_OBJECT_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
     MEM_OBJECT_SIZE(EXA_DB_SIZE_LAST_DAY, GIBIBYTES), //
@@ -51,36 +45,14 @@ public enum ExasolStatisticsTableMetric implements ExasolMetric {
     private final ExasolUnit unit;
 
     /**
-     * Create a new instance of {@link ExasolStatisticsTableMetric}.
+     * Create a new instance of {@link ExasolStatisticsTableRegularMetric}.
      * 
      * @param tableName name of the table that contains the metric
      * @param unit      unit of this metric
      */
-    private ExasolStatisticsTableMetric(final ExasolStatisticsTable tableName, final ExasolUnit unit) {
+    private ExasolStatisticsTableRegularMetric(final ExasolStatisticsTable tableName, final ExasolUnit unit) {
         this.table = tableName;
         this.unit = unit;
-    }
-
-    /**
-     * Build a {@link ExasolStatisticsTableMetric} from string.
-     * <p>
-     * In comparison to {@link #valueOf(String)} this method has better error messages.
-     * </p>
-     *
-     * @param name name of the metric
-     * @return built {@link ExasolStatisticsTableMetric}
-     */
-    public static ExasolStatisticsTableMetric parse(final String name) {
-        try {
-            return valueOf(name.toUpperCase());
-        } catch (final IllegalArgumentException exception) {
-            final List<String> availableMetrics = Arrays.stream(ExasolStatisticsTableMetric.values()).map(Enum::name)
-                    .collect(Collectors.toList());
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-CWA-9")
-                    .message("Unknown metric {{unknown metric}}.")
-                    .mitigation("Supported metrics are {{available metrics}}.").parameter("unknown metric", name)
-                    .parameter("available metrics", availableMetrics).toString());
-        }
     }
 
     /**
@@ -92,13 +64,12 @@ public enum ExasolStatisticsTableMetric implements ExasolMetric {
         return this.table;
     }
 
-    @Override
+    /**
+     * Get the unit
+     * 
+     * @return unit
+     */
     public ExasolUnit getUnit() {
         return this.unit;
-    }
-
-    @Override
-    public String getName() {
-        return name();
     }
 }

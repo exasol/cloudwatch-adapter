@@ -3,7 +3,6 @@ package com.exasol.cloudwatch.configuration;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.exasol.cloudwatch.ExasolStatisticsTableMetric;
 import com.exasol.errorreporting.ExaError;
 
 /**
@@ -33,16 +32,16 @@ class EnvironmentConfigurationReader {
     /**
      * Read {@code METRICS}.
      * 
+     * @param availableMetrics list of available metrics
      * @return list of enabled metrics
      */
     // [impl->dsn~env-var-for-metrics-selection~1]
-    List<ExasolStatisticsTableMetric> readEnabledMetrics() {
+    List<String> readEnabledMetrics(final Collection<String> availableMetrics) {
         final String metricsParameter = System.getenv("METRICS");
-        if (metricsParameter == null) {
-            return Arrays.asList(ExasolStatisticsTableMetric.values());
+        if (metricsParameter == null || metricsParameter.isBlank()) {
+            return List.copyOf(availableMetrics);
         } else {
-            return Arrays.stream(metricsParameter.split(",")).map(String::trim).filter(input -> !input.isEmpty())
-                    .map(ExasolStatisticsTableMetric::parse).collect(Collectors.toList());
+            return Arrays.stream(metricsParameter.split(",")).map(String::trim).collect(Collectors.toList());
         }
     }
 

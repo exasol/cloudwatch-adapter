@@ -6,9 +6,9 @@ import static com.exasol.cloudwatch.TestConstants.EXASOL_DOCKER_DB_VERSION;
 import static com.exasol.cloudwatch.TestConstants.LOCAL_STACK_IMAGE;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.CLOUDWATCH;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
@@ -95,6 +95,16 @@ class CloudWatchAdapterIT {
                     () -> assertThat(firstMetric.namespace(), equalTo("Exasol")), () -> assertThat(dimensions,
                             hasItem(Dimension.builder().name("Cluster Name").value("MAIN").build()))//
             );
+        }
+    }
+
+    @Test
+    void testUnknownMetric() throws Exception {
+        try (final ExaStatisticsTableMock statisticsTable = new ExaStatisticsTableMock(connection)) {
+            final Instant now = Instant.now();
+            final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                    () -> runAdapter(ExaStatisticsTableMock.SCHEMA, "UNKNOWN", now));
+            assertThat(exception.getMessage(), startsWith("E-CWA-31"));
         }
     }
 

@@ -13,6 +13,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.exasol.cloudwatch.configuration.*;
+import com.exasol.cloudwatch.exasolmetrics.*;
 import com.exasol.errorreporting.ExaError;
 
 import software.amazon.awssdk.services.cloudwatch.model.MetricDatum;
@@ -26,6 +27,7 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
     private final String exasolStatisticsSchemaOverride;
     private final AdapterConfiguration configuration;
     private final AwsClientFactory awsClientFactory;
+    private final ExasolMetricProvider exasolMetricProvider;
 
     /**
      * Create a new instance of {@link CloudWatchAdapter}.
@@ -44,7 +46,9 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
      */
     CloudWatchAdapter(final String exasolStatisticsSchemaOverride, final AwsClientFactory awsClientFactory) {
         this.awsClientFactory = awsClientFactory;
-        this.configuration = new AdapterConfigurationReader(this.awsClientFactory).readConfiguration();
+        this.exasolMetricProvider = new ExasolMetricProvider();
+        this.configuration = new AdapterConfigurationReader(this.awsClientFactory)
+                .readConfiguration(this.exasolMetricProvider.getSupportedMetrics());
         this.exasolStatisticsSchemaOverride = exasolStatisticsSchemaOverride;
     }
 
@@ -63,13 +67,13 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
     }
 
     private void runSynchronization(final Instant minuteToReport, final Connection exasolConnection) {
-        final ExasolMetricReader metricReader = new MainExasolMetricReader(exasolConnection,
+        final ExasolMetricReader reader = this.exasolMetricProvider.getReader(exasolConnection,
                 this.exasolStatisticsSchemaOverride);
         final ExasolToCloudwatchMetricDatumConverter converter = new ExasolToCloudwatchMetricDatumConverter(
                 this.configuration.getDeploymentName());
         final CloudWatchPointWriter pointWriter = new CloudWatchPointWriter(this.awsClientFactory);
-        final List<ExasolMetricDatum> exasolMetricData = metricReader
-                .readMetrics(this.configuration.getEnabledMetrics(), minuteToReport);
+        final List<ExasolMetricDatum> exasolMetricData = reader.readMetrics(this.configuration.getEnabledMetrics(),
+                minuteToReport);
         final List<MetricDatum> cloudwatchMetricData = exasolMetricData.stream().map(converter::convert)
                 .collect(Collectors.toList());
         logger.info("Writing {} points.", cloudwatchMetricData.size());

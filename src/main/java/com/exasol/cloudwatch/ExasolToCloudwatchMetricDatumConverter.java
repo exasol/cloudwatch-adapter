@@ -1,5 +1,6 @@
 package com.exasol.cloudwatch;
 
+import com.exasol.cloudwatch.exasolmetrics.ExasolMetricDatum;
 import com.exasol.errorreporting.ExaError;
 
 import software.amazon.awssdk.services.cloudwatch.model.*;
@@ -26,7 +27,7 @@ public class ExasolToCloudwatchMetricDatumConverter {
     }
 
     public MetricDatum convert(final ExasolMetricDatum point) {
-        switch (point.getMetric().getUnit()) {
+        switch (point.getUnit()) {
         case COUNT:
             return buildMetricDatum(point, StandardUnit.COUNT, 1.0);
         case PERCENT:
@@ -44,13 +45,13 @@ public class ExasolToCloudwatchMetricDatumConverter {
         default:
             throw new IllegalStateException(ExaError.messageBuilder("F-CWA-14")
                     .message("Converting of Metrics with unit {{unit}} is not implemented.").ticketMitigation()
-                    .parameter("unit", point.getMetric().getUnit()).toString());
+                    .parameter("unit", point.getMetricName()).toString());
         }
     }
 
     private MetricDatum buildMetricDatum(final ExasolMetricDatum point, final StandardUnit cloudwatchUnit,
             final double factor) {
-        return MetricDatum.builder().metricName(point.getMetric().name())//
+        return MetricDatum.builder().metricName(point.getMetricName())//
                 .timestamp(point.getTimestamp())//
                 .dimensions(this.deploymentDimension,
                         Dimension.builder().name(CLUSTER_NAME_DIMENSION_KEY).value(point.getClusterName()).build())

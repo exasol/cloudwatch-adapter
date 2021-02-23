@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.exasol.cloudwatch.exasolmetrics.ExasolStatisticsTable;
 import com.exasol.dbbuilder.dialects.Table;
 import com.exasol.dbbuilder.dialects.exasol.ExasolObjectFactory;
 import com.exasol.dbbuilder.dialects.exasol.ExasolSchema;
