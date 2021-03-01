@@ -1,13 +1,14 @@
-package com.exasol.cloudwatch;
+package com.exasol.cloudwatch.exasolmetrics;
 
 import java.time.Instant;
 import java.util.Objects;
 
 /**
- * This class represents one single measurement for a {@link ExasolStatisticsTableMetric}.
+ * This class represents one single measurement for a {@link ExasolStatisticsTableRegularMetric}.
  */
 public class ExasolMetricDatum {
-    private final ExasolStatisticsTableMetric metric;
+    private final String metricName;
+    private final ExasolUnit unit;
     private final Instant timestamp;
     private final double value;
     private final String clusterName;
@@ -15,14 +16,16 @@ public class ExasolMetricDatum {
     /**
      * Create a new instance of {@link ExasolMetricDatum}.
      * 
-     * @param metric      metric the datapoint belongs to
+     * @param metricName  metric the datapoint belongs to
+     * @param unit        unit of the metric
      * @param timestamp   timestamp of the measurement
      * @param value       value
      * @param clusterName name of the cluster
      */
-    public ExasolMetricDatum(final ExasolStatisticsTableMetric metric, final Instant timestamp, final double value,
-            final String clusterName) {
-        this.metric = metric;
+    public ExasolMetricDatum(final String metricName, final ExasolUnit unit, final Instant timestamp,
+            final double value, final String clusterName) {
+        this.metricName = metricName;
+        this.unit = unit;
         this.timestamp = timestamp;
         this.value = value;
         this.clusterName = clusterName;
@@ -60,14 +63,23 @@ public class ExasolMetricDatum {
      * 
      * @return metric
      */
-    public ExasolStatisticsTableMetric getMetric() {
-        return this.metric;
+    public String getMetricName() {
+        return this.metricName;
+    }
+
+    /**
+     * Get the unit.
+     *
+     * @return unit
+     */
+    public ExasolUnit getUnit() {
+        return this.unit;
     }
 
     @Override
     public String toString() {
-        return "ExasolMetricDatum{" + "metric=" + this.metric + ", timestamp=" + this.timestamp + ", value="
-                + this.value + '}';
+        return "ExasolMetricDatum{" + "metricName=" + this.metricName + ", unit=" + this.unit + ", timestamp="
+                + this.timestamp + ", value=" + this.value + '}';
     }
 
     @Override
@@ -79,12 +91,13 @@ public class ExasolMetricDatum {
             return false;
         }
         final ExasolMetricDatum that = (ExasolMetricDatum) other;
-        return this.timestamp.equals(that.timestamp) && this.value == that.value && this.metric.equals(that.metric)
-                && this.clusterName.equals(that.clusterName);
+        return this.timestamp.equals(that.timestamp) && this.value == that.value
+                && this.metricName.equals(that.metricName) && this.clusterName.equals(that.clusterName)
+                && this.unit.equals(that.unit);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.timestamp, this.value, this.metric, this.clusterName);
+        return Objects.hash(this.timestamp, this.value, this.metricName, this.unit, this.clusterName);
     }
 }

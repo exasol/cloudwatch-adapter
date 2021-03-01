@@ -1,13 +1,14 @@
-package com.exasol.cloudwatch;
+package com.exasol.cloudwatch.exasolmetrics;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 /**
- * Interface for classes that can read {@link ExasolMetricDatum}s for given {@link ExasolStatisticsTableMetric}s from
- * the Exasol database.
+ * Interface for classes that can read {@link ExasolMetricDatum}s from the Exasol database.
  */
 public interface ExasolMetricReader {
+
     /**
      * Read the {@link ExasolMetricDatum} for given metrics and a given minute.
      *
@@ -16,5 +17,5 @@ public interface ExasolMetricReader {
      * @return list of Exasol metrics
      */
     // [impl->dsn~report-minute-before-event~1]
-    List<ExasolMetricDatum> readMetrics(List<ExasolStatisticsTableMetric> metrics, Instant ofMinute);
+    List<ExasolMetricDatum> readMetrics(Collection<String> metrics, Instant ofMinute);
 }

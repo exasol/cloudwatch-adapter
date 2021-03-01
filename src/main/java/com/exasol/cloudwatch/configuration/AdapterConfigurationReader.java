@@ -1,5 +1,7 @@
 package com.exasol.cloudwatch.configuration;
 
+import java.util.Collection;
+
 import com.exasol.cloudwatch.AwsClientFactory;
 
 /**
@@ -20,14 +22,15 @@ public class AdapterConfigurationReader {
     /**
      * Read a {@link AdapterConfiguration}.
      * 
+     * @param availableMetrics list of available metrics
      * @return read {@link AdapterConfiguration}
      */
-    public AdapterConfiguration readConfiguration() {
+    public AdapterConfiguration readConfiguration(final Collection<String> availableMetrics) {
         final EnvironmentConfigurationReader envConfReader = new EnvironmentConfigurationReader();
         final String secretArn = envConfReader.readExasolConnectionArn();
         final ExasolCredentials exasolCredentials = new ExasolCredentialsReader(this.awsClientFactory)
                 .readExasolCredentials(secretArn);
-        return new AdapterConfiguration(envConfReader.readDeploymentName(), envConfReader.readEnabledMetrics(),
-                exasolCredentials);
+        return new AdapterConfiguration(envConfReader.readDeploymentName(),
+                envConfReader.readEnabledMetrics(availableMetrics), exasolCredentials);
     }
 }

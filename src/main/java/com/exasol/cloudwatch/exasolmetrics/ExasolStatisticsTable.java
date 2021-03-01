@@ -1,4 +1,4 @@
-package com.exasol.cloudwatch;
+package com.exasol.cloudwatch.exasolmetrics;
 
 /**
  * Enum of the relevant EXA_STATISTICS tables.
