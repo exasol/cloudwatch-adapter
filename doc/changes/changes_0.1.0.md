@@ -28,3 +28,4 @@
 * #8: Fixed wrong metrics
 * #14: Removed failing SAM validate CI, since it requires AWS access
 * #19: Fixed SAM template (`ClassNotFoundException` on deployment)
+* #21: Set retry count for scheduled event to 0 
