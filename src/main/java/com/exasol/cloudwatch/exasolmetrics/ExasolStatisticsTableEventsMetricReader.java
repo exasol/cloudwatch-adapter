@@ -28,8 +28,8 @@ class ExasolStatisticsTableEventsMetricReader extends AbstractExasolStatisticsTa
     // [impl->dsn~report-minute-before-event~1]
     @Override
     public List<ExasolMetricDatum> readMetrics(final Collection<String> metrics, final Instant ofMinute) {
-        final List<ExasolStatisticsTableEventsMetric> parsedMetrics = metrics.stream()
-                .map(ExasolStatisticsTableEventsMetric::valueOf).collect(Collectors.toList());
+        final List<ExasolStatisticsTableEventsMetric> parsedMetrics = getMetricsToReadInCurrentMinute(metrics,
+                ofMinute);
         final String query = buildMetricsQuery();
         try (final PreparedStatement statement = this.connection.prepareStatement(query);
                 final ResultSet resultSet = statement.executeQuery()) {
@@ -40,6 +40,20 @@ class ExasolStatisticsTableEventsMetricReader extends AbstractExasolStatisticsTa
                             .parameter("query", query).ticketMitigation().toString(),
                     exception);
         }
+    }
+
+    private List<ExasolStatisticsTableEventsMetric> getMetricsToReadInCurrentMinute(final Collection<String> metrics,
+            final Instant ofMinute) {
+        final List<ExasolStatisticsTableEventsMetric> parsedMetrics = metrics.stream()
+                .map(ExasolStatisticsTableEventsMetric::valueOf).collect(Collectors.toList());
+        return parsedMetrics.stream().filter(metric -> isInThisMinuteReadingRequired(ofMinute, metric))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isInThisMinuteReadingRequired(final Instant ofMinute,
+            final ExasolStatisticsTableEventsMetric metric) {
+        final long epochMinute = ofMinute.getEpochSecond() / 60;
+        return epochMinute % metric.getReportIntervalMinutes() == 0;
     }
 
     private List<ExasolMetricDatum> readResult(final List<ExasolStatisticsTableEventsMetric> metrics,
