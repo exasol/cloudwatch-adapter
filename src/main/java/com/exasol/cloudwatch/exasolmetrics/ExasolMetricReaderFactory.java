@@ -16,10 +16,9 @@ interface ExasolMetricReaderFactory {
     Set<String> getSupportedMetrics();
 
     /**
-     * Get an {@link ExasolMetricReader} that can read the metrics offered by this class. final Connection connection,
-     * final String schemaOverride
+     * Get an {@link ExasolMetricReader} that can read the metrics offered by this class.
      * 
-     * @param connection     connection to the exasol database
+     * @param connection     connection to the Exasol database
      * @param schemaOverride if null EXA_STATISTICS is used. This parameter allows you to test this connector with a
      *                       predefined SCHEMA instead of the unmodifiable live statistics.
      * @return {@link ExasolMetricReader}
@@ -30,7 +29,7 @@ interface ExasolMetricReaderFactory {
      * Get a link to the documentation for a specific metric.
      * 
      * @param metric metric
-     * @return link to the exasol documentation
+     * @return link to the Exasol documentation
      */
     Optional<String> getDocLinkForMetric(String metric);
 }

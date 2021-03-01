@@ -26,7 +26,7 @@ enum ExasolStatisticsTableEventsMetric {
     }
 
     /**
-     * Get the unit
+     * Get the unit.
      * 
      * @return unit
      */
