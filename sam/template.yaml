@@ -46,6 +46,9 @@ Resources:
       Handler: com.exasol.cloudwatch.CloudWatchAdapter
       Runtime: java11
       MemorySize: 512
+      RetryPolicy:
+        MaximumRetryAttempts: 0
+        MaximumEventAgeInSeconds: 60
       VpcConfig:
         SecurityGroupIds:
           - !Ref SecurityGroup
