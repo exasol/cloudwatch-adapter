@@ -16,10 +16,12 @@ class ReadmeGenerator {
     @Test
     void printMetrics() {
         final ExasolMetricProvider exasolMetricProvider = new ExasolMetricProvider();
-        System.out
-                .println(exasolMetricProvider.getSupportedMetrics().stream()
-                        .map(metric -> exasolMetricProvider.getDocLinkForMetric(metric)
-                                .map(s -> "[`" + metric + "`](" + s + ")").orElse(metric))
-                        .collect(Collectors.joining(", ")));
+        System.out.println(exasolMetricProvider.getSupportedMetrics().stream()
+                .map(metric -> this.buildMarkdownLink(metric, exasolMetricProvider)).collect(Collectors.joining(", ")));
+    }
+
+    private String buildMarkdownLink(final String metric, final ExasolMetricProvider exasolMetricProvider) {
+        return exasolMetricProvider.getDocLinkForMetric(metric).map(s -> "[`" + metric + "`](" + s + ")")
+                .orElse(metric);
     }
 }

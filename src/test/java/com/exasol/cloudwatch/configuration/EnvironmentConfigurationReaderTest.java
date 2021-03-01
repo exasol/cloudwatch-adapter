@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 class EnvironmentConfigurationReaderTest {
@@ -18,7 +17,7 @@ class EnvironmentConfigurationReaderTest {
     // [utest->dsn~env-var-for-metrics-selection~1]
     void testMetrics() throws Exception {
         withEnvironmentVariable("METRICS", "CPU, USERS").execute(() -> {
-            assertThat(READER.readEnabledMetrics(AVAILABLE_METRICS), Matchers.containsInAnyOrder("CPU", "USERS"));
+            assertThat(READER.readEnabledMetrics(AVAILABLE_METRICS), containsInAnyOrder("CPU", "USERS"));
         });
     }
 

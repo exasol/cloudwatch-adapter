@@ -4,8 +4,9 @@ import static com.exasol.cloudwatch.exasolmetrics.ExasolUnit.COUNT;
 import static com.exasol.cloudwatch.exasolmetrics.ExasolUnit.GIBIBYTES;
 
 /**
- * Enum with the relevant columns of the EXA_STATISTIC.EXA_SYSTEM_EVENTS table. This table needs a different reader then
- * the other tables, since Exasol does not report theses values periodically but for example on reboot.
+ * Enum with the relevant columns of the {@code EXA_STATISTIC.EXA_SYSTEM_EVENTS} table. This table needs a different
+ * reader than that of other tables, since Exasol does not report these values periodically but, for example, after
+ * reboot.
  */
 enum ExasolStatisticsTableEventsMetric {
     NODES(COUNT, 4), //

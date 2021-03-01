@@ -35,11 +35,8 @@ class CompoundExasolMetricReader implements ExasolMetricReader {
     @Override
     public List<ExasolMetricDatum> readMetrics(final Collection<String> metrics, final Instant ofMinute) {
         final Set<String> remainingMetrics = new HashSet<>(metrics);
-        final List<String> supportedMetrics = new ArrayList<>();
         final List<ExasolMetricDatum> result = this.childReaderFactories.stream().flatMap(readerFactory -> {
-            final Set<String> thisReadersSupportedMetrics = readerFactory.getSupportedMetrics();
-            supportedMetrics.addAll(thisReadersSupportedMetrics);
-            final Set<String> thisReadersMetrics = intersection(remainingMetrics, thisReadersSupportedMetrics);
+            final Set<String> thisReadersMetrics = getMetricsSupportedByReader(remainingMetrics, readerFactory);
             remainingMetrics.removeAll(thisReadersMetrics);
             if (thisReadersMetrics.isEmpty()) {
                 return Stream.empty();
@@ -48,11 +45,19 @@ class CompoundExasolMetricReader implements ExasolMetricReader {
                         .readMetrics(thisReadersMetrics, ofMinute).stream();
             }
         }).collect(Collectors.toList());
-        assertAllMetricsWereFound(remainingMetrics, supportedMetrics);
+        assertAllMetricsWereFound(remainingMetrics);
         return result;
     }
 
-    private void assertAllMetricsWereFound(final Set<String> remainingMetrics, final List<String> supportedMetrics) {
+    private Set<String> getMetricsSupportedByReader(final Set<String> remainingMetrics,
+            final ExasolMetricReaderFactory readerFactory) {
+        final Set<String> thisReadersSupportedMetrics = readerFactory.getSupportedMetrics();
+        return intersection(remainingMetrics, thisReadersSupportedMetrics);
+    }
+
+    private void assertAllMetricsWereFound(final Set<String> remainingMetrics) {
+        final List<String> supportedMetrics = this.childReaderFactories.stream()
+                .flatMap(factory -> factory.getSupportedMetrics().stream()).collect(Collectors.toList());
         if (!remainingMetrics.isEmpty()) {
             throw new IllegalArgumentException(
                     ExaError.messageBuilder("E-CWA-31").message("Invalid metrics {{invalid metrics}}.")
