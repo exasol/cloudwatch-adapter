@@ -1,6 +1,10 @@
-#cloudwatch-adapter 0.1.0, released 2021-01-??
+#cloudwatch-adapter 0.1.0, released 2021-03-02
 
-## Code name:
+## Code name: Initial release
+
+## Summary
+
+This is the very first release of the Exasol – Cloud watch adapter.
 
 ## Features / Enhancements
 
@@ -11,6 +15,7 @@
 * #30: Added configuration for VPC
 * #35: Added regular reporting of metrics from EXA_SYSTEM_EVENTS
 * #37: Report metrics from EXA_SYSTEM_EVENTS only every 4 minutes
+* #31: Added wrapper for AWS SDK exceptions
 
 ## Documentation
 

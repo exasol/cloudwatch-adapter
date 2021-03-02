@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.exasol.errorreporting.ExaError;
+
+import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
 import software.amazon.awssdk.services.cloudwatch.model.MetricDatum;
 import software.amazon.awssdk.services.cloudwatch.model.PutMetricDataRequest;
@@ -19,10 +22,10 @@ public class CloudWatchPointWriter {
     /**
      * Create a new instance of {@link CloudWatchPointWriter}.
      *
-     * @param awsClientConfigurator callback that allows tests to use alternate cloudwatch configuration
+     * @param awsClientFactory callback that allows tests to use alternate cloudwatch configuration
      */
-    public CloudWatchPointWriter(final AwsClientFactory awsClientConfigurator) {
-        this.awsClientFactory = awsClientConfigurator;
+    public CloudWatchPointWriter(final AwsClientFactory awsClientFactory) {
+        this.awsClientFactory = awsClientFactory;
     }
 
     /**
@@ -44,6 +47,13 @@ public class CloudWatchPointWriter {
     private void putPoints(final CloudWatchClient cloudwatch, final Stream<MetricDatum> points) {
         final PutMetricDataRequest putRequest = PutMetricDataRequest.builder().namespace(CLOUDWATCH_NAMESPACE)
                 .metricData(points.collect(Collectors.toList())).build();
-        cloudwatch.putMetricData(putRequest);
+        try {
+            cloudwatch.putMetricData(putRequest);
+        } catch (final SdkClientException exception) {
+            throw new IllegalStateException(
+                    ExaError.messageBuilder("E-CWA-19").message("Failed to put CloudWatch metrics.")
+                            .mitigation("Make sure that you created a CloudWatch endpoint in your VPC.").toString(),
+                    exception);
+        }
     }
 }
