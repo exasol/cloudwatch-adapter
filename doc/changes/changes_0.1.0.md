@@ -15,7 +15,7 @@ This is the very first release of the Exasol – Cloud watch adapter.
 * #30: Added configuration for VPC
 * #35: Added regular reporting of metrics from EXA_SYSTEM_EVENTS
 * #37: Report metrics from EXA_SYSTEM_EVENTS only every 4 minutes
-* #31: Add wrapper for AWS SDK exceptions
+* #31: Added wrapper for AWS SDK exceptions
 
 ## Documentation
 
