@@ -10,6 +10,7 @@
 * #7: Added additional metrics: `NET`, `SWAP`, `DB_RAM_SIZE`, `NODES`
 * #30: Added configuration for VPC
 * #35: Added regular reporting of metrics from EXA_SYSTEM_EVENTS
+* #37: Report metrics from EXA_SYSTEM_EVENTS only every 4 minutes
 
 ## Documentation
 

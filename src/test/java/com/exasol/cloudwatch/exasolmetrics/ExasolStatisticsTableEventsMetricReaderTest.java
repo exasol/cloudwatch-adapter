@@ -43,7 +43,7 @@ class ExasolStatisticsTableEventsMetricReaderTest {
     @Test
     void testLatestIsReported() throws Exception {
         try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable()) {
-            final Instant someWhen = Instant.ofEpochSecond(10000);
+            final Instant someWhen = Instant.ofEpochSecond(0);
             mockTable.insert(someWhen, 10, 2, "MAIN");
             mockTable.insert(someWhen.plus(Duration.ofHours(1)), 100, 4, "MAIN");
             mockTable.insert(someWhen.minus(Duration.ofHours(1)), 5, 1, "MAIN");
@@ -57,9 +57,25 @@ class ExasolStatisticsTableEventsMetricReaderTest {
     }
 
     @Test
+    void testReportedOnlyEveryFourMinutes() throws Exception {
+        try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable()) {
+            final Instant someWhen = Instant.ofEpochSecond(0);
+            mockTable.insert(someWhen, 10, 2, "MAIN");
+            int resultCounter = 0;
+            for (int minutes = 0; minutes < 8; minutes++) {
+                final List<ExasolMetricDatum> result = runReader(someWhen.plus(Duration.ofMinutes(minutes)));
+                resultCounter += result.size();
+            }
+            assertThat(
+                    "The adapter reports the NODES metric twice in 8 minutes. (The metric should get reported once every 4 mins)",
+                    resultCounter, equalTo(2));
+        }
+    }
+
+    @Test
     void testMultipleClusters() throws Exception {
         try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable()) {
-            final Instant someWhen = Instant.ofEpochSecond(10000);
+            final Instant someWhen = Instant.ofEpochSecond(0);
             mockTable.insert(someWhen, 10, 2, "MAIN");
             mockTable.insert(someWhen, 100, 4, "OTHER");
             final List<ExasolMetricDatum> result = runReader(someWhen);
