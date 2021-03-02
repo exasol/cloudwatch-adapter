@@ -11,6 +11,6 @@ Publishing of this repository will fail, due to a [bug in SAM](https://github.co
 Workaround:
 
 1. Remove the `RetryPolicy` from `sam/template.yaml`
-1. Run `sam package` and `sam publish` (with appropriate paramters)
+1. Run `sam package` and `sam publish` (with appropriate parameters)
 1. Add the `RetryPolicy` again to `sam/template.yaml`
 1. Run `sam package` and `sam publish` again
