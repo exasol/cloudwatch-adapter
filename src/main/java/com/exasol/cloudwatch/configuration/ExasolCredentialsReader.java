@@ -10,6 +10,7 @@ import javax.json.*;
 import com.exasol.cloudwatch.AwsClientFactory;
 import com.exasol.errorreporting.ExaError;
 
+import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
 
@@ -46,13 +47,24 @@ class ExasolCredentialsReader {
 
     private ExasolCredentials readExasolCredentials(final String secretArn,
             final SecretsManagerClient secretsManagerClient) {
-        final String result = secretsManagerClient
-                .getSecretValue(GetSecretValueRequest.builder().secretId(secretArn).build()).secretString();
-        try (final JsonReader reader = Json.createReader(new StringReader(result))) {
+        final String secret = fetchSecret(secretArn, secretsManagerClient);
+        try (final JsonReader reader = Json.createReader(new StringReader(secret))) {
             final JsonObject secretsObject = reader.readObject();
             validateSecretContainsRequiredFields(secretArn, secretsObject);
             return new ExasolCredentials(secretsObject.getString(KEY_HOST), secretsObject.getString(KEY_PORT, "8563"),
                     secretsObject.getString(KEY_USER), secretsObject.getString(KEY_PASSWORD));
+        }
+    }
+
+    private String fetchSecret(final String secretArn, final SecretsManagerClient secretsManagerClient) {
+        try {
+            return secretsManagerClient.getSecretValue(GetSecretValueRequest.builder().secretId(secretArn).build())
+                    .secretString();
+        } catch (final SdkClientException exception) {
+            throw new IllegalStateException(
+                    ExaError.messageBuilder("E-CWA-18").message("Failed to fetch secret from AWS SecretManager.")
+                            .mitigation("Make sure that you created a SecretsManager endpoint in your VPC.").toString(),
+                    exception);
         }
     }
 

@@ -2,13 +2,15 @@ package com.exasol.cloudwatch.configuration;
 
 import static com.exasol.cloudwatch.TestConstants.LOCAL_STACK_IMAGE;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 
 import java.io.IOException;
+import java.net.URI;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -22,8 +24,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import com.exasol.cloudwatch.LocalStackTestInterface;
-import com.exasol.cloudwatch.LocalstackContainerWithReuse;
+import com.exasol.cloudwatch.*;
+
+import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 
 @Testcontainers
 class ExasolCredentialsReaderTest {
@@ -84,5 +87,16 @@ class ExasolCredentialsReaderTest {
         } finally {
             localStackTestInterface.deleteSecret(secretArn);
         }
+    }
+
+    @Test
+    void testAwsSecretsManagerEndpointNotReachable() {
+        final AwsClientFactory awsClientFactory = mock(AwsClientFactory.class);
+        when(awsClientFactory.getSecretsManagerClient()).thenAnswer(invocation -> SecretsManagerClient.builder()
+                .endpointOverride(URI.create("http://127.0.0.1:1")).build());
+        final ExasolCredentialsReader reader = new ExasolCredentialsReader(awsClientFactory);
+        final IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> reader.readExasolCredentials("myArn"));
+        assertThat(exception.getMessage(), startsWith("E-CWA-18"));
     }
 }
