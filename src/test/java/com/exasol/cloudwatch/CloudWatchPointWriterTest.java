@@ -12,6 +12,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
 import software.amazon.awssdk.services.cloudwatch.model.MetricDatum;
 
@@ -20,8 +23,11 @@ class CloudWatchPointWriterTest {
     @Test
     void testCloudWatchEndpointNotReachable() throws Exception {
         final AwsClientFactory awsClientFactory = mock(AwsClientFactory.class);
-        when(awsClientFactory.getCloudWatchClient()).thenAnswer(
-                invocation -> CloudWatchClient.builder().endpointOverride(URI.create("http://127.0.0.1:1")).build());
+        when(awsClientFactory.getCloudWatchClient()).thenAnswer(invocation -> CloudWatchClient.builder()
+                .endpointOverride(URI.create("http://127.0.0.1:1")).region(Region.EU_CENTRAL_1)
+                .credentialsProvider(
+                        StaticCredentialsProvider.create(AwsBasicCredentials.create("someUser", "ignoredAnyway")))
+                .build());
         final CloudWatchPointWriter writer = new CloudWatchPointWriter(awsClientFactory);
         final List<MetricDatum> values = List
                 .of(MetricDatum.builder().metricName("test").timestamp(Instant.now()).value(1.0).build());

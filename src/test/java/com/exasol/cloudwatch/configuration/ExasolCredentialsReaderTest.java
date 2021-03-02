@@ -26,6 +26,9 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.exasol.cloudwatch.*;
 
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 
 @Testcontainers
@@ -93,7 +96,10 @@ class ExasolCredentialsReaderTest {
     void testAwsSecretsManagerEndpointNotReachable() {
         final AwsClientFactory awsClientFactory = mock(AwsClientFactory.class);
         when(awsClientFactory.getSecretsManagerClient()).thenAnswer(invocation -> SecretsManagerClient.builder()
-                .endpointOverride(URI.create("http://127.0.0.1:1")).build());
+                .endpointOverride(URI.create("http://127.0.0.1:1")).region(Region.EU_CENTRAL_1)
+                .credentialsProvider(
+                        StaticCredentialsProvider.create(AwsBasicCredentials.create("someUser", "ignoredAnyway")))
+                .build());
         final ExasolCredentialsReader reader = new ExasolCredentialsReader(awsClientFactory);
         final IllegalStateException exception = assertThrows(IllegalStateException.class,
                 () -> reader.readExasolCredentials("myArn"));
