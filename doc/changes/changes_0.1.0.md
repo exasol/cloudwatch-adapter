@@ -4,7 +4,7 @@ Code name: Initial release
 
 ## Summary
 
-This is the very first release of the Exasol – Cloud watch adapter.
+This is the very first release of the Exasol – CloudWatch adapter.
 
 Known issue:
 
