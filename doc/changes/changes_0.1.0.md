@@ -1,6 +1,6 @@
 #cloudwatch-adapter 0.1.0, released 2021-03-03
 
-## Code name: Initial release
+Code name: Initial release
 
 ## Summary
 
@@ -8,8 +8,8 @@ This is the very first release of the Exasol – Cloud watch adapter.
 
 Known issue:
 
-* #21: Due to a bug in SAM we can not publish the app with a retry count set to 0. This can lead to duplicate reported data if the Lambda fails after reporting some points and EventBridge triggers it again.
-* #2: In case your Exasol database uses a timezone with time-shift as `DBTIMEZONE`, this adapter will **not report** the hour when the time is shifted back, since Exasol stores the statistics entries in the `DBTIMEZONE` and by that, the log entries are ambiguous in that hour.
+* In case your Exasol database uses a timezone with time-shift as `DBTIMEZONE`, this adapter will **not report** the hour when the time is shifted back, since Exasol stores the statistics entries in the `DBTIMEZONE` and by that, the log entries are ambiguous in that hour (see [#2](https://github.com/exasol/cloudwatch-adapter/issues/2)).
+* Due to a bug in SAM we can not publish the app with a retry count set to 0. This can lead to duplicate reported data if the Lambda fails after reporting some points and EventBridge triggers it again (see [#21](https://github.com/exasol/cloudwatch-adapter/issues/21)).
 
 ## Features / Enhancements
 
