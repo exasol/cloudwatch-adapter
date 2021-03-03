@@ -39,3 +39,29 @@ Known issue:
 * #8: Fixed wrong metrics
 * #14: Removed failing SAM validate CI, since it requires AWS access
 * #19: Fixed SAM template (`ClassNotFoundException` on deployment)
+
+## Dependency Updates
+
+* Added `org.apache.logging.log4j:log4j-core:2.14.0`
+* Added `com.amazonaws:aws-lambda-java-events:3.7.0`
+* Added `org.junit.jupiter:junit-jupiter:5.7.1`
+* Added `org.hamcrest:hamcrest:2.2`
+* Added `com.github.stefanbirkner:system-lambda:1.2.0`
+* Added `org.testcontainers:localstack:1.15.2`
+* Added `com.exasol:exasol-jdbc:7.0.7`
+* Added `com.amazonaws:aws-java-sdk-s3:1.11.966`
+* Added `software.amazon.awssdk:cloudwatch:2.16.10`
+* Added `com.exasol:error-reporting-java:0.2.2`
+* Added `org.apache.logging.log4j:log4j-slf4j18-impl:2.14.0`
+* Added `org.glassfish:javax.json:1.1.4`
+* Added `org.itsallcode:junit5-system-extensions:1.1.0`
+* Added `org.mockito:mockito-core:3.8.0`
+* Added `org.apache.logging.log4j:log4j-api:2.14.0`
+* Added `com.exasol:exasol-testcontainers:3.5.1`
+* Added `javax.json:javax.json-api:1.1.4`
+* Added `com.exasol:test-db-builder-java:3.1.0`
+* Added `org.testcontainers:junit-jupiter:1.15.2`
+* Added `com.amazonaws:aws-lambda-java-core:1.2.1`
+* Added `com.amazonaws:aws-lambda-java-log4j2:1.2.0`
+* Added `nl.jqno.equalsverifier:equalsverifier:3.5.5`
+* Added `software.amazon.awssdk:secretsmanager:2.16.10`
