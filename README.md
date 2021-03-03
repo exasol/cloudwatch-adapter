@@ -67,6 +67,7 @@ If the adapter does not work properly, first check its log output. For that go t
 ## Known Bugs
 
 * In case your Exasol database uses a timezone with time-shift as `DBTIMEZONE`, this adapter will **not report** the hour when the time is shifted back, since Exasol stores the statistics entries in the `DBTIMEZONE` and by that, the log entries are ambiguous in that hour (see [#2](https://github.com/exasol/cloudwatch-adapter/issues/2)).
+* Due to a bug in SAM we can not publish the app with a retry count set to 0. This can lead to duplicate reported data if the Lambda fails after reporting some points and EventBridge triggers it again (see [#21](https://github.com/exasol/cloudwatch-adapter/issues/21)).
 
 ## Additional Information
 
