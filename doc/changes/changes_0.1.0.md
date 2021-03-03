@@ -1,4 +1,4 @@
-#cloudwatch-adapter 0.1.0, released 2021-03-03
+# CloudWatch-adapter 0.1.0, released 2021-03-03
 
 Code name: Initial release
 
