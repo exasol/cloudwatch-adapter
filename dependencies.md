@@ -66,6 +66,7 @@
 [20]: https://javaee.github.io/jsonp
 [45]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [46]: https://maven.apache.org/surefire/maven-surefire-plugin/
+[5]: https://www.exasol.com/support/secure/attachment/155343/EXASOL_SDK-7.0.11.tar.gz
 [76]: http://maven.apache.org/plugins/maven-clean-plugin/
 [0]: https://aws.amazon.com/sdkforjava
 [7]: https://opensource.org/licenses/MIT
@@ -92,7 +93,6 @@
 [52]: https://maven.apache.org/surefire/maven-failsafe-plugin/
 [24]: https://github.com/exasol/test-db-builder-java
 [35]: http://opensource.org/licenses/MIT
-[5]: https://github.com/exasol/test-db-builder-java/blob/main/LICENSE-exasol-jdbc.txt
 [32]: https://github.com/exasol/exasol-testcontainers
 [71]: https://www.gnu.org/licenses/gpl-3.0.html
 [15]: https://www.apache.org/licenses/LICENSE-2.0.txt

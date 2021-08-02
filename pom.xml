@@ -351,7 +351,7 @@
                     </modules>
                     <linkReplacements>
                         <linkReplacement>
-                            LICENSE-exasol-jdbc.txt|https://github.com/exasol/test-db-builder-java/blob/main/LICENSE-exasol-jdbc.txt
+                            LICENSE-exasol-jdbc.txt|https://www.exasol.com/support/secure/attachment/155343/EXASOL_SDK-7.0.11.tar.gz
                         </linkReplacement>
                     </linkReplacements>
                 </configuration>
