@@ -1,0 +1,13 @@
+release-platforms:
+  - GitHub
+  - Community
+  - Jira
+community-tags:
+  - CloudWatch
+  - AWS
+  - Monitoring
+  - Integration
+community-project-name: Exasol – Cloud Watch Adapter
+community-project-description: |
+  This project contains an adapter that transfers the statistics from the Exasol database to [AWS CloudWatch](https://aws.amazon.com/de/cloudwatch/) metrics.
+  By that you can use AWS CloudWatch to monitor your exasol database.
