@@ -1,0 +1,4 @@
+error-tags:
+  CWA:
+    packages:
+      - com.exasol.cloudwatch
