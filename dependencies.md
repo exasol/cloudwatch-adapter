@@ -88,11 +88,11 @@
 [78]: http://maven.apache.org/plugins/maven-resources-plugin/
 [60]: https://github.com/exasol/artifact-reference-checker-maven-plugin
 [74]: https://maven.apache.org/plugins/maven-jar-plugin/
-[5]: LICENSE-exasol-jdbc.txt
 [14]: https://logging.apache.org/log4j/2.x/log4j-api/
 [52]: https://maven.apache.org/surefire/maven-failsafe-plugin/
 [24]: https://github.com/exasol/test-db-builder-java
 [35]: http://opensource.org/licenses/MIT
+[5]: https://github.com/exasol/test-db-builder-java/blob/main/LICENSE-exasol-jdbc.txt
 [32]: https://github.com/exasol/exasol-testcontainers
 [71]: https://www.gnu.org/licenses/gpl-3.0.html
 [15]: https://www.apache.org/licenses/LICENSE-2.0.txt

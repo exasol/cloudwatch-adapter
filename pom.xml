@@ -349,6 +349,11 @@
                         <module>jar_artifact</module>
                         <module>integration_tests</module>
                     </modules>
+                    <linkReplacements>
+                        <linkReplacement>
+                            LICENSE-exasol-jdbc.txt|https://github.com/exasol/test-db-builder-java/blob/main/LICENSE-exasol-jdbc.txt
+                        </linkReplacement>
+                    </linkReplacements>
                 </configuration>
             </plugin>
             <plugin>
