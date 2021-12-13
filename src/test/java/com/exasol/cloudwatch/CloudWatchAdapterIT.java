@@ -34,6 +34,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
+import com.exasol.cloudwatch.fingerprint.FingerprintExtractor;
 import com.exasol.containers.ExasolContainer;
 
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
@@ -63,7 +64,12 @@ class CloudWatchAdapterIT {
         cloudWatch = localStackTestInterface.getCloudWatchClient();
         localstackCloudWatchRaw = new LocalstackCloudWatchRaw(LOCAL_STACK_CONTAINER);
         secretArn = localStackTestInterface.putExasolCredentials(EXASOL.getHost(),
-                EXASOL.getFirstMappedPort().toString(), EXASOL.getUsername(), EXASOL.getPassword());
+                EXASOL.getFirstMappedPort().toString(), EXASOL.getUsername(), EXASOL.getPassword(),
+                getCertificateFingerprint());
+    }
+
+    private static String getCertificateFingerprint() {
+        return FingerprintExtractor.extractFingerprint(EXASOL.getJdbcUrl()).orElse(null);
     }
 
     @AfterAll

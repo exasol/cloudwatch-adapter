@@ -38,7 +38,7 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
 
     /**
      * Constructor for testing.
-     * 
+     *
      * @param exasolStatisticsSchemaOverride if null EXA_STATISITCS is used. This parameter allows you to test this
      *                                       connector with a * predefined SCHEMA instead of the unmodifiable live
      *                                       statistics.
@@ -83,13 +83,23 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
     private Connection connectToExasol() {
         try {
             final ExasolCredentials exasolCredentials = this.configuration.getExasolCredentials();
-            return DriverManager.getConnection(
-                    "jdbc:exa:" + exasolCredentials.getHost() + ":" + exasolCredentials.getPort() + ";schema=SYS",
-                    exasolCredentials.getUser(), exasolCredentials.getPass());
+            return DriverManager.getConnection(getJdbcUrl(exasolCredentials), exasolCredentials.getUser(),
+                    exasolCredentials.getPass());
         } catch (final SQLException exception) {
             throw new IllegalStateException(
                     ExaError.messageBuilder("E-CWA-2").message("Failed to connect to the Exasol database.").toString(),
                     exception);
+        }
+    }
+
+    private String getJdbcUrl(final ExasolCredentials exasolCredentials) {
+        final String url = "jdbc:exa:" + exasolCredentials.getHost() + ":" + exasolCredentials.getPort()
+                + ";schema=SYS";
+        final String fingerprint = exasolCredentials.getCertificateFingerprint();
+        if ((fingerprint == null) || fingerprint.isBlank()) {
+            return url;
+        } else {
+            return url + ";fingerprint=" + fingerprint;
         }
     }
 }

@@ -6,8 +6,7 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 import java.io.*;
 import java.time.Instant;
 
-import javax.json.Json;
-import javax.json.JsonObject;
+import javax.json.*;
 
 import org.testcontainers.containers.localstack.LocalStackContainer;
 
@@ -46,9 +45,13 @@ public class LocalStackTestInterface implements AwsClientFactory {
     }
 
     public String putExasolCredentials(final String host, final String port, final String username,
-            final String password) throws IOException {
-        final JsonObject jsonCredentials = Json.createObjectBuilder().add("username", username)
-                .add("password", password).add("host", host).add("port", port).build();
+            final String password, final String certificateFingerprint) throws IOException {
+        final JsonObjectBuilder jsonBuilder = Json.createObjectBuilder().add("username", username)
+                .add("password", password).add("host", host).add("port", port);
+        if (certificateFingerprint != null) {
+            jsonBuilder.add("certificateFingerprint", certificateFingerprint);
+        }
+        final JsonObject jsonCredentials = jsonBuilder.build();
         return putExasolCredentials(jsonCredentials);
     }
 

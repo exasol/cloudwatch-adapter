@@ -47,13 +47,31 @@ class ExasolCredentialsReaderTest {
 
     @Test
     void testReadCredentials() throws IOException {
-        final String secretArn = localStackTestInterface.putExasolCredentials("127.0.0.1", "1234", "test", "myPass");
+        final String secretArn = localStackTestInterface.putExasolCredentials("127.0.0.1", "1234", "test", "myPass",
+                "myFingerprint");
         try {
             final ExasolCredentials exasolCredentials = credentialsReader.readExasolCredentials(secretArn);
             assertAll(() -> assertThat(exasolCredentials.getHost(), equalTo("127.0.0.1")),
                     () -> assertThat(exasolCredentials.getPort(), equalTo("1234")),
                     () -> assertThat(exasolCredentials.getUser(), equalTo("test")),
-                    () -> assertThat(exasolCredentials.getPass(), equalTo("myPass")));
+                    () -> assertThat(exasolCredentials.getPass(), equalTo("myPass")),
+                    () -> assertThat(exasolCredentials.getCertificateFingerprint(), equalTo("myFingerprint")));
+        } finally {
+            localStackTestInterface.deleteSecret(secretArn);
+        }
+    }
+
+    @Test
+    void testReadCredentialsWithoutFingerprint() throws IOException {
+        final String secretArn = localStackTestInterface.putExasolCredentials("127.0.0.1", "1234", "test", "myPass",
+                null);
+        try {
+            final ExasolCredentials exasolCredentials = credentialsReader.readExasolCredentials(secretArn);
+            assertAll(() -> assertThat(exasolCredentials.getHost(), equalTo("127.0.0.1")),
+                    () -> assertThat(exasolCredentials.getPort(), equalTo("1234")),
+                    () -> assertThat(exasolCredentials.getUser(), equalTo("test")),
+                    () -> assertThat(exasolCredentials.getPass(), equalTo("myPass")),
+                    () -> assertThat(exasolCredentials.getCertificateFingerprint(), nullValue()));
         } finally {
             localStackTestInterface.deleteSecret(secretArn);
         }
