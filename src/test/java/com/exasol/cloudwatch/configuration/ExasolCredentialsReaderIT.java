@@ -32,7 +32,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 
 @Testcontainers
-class ExasolCredentialsReaderTest {
+class ExasolCredentialsReaderIT {
     @Container
     private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalstackContainerWithReuse(
             DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices(SECRETSMANAGER);
