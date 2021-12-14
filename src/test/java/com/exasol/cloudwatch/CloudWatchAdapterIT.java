@@ -86,6 +86,24 @@ class CloudWatchAdapterIT {
     }
 
     @Test
+    void testConnectionWithoutCertificateFingerprintFails() throws Exception {
+        final String secretArnWithoutFingerprint = localStackTestInterface.putExasolCredentials(EXASOL.getHost(),
+                EXASOL.getFirstMappedPort().toString(), EXASOL.getUsername(), EXASOL.getPassword(), null);
+        try (final ExaStatisticsTableMock statisticsTable = new ExaStatisticsTableMock(connection)) {
+            final Instant now = Instant.now();
+            final IllegalStateException exception = assertThrows(IllegalStateException.class,
+                    () -> runAdapter(secretArnWithoutFingerprint, ExaStatisticsTableMock.SCHEMA, "QUERIES", now));
+            assertAll(
+                    () -> assertThat(exception.getMessage(),
+                            equalTo("E-CWA-2: Failed to connect to the Exasol database.")),
+                    () -> assertThat(exception.getCause().getMessage(),
+                            matchesRegex(".*TLS connection to host (.*) failed: PKIX path building failed.*")));
+        } finally {
+            localStackTestInterface.deleteSecret(secretArnWithoutFingerprint);
+        }
+    }
+
+    @Test
     void testMetricsAreCreated() throws Exception {
         try (final ExaStatisticsTableMock statisticsTable = new ExaStatisticsTableMock(connection)) {
             final Instant now = Instant.now();
@@ -170,14 +188,19 @@ class CloudWatchAdapterIT {
         return cloudWatch.listMetrics(listRequest).metrics();
     }
 
-    private void runAdapter(final String schemaOverride, final String metrics, final Instant forMinute)
-            throws Exception {
-        withEnvironmentVariable("EXASOL_CONNECTION_SECRET_ARN", secretArn)
+    private void runAdapter(final String overrideSecretArn, final String schemaOverride, final String metrics,
+            final Instant forMinute) throws Exception {
+        withEnvironmentVariable("EXASOL_CONNECTION_SECRET_ARN", overrideSecretArn)
                 .and("EXASOL_DEPLOYMENT_NAME", this.uniqueDeploymentName).and("METRICS", metrics).execute(() -> {
                     final ScheduledEvent event = new ScheduledEvent();
                     event.setTime(new DateTime(forMinute.toEpochMilli()));
                     final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride, localStackTestInterface);
                     adapter.handleRequest(event, mock(Context.class));
                 });
+    }
+
+    private void runAdapter(final String schemaOverride, final String metrics, final Instant forMinute)
+            throws Exception {
+        runAdapter(CloudWatchAdapterIT.secretArn, schemaOverride, metrics, forMinute);
     }
 }

@@ -21,4 +21,11 @@ class ExasolCredentialsTest {
         assertThat(credentials.toString(), equalTo(
                 "ExasolCredentials{host='127.0.0.1', port='8563', user='myUser', pass=<HIDDEN>, certificate fingerprint='myFingerprint'}"));
     }
+
+    @Test
+    void testToStringWithoutFingerprint() {
+        final ExasolCredentials credentials = new ExasolCredentials("127.0.0.1", "8563", "myUser", "myPass", null);
+        assertThat(credentials.toString(), equalTo(
+                "ExasolCredentials{host='127.0.0.1', port='8563', user='myUser', pass=<HIDDEN>, certificate fingerprint='null'}"));
+    }
 }
