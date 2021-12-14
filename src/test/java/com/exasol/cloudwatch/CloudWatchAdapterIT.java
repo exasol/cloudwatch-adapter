@@ -25,6 +25,8 @@ import java.util.stream.Stream;
 
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.localstack.LocalStackContainer;
@@ -63,9 +65,12 @@ class CloudWatchAdapterIT {
         localStackTestInterface = new LocalStackTestInterface(LOCAL_STACK_CONTAINER);
         cloudWatch = localStackTestInterface.getCloudWatchClient();
         localstackCloudWatchRaw = new LocalstackCloudWatchRaw(LOCAL_STACK_CONTAINER);
-        secretArn = localStackTestInterface.putExasolCredentials(EXASOL.getHost(),
-                EXASOL.getFirstMappedPort().toString(), EXASOL.getUsername(), EXASOL.getPassword(),
-                getCertificateFingerprint());
+        secretArn = createCredentials(getCertificateFingerprint());
+    }
+
+    private static String createCredentials(final String certificateFingerprint) throws IOException {
+        return localStackTestInterface.putExasolCredentials(EXASOL.getHost(), EXASOL.getFirstMappedPort().toString(),
+                EXASOL.getUsername(), EXASOL.getPassword(), certificateFingerprint);
     }
 
     private static String getCertificateFingerprint() {
@@ -85,10 +90,15 @@ class CloudWatchAdapterIT {
         LOGGER.info("current deployment name: {}", this.uniqueDeploymentName);
     }
 
-    @Test
-    void testConnectionWithoutCertificateFingerprintFails() throws Exception {
-        final String secretArnWithoutFingerprint = localStackTestInterface.putExasolCredentials(EXASOL.getHost(),
-                EXASOL.getFirstMappedPort().toString(), EXASOL.getUsername(), EXASOL.getPassword(), null);
+    @CsvSource(nullValues = { "NULL" }, value = {
+            "NULL, .*TLS connection to host (.*) failed: PKIX path building failed.*",
+            "'', .*TLS connection to host (.*) failed: PKIX path building failed.*",
+            "'  ', .*TLS connection to host (.*) failed: PKIX path building failed.*",
+            "'invalid-fingerprint', .*Fingerprint did not match. The fingerprint provided: INVALID-FINGERPRINT.*" })
+    @ParameterizedTest
+    void testConnectionWithWrongCertificateFingerprintFails(final String fingerprint,
+            final String expectedErrorMessageRegexp) throws Exception {
+        final String secretArnWithoutFingerprint = createCredentials(fingerprint);
         try (final ExaStatisticsTableMock statisticsTable = new ExaStatisticsTableMock(connection)) {
             final Instant now = Instant.now();
             final IllegalStateException exception = assertThrows(IllegalStateException.class,
@@ -96,8 +106,7 @@ class CloudWatchAdapterIT {
             assertAll(
                     () -> assertThat(exception.getMessage(),
                             equalTo("E-CWA-2: Failed to connect to the Exasol database.")),
-                    () -> assertThat(exception.getCause().getMessage(),
-                            matchesRegex(".*TLS connection to host (.*) failed: PKIX path building failed.*")));
+                    () -> assertThat(exception.getCause().getMessage(), matchesRegex(expectedErrorMessageRegexp)));
         } finally {
             localStackTestInterface.deleteSecret(secretArnWithoutFingerprint);
         }
