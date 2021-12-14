@@ -189,8 +189,9 @@
                 <configuration>
                     <!-- Set the highest log level for coverage testing, so that we have
                                   a chance to reach branches in the logging lambdas too. -->
-                    <argLine>-Djava.util.logging.config.file=src/test/resources/logging.properties ${argLine}</argLine>
-                    <argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
+                    <argLine>-Djava.util.logging.config.file=src/test/resources/logging.properties --add-opens
+                        java.base/java.util=ALL-UNNAMED ${argLine}
+                    </argLine>
                 </configuration>
             </plugin>
             <plugin>
