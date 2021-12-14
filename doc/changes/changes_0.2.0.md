@@ -1,4 +1,4 @@
-# cloudwatch-adapter 0.2.0, released 2021-12-14
+# cloudwatch-adapter 0.2.0, released 2021-12-15
 
 Code name: Support TLS certificate fingerprints
 
