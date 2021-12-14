@@ -2,6 +2,8 @@
 
 Code name: Support TLS certificate fingerprints
 
+This version allows you to configure the TLS certificate fingerprint of the Exasol database. This is useful when Exasol uses a self-signed certificate. See the [documentation](../../README.md#store-credentials-in-aws-secrets-manager) how to configure the fingerprint.
+
 ## Features
 
 * #52: Added support for TLS certificate fingerprints
