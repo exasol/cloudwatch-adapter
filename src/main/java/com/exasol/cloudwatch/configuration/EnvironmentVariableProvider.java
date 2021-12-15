@@ -5,6 +5,7 @@ package com.exasol.cloudwatch.configuration;
  * {@link System#getenv(String)}. The advantage over using {@link System#getenv(String)} directly is that you can mock
  * this interface in unit tests.
  */
+@FunctionalInterface
 public interface EnvironmentVariableProvider {
 
     /**

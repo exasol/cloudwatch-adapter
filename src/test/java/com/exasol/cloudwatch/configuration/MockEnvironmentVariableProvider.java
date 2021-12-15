@@ -8,7 +8,6 @@ import java.util.Map;
  * variables.
  */
 public class MockEnvironmentVariableProvider implements EnvironmentVariableProvider {
-
     private final Map<String, String> variables = new HashMap<>();
 
     @Override
