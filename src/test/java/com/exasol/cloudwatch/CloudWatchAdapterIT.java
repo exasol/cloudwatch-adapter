@@ -4,7 +4,6 @@ import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.CLUST
 import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.DEPLOYMENT_DIMENSION_KEY;
 import static com.exasol.cloudwatch.TestConstants.EXASOL_DOCKER_DB_VERSION;
 import static com.exasol.cloudwatch.TestConstants.LOCAL_STACK_IMAGE;
-import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,6 +35,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
+import com.exasol.cloudwatch.configuration.MockEnvironmentVariableProvider;
 import com.exasol.cloudwatch.fingerprint.FingerprintExtractor;
 import com.exasol.containers.ExasolContainer;
 
@@ -198,18 +198,19 @@ class CloudWatchAdapterIT {
     }
 
     private void runAdapter(final String overrideSecretArn, final String schemaOverride, final String metrics,
-            final Instant forMinute) throws Exception {
-        withEnvironmentVariable("EXASOL_CONNECTION_SECRET_ARN", overrideSecretArn)
-                .and("EXASOL_DEPLOYMENT_NAME", this.uniqueDeploymentName).and("METRICS", metrics).execute(() -> {
-                    final ScheduledEvent event = new ScheduledEvent();
-                    event.setTime(new DateTime(forMinute.toEpochMilli()));
-                    final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride, localStackTestInterface);
-                    adapter.handleRequest(event, mock(Context.class));
-                });
+            final Instant forMinute) {
+        final MockEnvironmentVariableProvider mockEnvironment = new MockEnvironmentVariableProvider();
+        mockEnvironment.put("EXASOL_CONNECTION_SECRET_ARN", overrideSecretArn);
+        mockEnvironment.put("EXASOL_DEPLOYMENT_NAME", this.uniqueDeploymentName);
+        mockEnvironment.put("METRICS", metrics);
+        final ScheduledEvent event = new ScheduledEvent();
+        event.setTime(new DateTime(forMinute.toEpochMilli()));
+        final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride, localStackTestInterface,
+                mockEnvironment);
+        adapter.handleRequest(event, mock(Context.class));
     }
 
-    private void runAdapter(final String schemaOverride, final String metrics, final Instant forMinute)
-            throws Exception {
+    private void runAdapter(final String schemaOverride, final String metrics, final Instant forMinute) {
         runAdapter(CloudWatchAdapterIT.secretArn, schemaOverride, metrics, forMinute);
     }
 }

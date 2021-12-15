@@ -33,7 +33,7 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
      * Create a new instance of {@link CloudWatchAdapter}.
      */
     public CloudWatchAdapter() {
-        this(null, new DefaultAwsClientFactory());
+        this(null, new DefaultAwsClientFactory(), EnvironmentVariableProvider.getDefault());
     }
 
     /**
@@ -43,11 +43,13 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
      *                                       connector with a * predefined SCHEMA instead of the unmodifiable live
      *                                       statistics.
      * @param awsClientFactory               dependency injection of AWS clients
+     * @param environmentVariableProvider    dependency injection of the {@link EnvironmentConfigurationReader}
      */
-    CloudWatchAdapter(final String exasolStatisticsSchemaOverride, final AwsClientFactory awsClientFactory) {
+    CloudWatchAdapter(final String exasolStatisticsSchemaOverride, final AwsClientFactory awsClientFactory,
+            final EnvironmentVariableProvider environmentVariableProvider) {
         this.awsClientFactory = awsClientFactory;
         this.exasolMetricProvider = new ExasolMetricProvider();
-        this.configuration = new AdapterConfigurationReader(this.awsClientFactory)
+        this.configuration = new AdapterConfigurationReader(this.awsClientFactory, environmentVariableProvider)
                 .readConfiguration(this.exasolMetricProvider.getSupportedMetrics());
         this.exasolStatisticsSchemaOverride = exasolStatisticsSchemaOverride;
     }
