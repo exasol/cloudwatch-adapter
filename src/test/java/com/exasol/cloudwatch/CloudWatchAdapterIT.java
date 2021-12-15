@@ -4,7 +4,6 @@ import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.CLUST
 import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.DEPLOYMENT_DIMENSION_KEY;
 import static com.exasol.cloudwatch.TestConstants.EXASOL_DOCKER_DB_VERSION;
 import static com.exasol.cloudwatch.TestConstants.LOCAL_STACK_IMAGE;
-import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -25,6 +24,8 @@ import java.util.stream.Stream;
 
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.localstack.LocalStackContainer;
@@ -34,6 +35,8 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
+import com.exasol.cloudwatch.configuration.MockEnvironmentVariableProvider;
+import com.exasol.cloudwatch.fingerprint.FingerprintExtractor;
 import com.exasol.containers.ExasolContainer;
 
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
@@ -62,8 +65,16 @@ class CloudWatchAdapterIT {
         localStackTestInterface = new LocalStackTestInterface(LOCAL_STACK_CONTAINER);
         cloudWatch = localStackTestInterface.getCloudWatchClient();
         localstackCloudWatchRaw = new LocalstackCloudWatchRaw(LOCAL_STACK_CONTAINER);
-        secretArn = localStackTestInterface.putExasolCredentials(EXASOL.getHost(),
-                EXASOL.getFirstMappedPort().toString(), EXASOL.getUsername(), EXASOL.getPassword());
+        secretArn = createCredentials(getCertificateFingerprint());
+    }
+
+    private static String createCredentials(final String certificateFingerprint) throws IOException {
+        return localStackTestInterface.putExasolCredentials(EXASOL.getHost(), EXASOL.getFirstMappedPort().toString(),
+                EXASOL.getUsername(), EXASOL.getPassword(), certificateFingerprint);
+    }
+
+    private static String getCertificateFingerprint() {
+        return FingerprintExtractor.extractFingerprint(EXASOL.getJdbcUrl()).orElse(null);
     }
 
     @AfterAll
@@ -77,6 +88,28 @@ class CloudWatchAdapterIT {
     void beforeEach() {
         this.uniqueDeploymentName = "TEST-" + new Date().getTime() + "-" + ((int) (Math.random() * 1000));
         LOGGER.info("current deployment name: {}", this.uniqueDeploymentName);
+    }
+
+    @CsvSource(nullValues = { "NULL" }, value = {
+            "NULL, .*TLS connection to host (.*) failed: PKIX path building failed.*",
+            "'', .*TLS connection to host (.*) failed: PKIX path building failed.*",
+            "'  ', .*TLS connection to host (.*) failed: PKIX path building failed.*",
+            "'invalid-fingerprint', .*Fingerprint did not match. The fingerprint provided: INVALID-FINGERPRINT.*" })
+    @ParameterizedTest
+    void testConnectionWithWrongCertificateFingerprintFails(final String fingerprint,
+            final String expectedErrorMessageRegexp) throws Exception {
+        final String secretArnWithoutFingerprint = createCredentials(fingerprint);
+        try (final ExaStatisticsTableMock statisticsTable = new ExaStatisticsTableMock(connection)) {
+            final Instant now = Instant.now();
+            final IllegalStateException exception = assertThrows(IllegalStateException.class,
+                    () -> runAdapter(secretArnWithoutFingerprint, ExaStatisticsTableMock.SCHEMA, "QUERIES", now));
+            assertAll(
+                    () -> assertThat(exception.getMessage(),
+                            equalTo("E-CWA-2: Failed to connect to the Exasol database.")),
+                    () -> assertThat(exception.getCause().getMessage(), matchesRegex(expectedErrorMessageRegexp)));
+        } finally {
+            localStackTestInterface.deleteSecret(secretArnWithoutFingerprint);
+        }
     }
 
     @Test
@@ -164,14 +197,20 @@ class CloudWatchAdapterIT {
         return cloudWatch.listMetrics(listRequest).metrics();
     }
 
-    private void runAdapter(final String schemaOverride, final String metrics, final Instant forMinute)
-            throws Exception {
-        withEnvironmentVariable("EXASOL_CONNECTION_SECRET_ARN", secretArn)
-                .and("EXASOL_DEPLOYMENT_NAME", this.uniqueDeploymentName).and("METRICS", metrics).execute(() -> {
-                    final ScheduledEvent event = new ScheduledEvent();
-                    event.setTime(new DateTime(forMinute.toEpochMilli()));
-                    final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride, localStackTestInterface);
-                    adapter.handleRequest(event, mock(Context.class));
-                });
+    private void runAdapter(final String overrideSecretArn, final String schemaOverride, final String metrics,
+            final Instant forMinute) {
+        final MockEnvironmentVariableProvider mockEnvironment = new MockEnvironmentVariableProvider();
+        mockEnvironment.put("EXASOL_CONNECTION_SECRET_ARN", overrideSecretArn);
+        mockEnvironment.put("EXASOL_DEPLOYMENT_NAME", this.uniqueDeploymentName);
+        mockEnvironment.put("METRICS", metrics);
+        final ScheduledEvent event = new ScheduledEvent();
+        event.setTime(new DateTime(forMinute.toEpochMilli()));
+        final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride, localStackTestInterface,
+                mockEnvironment);
+        adapter.handleRequest(event, mock(Context.class));
+    }
+
+    private void runAdapter(final String schemaOverride, final String metrics, final Instant forMinute) {
+        runAdapter(CloudWatchAdapterIT.secretArn, schemaOverride, metrics, forMinute);
     }
 }

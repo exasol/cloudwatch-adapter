@@ -22,11 +22,13 @@ class ExasolCredentialsReader {
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_PORT = "port";
     private static final String KEY_HOST = "host";
+    private static final String KEY_CERTIFICATE_FINGERPRINT = "certificateFingerprint";
+    private static final String DEFAULT_CERTIFICATE_FINGERPRINT = null;
     private final AwsClientFactory awsClientFactory;
 
     /**
      * Create a new instance of {@link ExasolCredentialsReader}.
-     * 
+     *
      * @param awsClientFactory dependency injection of AWS client
      */
     public ExasolCredentialsReader(final AwsClientFactory awsClientFactory) {
@@ -35,7 +37,7 @@ class ExasolCredentialsReader {
 
     /**
      * Read the Exasol credentials from AWS SecretsManager.
-     * 
+     *
      * @param secretArn arn of the secret
      * @return read {@link ExasolCredentials}
      */
@@ -52,7 +54,8 @@ class ExasolCredentialsReader {
             final JsonObject secretsObject = reader.readObject();
             validateSecretContainsRequiredFields(secretArn, secretsObject);
             return new ExasolCredentials(secretsObject.getString(KEY_HOST), secretsObject.getString(KEY_PORT, "8563"),
-                    secretsObject.getString(KEY_USER), secretsObject.getString(KEY_PASSWORD));
+                    secretsObject.getString(KEY_USER), secretsObject.getString(KEY_PASSWORD),
+                    secretsObject.getString(KEY_CERTIFICATE_FINGERPRINT, DEFAULT_CERTIFICATE_FINGERPRINT));
         }
     }
 

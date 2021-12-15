@@ -28,7 +28,7 @@ import com.exasol.containers.ExasolContainer;
 
 @Testcontainers
 @ExtendWith(SystemOutGuard.class)
-class ExasolStatisticsTableRegularMetricReaderTest {
+class ExasolStatisticsTableRegularMetricReaderIT {
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             EXASOL_DOCKER_DB_VERSION).withReuse(true);

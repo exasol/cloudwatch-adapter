@@ -52,9 +52,8 @@ public class LocalstackCloudWatchRaw {
 
     private Instant readTimestamp(final String timestampString) {
         final LocalDateTime localDateTime = LocalDateTime.parse(timestampString,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'"));
-        final Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
-        return instant;
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+        return localDateTime.toInstant(ZoneOffset.UTC);
     }
 
     private boolean testIfDimensionsMatch(final Map<String, String> actual, final Dimension[] filter) {

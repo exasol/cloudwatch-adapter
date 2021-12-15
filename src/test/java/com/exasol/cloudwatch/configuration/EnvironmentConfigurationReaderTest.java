@@ -1,59 +1,63 @@
 package com.exasol.cloudwatch.configuration;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class EnvironmentConfigurationReaderTest {
-    private static final EnvironmentConfigurationReader READER = new EnvironmentConfigurationReader();
     private static final List<String> AVAILABLE_METRICS = List.of("MY_METRIC");
+    private EnvironmentConfigurationReader reader;
+    private MockEnvironmentVariableProvider mockEnvironment;
+
+    @BeforeEach
+    void beforeEach() {
+        this.mockEnvironment = new MockEnvironmentVariableProvider();
+        this.reader = new EnvironmentConfigurationReader(this.mockEnvironment);
+    }
 
     @Test
     // [utest->dsn~env-var-for-metrics-selection~1]
-    void testMetrics() throws Exception {
-        withEnvironmentVariable("METRICS", "CPU, USERS").execute(() -> {
-            assertThat(READER.readEnabledMetrics(AVAILABLE_METRICS), containsInAnyOrder("CPU", "USERS"));
-        });
+    void testMetrics() {
+        this.mockEnvironment.put("METRICS", "CPU, USERS");
+        assertThat(this.reader.readEnabledMetrics(AVAILABLE_METRICS), containsInAnyOrder("CPU", "USERS"));
     }
 
     @Test
     void testMetricsNotSet() {
-        assertThat(READER.readEnabledMetrics(AVAILABLE_METRICS),
+        assertThat(this.reader.readEnabledMetrics(AVAILABLE_METRICS),
                 containsInAnyOrder(AVAILABLE_METRICS.toArray(String[]::new)));
     }
 
     @Test
-    void testMetricsEmpty() throws Exception {
-        withEnvironmentVariable("METRICS", "").execute(() -> {
-            assertThat(READER.readEnabledMetrics(AVAILABLE_METRICS),
-                    containsInAnyOrder(AVAILABLE_METRICS.toArray(String[]::new)));
-        });
+    void testMetricsEmpty() {
+        this.mockEnvironment.put("METRICS", "");
+        assertThat(this.reader.readEnabledMetrics(AVAILABLE_METRICS),
+                containsInAnyOrder(AVAILABLE_METRICS.toArray(String[]::new)));
     }
 
     @Test
-    void testDeploymentName() throws Exception {
-        withEnvironmentVariable("EXASOL_DEPLOYMENT_NAME", "MyExasol").execute(() -> {
-            assertThat(READER.readDeploymentName(), equalTo("MyExasol"));
-        });
+    void testDeploymentName() {
+        this.mockEnvironment.put("EXASOL_DEPLOYMENT_NAME", "MyExasol");
+        assertThat(this.reader.readDeploymentName(), equalTo("MyExasol"));
     }
 
     @Test
     void testDeploymentNameMissing() {
-        final NullPointerException exception = assertThrows(NullPointerException.class, READER::readDeploymentName);
+        final NullPointerException exception = assertThrows(NullPointerException.class,
+                this.reader::readDeploymentName);
         assertThat(exception.getMessage(), containsString("E-CWA-7"));
     }
 
     @Test
-    void testEmptyDeploymentName() throws Exception {
-        withEnvironmentVariable("EXASOL_DEPLOYMENT_NAME", "").execute(() -> {
-            final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                    READER::readDeploymentName);
-            assertThat(exception.getMessage(), containsString("E-CWA-8"));
-        });
+    void testEmptyDeploymentName() {
+        this.mockEnvironment.put("EXASOL_DEPLOYMENT_NAME", "");
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                this.reader::readDeploymentName);
+        assertThat(exception.getMessage(), containsString("E-CWA-8"));
     }
 }

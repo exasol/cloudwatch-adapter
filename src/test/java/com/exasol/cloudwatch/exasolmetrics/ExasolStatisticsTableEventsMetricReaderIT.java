@@ -19,7 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.exasol.containers.ExasolContainer;
 
 @Testcontainers
-class ExasolStatisticsTableEventsMetricReaderTest {
+class ExasolStatisticsTableEventsMetricReaderIT {
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             EXASOL_DOCKER_DB_VERSION).withReuse(true);

@@ -38,6 +38,7 @@ Create a new secret in the [AWS Secrets Manager](https://aws.amazon.com/secrets-
 * `port`: Exasol JDBC port (default: 8563)
 * `username`: Name of an Exasol user account with `CREATE SESSION` privileges
 * `password`: Password for the account
+* `certificateFingerprint`: Fingerprint of the database's TLS certificate. This is only required if Exasol uses a self-signed certificate.
 
 ### VPC Setup
 
