@@ -6,7 +6,7 @@ This version allows you to configure the TLS certificate fingerprint of the Exas
 
 ## Features
 
-* #52: Added support for TLS certificate fingerprints
+* #54: Added support for TLS certificate fingerprints
 
 ## Dependency Updates
 
