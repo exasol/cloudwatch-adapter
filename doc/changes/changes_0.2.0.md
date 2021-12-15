@@ -16,12 +16,15 @@ This version allows you to configure the TLS certificate fingerprint of the Exas
 * Updated `com.exasol:error-reporting-java:0.4.0` to `0.4.1`
 * Updated `com.exasol:exasol-jdbc:7.0.11` to `7.1.3`
 * Updated `com.exasol:test-db-builder-java:3.2.0` to `3.2.1`
+* Updated `org.apache.logging.log4j:log4j-api:2.15.0` to `2.16.0`
+* Updated `org.apache.logging.log4j:log4j-core:2.15.0` to `2.16.0`
+* Updated `org.apache.logging.log4j:log4j-slf4j18-impl:2.15.0` to `2.16.0`
 * Updated `software.amazon.awssdk:cloudwatch:2.17.9` to `2.17.100`
 * Updated `software.amazon.awssdk:secretsmanager:2.17.9` to `2.17.100`
 
 ### Test Dependency Updates
 
-* Updated `com.amazonaws:aws-java-sdk-s3:1.12.37` to `1.12.128`
+* Updated `com.amazonaws:aws-java-sdk-s3:1.12.37` to `1.12.129`
 * Updated `com.exasol:exasol-testcontainers:4.0.0` to `5.1.1`
 * Removed `com.github.stefanbirkner:system-lambda:1.2.0`
 * Updated `nl.jqno.equalsverifier:equalsverifier:3.7` to `3.8`
