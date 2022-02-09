@@ -2,6 +2,8 @@
 
 Currently, this adapter supports the following metrics.
 
+## Statistics
+
 <!-- DON'T CHANGE THIS BY HAND! Use ReadmeGenerator#printMetrics() instead! -->
 * [`RECOMMENDED_DB_RAM_SIZE`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_db_size_last_day.htm)
 * [`PERSISTENT_DB_RAM`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_monitor_last_day.htm)
@@ -37,3 +39,9 @@ Currently, this adapter supports the following metrics.
 * [`REMOTE_READ_DURATION`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_monitor_last_day.htm)
 
 For a reference check the [Exasol documentation](https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm).
+
+## Events
+
+* [`EVENT_BACKUP_END`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_system_events.htm)
+* [`EVENT_BACKUP_START`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_system_events.htm)
+* [`EVENT_BACKUP_ABORTED`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_system_events.htm)
