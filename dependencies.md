@@ -31,7 +31,7 @@
 | [mockito-core][36]                              | [The MIT License][37]             |
 | [Testcontainers :: Localstack][34]              | [MIT][35]                         |
 | [AWS Java SDK for Amazon S3][0]                 | [Apache License, Version 2.0][1]  |
-| [EqualsVerifier][42]                            | [Apache License, Version 2.0][43] |
+| [EqualsVerifier | release normal jar][42]       | [Apache License, Version 2.0][15] |
 
 ## Plugin Dependencies
 
@@ -41,7 +41,7 @@
 | [JaCoCo :: Maven Plugin][46]                            | [Eclipse Public License 2.0][47]               |
 | [Apache Maven Compiler Plugin][48]                      | [Apache License, Version 2.0][15]              |
 | [Maven Failsafe Plugin][50]                             | [Apache License, Version 2.0][15]              |
-| [org.sonatype.ossindex.maven:ossindex-maven-plugin][52] | [ASL2][43]                                     |
+| [org.sonatype.ossindex.maven:ossindex-maven-plugin][52] | [ASL2][53]                                     |
 | [Versions Maven Plugin][54]                             | [Apache License, Version 2.0][15]              |
 | [Apache Maven Enforcer Plugin][56]                      | [Apache License, Version 2.0][15]              |
 | [Artifact reference checker and unifier][58]            | [MIT][7]                                       |
@@ -50,19 +50,19 @@
 | [Apache Maven Shade Plugin][64]                         | [Apache License, Version 2.0][15]              |
 | [error-code-crawler-maven-plugin][66]                   | [MIT][7]                                       |
 | [OpenFastTrace Maven Plugin][68]                        | [GNU General Public License v3.0][69]          |
-| [Reproducible Build Maven Plugin][70]                   | [Apache 2.0][43]                               |
+| [Reproducible Build Maven Plugin][70]                   | [Apache 2.0][53]                               |
 | [Apache Maven JAR Plugin][72]                           | [Apache License, Version 2.0][15]              |
-| [Maven Clean Plugin][74]                                | [The Apache Software License, Version 2.0][43] |
-| [Maven Resources Plugin][76]                            | [The Apache Software License, Version 2.0][43] |
-| [Maven Install Plugin][78]                              | [The Apache Software License, Version 2.0][43] |
-| [Maven Deploy Plugin][80]                               | [The Apache Software License, Version 2.0][43] |
-| [Maven Site Plugin 3][82]                               | [The Apache Software License, Version 2.0][43] |
+| [Maven Clean Plugin][74]                                | [The Apache Software License, Version 2.0][53] |
+| [Maven Resources Plugin][76]                            | [The Apache Software License, Version 2.0][53] |
+| [Maven Install Plugin][78]                              | [The Apache Software License, Version 2.0][53] |
+| [Maven Deploy Plugin][80]                               | [The Apache Software License, Version 2.0][53] |
+| [Maven Site Plugin 3][82]                               | [The Apache Software License, Version 2.0][53] |
 
 [60]: https://github.com/exasol/project-keeper-maven-plugin
 [6]: https://github.com/exasol/error-reporting-java
 [27]: http://www.eclipse.org/legal/epl-v20.html
 [20]: https://javaee.github.io/jsonp
-[43]: http://www.apache.org/licenses/LICENSE-2.0.txt
+[53]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [44]: https://maven.apache.org/surefire/maven-surefire-plugin/
 [5]: https://www.exasol.com/support/secure/attachment/155343/EXASOL_SDK-7.0.11.tar.gz
 [74]: http://maven.apache.org/plugins/maven-clean-plugin/
@@ -94,6 +94,7 @@
 [32]: https://github.com/exasol/exasol-testcontainers
 [69]: https://www.gnu.org/licenses/gpl-3.0.html
 [15]: https://www.apache.org/licenses/LICENSE-2.0.txt
+[42]: https://www.jqno.nl/equalsverifier
 [56]: https://maven.apache.org/enforcer/maven-enforcer-plugin/
 [4]: http://www.exasol.com
 [31]: https://www.eclipse.org/legal/epl-v20.html
@@ -102,7 +103,6 @@
 [8]: https://aws.amazon.com/lambda/
 [34]: https://testcontainers.org
 [26]: https://github.com/itsallcode/junit5-system-extensions
-[42]: http://www.jqno.nl/equalsverifier
 [80]: http://maven.apache.org/plugins/maven-deploy-plugin/
 [82]: http://maven.apache.org/plugins/maven-site-plugin/
 [66]: https://github.com/exasol/error-code-crawler-maven-plugin
