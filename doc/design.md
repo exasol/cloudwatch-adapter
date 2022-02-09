@@ -91,10 +91,10 @@ Cons:
 
 `dsn~exasol-credentials-from-kms~1`
 
-This adapter read the credentials for the Exasol database from an AWS Key Management Service. By that they are stored securely.
-
-**Not yet implemented**
+This adapter reads the credentials for the Exasol database from an AWS Key Management Service. By that they are stored securely.
 
 Covers:
 
-* req~secure-store-exasol-credentials~1
+* `req~secure-store-exasol-credentials~1`
+
+Needs: impl, itest

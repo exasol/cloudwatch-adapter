@@ -32,6 +32,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 
 @Testcontainers
+// [itest->dsn~exasol-credentials-from-kms~1]
 class ExasolCredentialsReaderIT {
     @Container
     private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalstackContainerWithReuse(
