@@ -1,6 +1,7 @@
 package com.exasol.cloudwatch.exasolmetrics;
 
 import java.sql.*;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,15 +15,23 @@ import com.exasol.errorreporting.ExaError;
  */
 class ExasolStatisticsTableEventsMetricReader extends AbstractExasolStatisticsTableMetricReader {
 
+    private final Clock clock;
+
     /**
      * Create a new instance of {@link ExasolStatisticsTableEventsMetricReader}.
-     * 
+     *
      * @param connection     connection to the exasol database
      * @param schemaOverride if null EXA_STATISTICS is used. This parameter allows you to test this connector with a
      *                       predefined SCHEMA instead of the unmodifiable live statistics.
      */
     public ExasolStatisticsTableEventsMetricReader(final Connection connection, final String schemaOverride) {
+        this(connection, schemaOverride, Clock.systemUTC());
+    }
+
+    ExasolStatisticsTableEventsMetricReader(final Connection connection, final String schemaOverride,
+            final Clock clock) {
         super(connection, schemaOverride);
+        this.clock = clock;
     }
 
     // [impl->dsn~report-minute-before-event~1]
@@ -53,15 +62,16 @@ class ExasolStatisticsTableEventsMetricReader extends AbstractExasolStatisticsTa
     private boolean isInThisMinuteReadingRequired(final Instant ofMinute,
             final ExasolStatisticsTableEventsMetric metric) {
         final long epochMinute = ofMinute.getEpochSecond() / 60;
-        return epochMinute % metric.getReportIntervalMinutes() == 0;
+        return (epochMinute % metric.getReportIntervalMinutes()) == 0;
     }
 
     private List<ExasolMetricDatum> readResult(final List<ExasolStatisticsTableEventsMetric> metrics,
             final ResultSet resultSet) throws SQLException {
+        final Instant now = this.clock.instant();
         final List<ExasolMetricDatum> result = new ArrayList<>();
         while (resultSet.next()) {
             for (final ExasolStatisticsTableEventsMetric metric : metrics) {
-                result.add(new ExasolMetricDatum(metric.name(), metric.getUnit(), Instant.now(),
+                result.add(new ExasolMetricDatum(metric.name(), metric.getUnit(), now,
                         resultSet.getDouble(metric.name()), resultSet.getString("CLUSTER_NAME")));
             }
         }
@@ -70,7 +80,7 @@ class ExasolStatisticsTableEventsMetricReader extends AbstractExasolStatisticsTa
 
     /**
      * Build a metric query for the latest report of each cluster.
-     * 
+     *
      * @return sql query
      */
     private String buildMetricsQuery() {
