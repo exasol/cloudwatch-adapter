@@ -3,10 +3,11 @@ package com.exasol.cloudwatch.exasolmetrics;
 import static java.util.stream.Collectors.toSet;
 
 import java.sql.Connection;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+/**
+ * Factory for {@link ExasolEventMetricsReader}.
+ */
 class ExasolEventMetricsReaderFactory implements ExasolMetricReaderFactory {
 
     @Override
@@ -15,13 +16,12 @@ class ExasolEventMetricsReaderFactory implements ExasolMetricReaderFactory {
     }
 
     @Override
-    public ExasolMetricReader getReader(Connection connection, String schemaOverride) {
-        // TODO Auto-generated method stub
-        return null;
+    public ExasolMetricReader getReader(final Connection connection, final String schemaOverride) {
+        return new ExasolEventMetricsReader(connection, schemaOverride);
     }
 
     @Override
-    public Optional<String> getDocLinkForMetric(String metric) {
+    public Optional<String> getDocLinkForMetric(final String metric) {
         if (getSupportedMetrics().contains(metric)) {
             return Optional.of(
                     "https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_system_events.htm");
