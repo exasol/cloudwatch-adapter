@@ -3,27 +3,20 @@ package com.exasol.cloudwatch.exasolmetrics;
 import static com.exasol.cloudwatch.TestConstants.EXASOL_DOCKER_DB_VERSION;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.exasol.containers.ExasolContainer;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import com.exasol.containers.ExasolContainer;
 
 @Testcontainers
 class ExasolStatisticsTableEventsMetricReaderIT {
@@ -46,7 +39,7 @@ class ExasolStatisticsTableEventsMetricReaderIT {
     }
 
     @Test
-    void testNoMetricsRequested() throws Exception {
+    void testNoMetricsRequested() throws SQLException {
         try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable(exasolConnection)) {
             final Instant someWhen = Instant.ofEpochSecond(0);
             mockTable.insert(someWhen, 10, 2, "MAIN");
@@ -58,7 +51,7 @@ class ExasolStatisticsTableEventsMetricReaderIT {
     }
 
     @Test
-    void testTwoMetricsRequested() throws Exception {
+    void testTwoMetricsRequested() throws SQLException {
         try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable(exasolConnection)) {
             final Instant someWhen = Instant.ofEpochSecond(0);
             mockTable.insert(someWhen, 10, 2, "MAIN");
@@ -81,7 +74,7 @@ class ExasolStatisticsTableEventsMetricReaderIT {
     }
 
     @Test
-    void testLatestIsReported() throws Exception {
+    void testLatestIsReported() throws SQLException {
         try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable(exasolConnection)) {
             final Instant someWhen = Instant.ofEpochSecond(0);
             mockTable.insert(someWhen, 10, 2, "MAIN");
@@ -97,7 +90,7 @@ class ExasolStatisticsTableEventsMetricReaderIT {
     }
 
     @Test
-    void testReportedOnlyEveryFourMinutes() throws Exception {
+    void testReportedOnlyEveryFourMinutes() throws SQLException {
         try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable(exasolConnection)) {
             final Instant someWhen = Instant.ofEpochSecond(0);
             mockTable.insert(someWhen, 10, 2, "MAIN");
@@ -113,7 +106,7 @@ class ExasolStatisticsTableEventsMetricReaderIT {
     }
 
     @Test
-    void testMultipleClusters() throws Exception {
+    void testMultipleClusters() throws SQLException {
         try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable(exasolConnection)) {
             final Instant someWhen = Instant.ofEpochSecond(0);
             mockTable.insert(someWhen, 10, 2, "MAIN");
