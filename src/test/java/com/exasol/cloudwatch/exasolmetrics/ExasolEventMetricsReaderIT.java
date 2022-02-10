@@ -4,9 +4,9 @@ import static com.exasol.cloudwatch.TestConstants.EXASOL_DOCKER_DB_VERSION;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,7 +14,10 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
+import org.itsallcode.io.Capturable;
+import org.itsallcode.junit.sysextensions.SystemOutGuard;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.testcontainers.junit.jupiter.Container;
@@ -23,6 +26,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.exasol.containers.ExasolContainer;
 
 @Testcontainers
+@ExtendWith(SystemOutGuard.class)
 class ExasolEventMetricsReaderIT {
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
@@ -154,12 +158,36 @@ class ExasolEventMetricsReaderIT {
         }
     }
 
+    @Test
+    void logsWarningForSkippedPointsDueToTimeshift(final Capturable stdOutStream) throws SQLException {
+        final Instant minuteToQuery = Instant.parse("2020-10-25T01:10:00Z");
+        try (final ExaSystemEventsMockTable mockTable = ExaSystemEventsMockTable.forDbTimeZone(this.exasolConnection)) {
+            mockTable.insert(Instant.parse("2020-10-25T01:10:00Z"), CLUSTER1, "BACKUP_START");
+            stdOutStream.capture();
+            final List<ExasolMetricDatum> result = runReader(minuteToQuery, allMetricsNames());
+            assertAll( //
+                    () -> assertThat(result, empty()), //
+                    () -> assertThat(stdOutStream.getCapturedData(), containsString(
+                            "WARN  ExasolEventMetricsReader - W-CWA-21: Skipping points due to timeshift")) //
+            );
+        }
+    }
+
+    @Test
+    void failsWithSqlExceptionWhenTableIsMissing() throws SQLException {
+        final IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> runReader(NOW, "EVENT_BACKUP_START"));
+        assertThat(exception.getMessage(), startsWith("F-CWA-22: Failed to execute query"));
+        assertThat(exception.getCause().getMessage(),
+                startsWith("object \"MOCK_SCHEMA\".\"EXA_SYSTEM_EVENTS\" not found"));
+    }
+
     private List<ExasolMetricDatum> runReader(final Instant someWhen, final String... events) throws SQLException {
         return runReader(someWhen, asList(events));
     }
 
     private List<ExasolMetricDatum> runReader(final Instant someWhen, final List<String> events) throws SQLException {
-        final ExasolEventMetricsReader reader = new ExasolEventMetricsReader(EXASOL.createConnection(),
+        final ExasolMetricReader reader = new ExasolEventMetricsReaderFactory().getReader(EXASOL.createConnection(),
                 ExaSystemEventsMockTable.MOCK_SCHEMA);
         return reader.readMetrics(events, someWhen);
     }
