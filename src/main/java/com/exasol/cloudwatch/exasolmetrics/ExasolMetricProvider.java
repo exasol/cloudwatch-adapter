@@ -17,7 +17,8 @@ public class ExasolMetricProvider extends CompoundExasolMetricReaderFactory {
     private static List<ExasolMetricReaderFactory> createReaders() {
         return List.of(//
                 new ExasolStatisticsTableRegularMetricReaderFactory(),
-                new ExasolStatisticsTableEventsMetricReaderFactory(),
-                new ExasolEventMetricsReaderFactory());
+                new ExasolStatisticsTableEventsMetricReaderFactory(), //
+                new ExasolEventMetricsReaderFactory(), //
+                new ExasolBackupDurationReaderFactory());
     }
 }

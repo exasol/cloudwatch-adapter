@@ -1,15 +1,10 @@
 package com.exasol.cloudwatch.exasolmetrics;
 
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toMap;
-
 import java.sql.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,37 +12,32 @@ import org.slf4j.LoggerFactory;
 import com.exasol.errorreporting.ExaError;
 
 /**
- * This {@link ExasolMetricReader} reads events that occured within the last minute.
+ * This {@link ExasolEventMetricsReader} reads the duration of the finished within the last minute.
  */
-class ExasolEventMetricsReader extends AbstractExasolStatisticsTableMetricReader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExasolEventMetricsReader.class);
+class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricReader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExasolBackupDurationReader.class);
 
     /**
-     * Create a new instance of {@link ExasolEventMetricsReader}.
+     * Create a new instance of {@link ExasolBackupDurationReader}.
      *
      * @param connection     connection to the Exasol database
      * @param schemaOverride if null {@code EXA_STATISTICS} is used. This parameter allows you to test this connector
      *                       with a predefined SCHEMA instead of the unmodifiable live statistics.
      */
-    ExasolEventMetricsReader(final Connection connection, final String schemaOverride) {
+    ExasolBackupDurationReader(final Connection connection, final String schemaOverride) {
         super(connection, schemaOverride);
     }
 
     @Override
     public List<ExasolMetricDatum> readMetrics(final Collection<String> metricsNames, final Instant ofMinute) {
-        final List<ExasolEvent> metrics = metricsNames.stream().map(ExasolEvent::forName).collect(Collectors.toList());
-        if (metrics.isEmpty()) {
-            return emptyList();
-        }
         final Instant start = ofMinute.truncatedTo(ChronoUnit.MINUTES);
         final Instant end = start.plus(Duration.ofMinutes(1));
-
         final String query = buildQuery();
         try (final PreparedStatement statement = this.connection.prepareStatement(query)) {
             LOGGER.debug("Query events between {} and {}", start, end);
             statement.setTimestamp(1, Timestamp.from(start), this.utcCalendar);
             statement.setTimestamp(2, Timestamp.from(end), this.utcCalendar);
-            return executeSystemTableQuery(metrics, statement);
+            return executeSystemTableQuery(statement);
         } catch (final SQLException exception) {
             if (exception.getMessage().contains("ambigous timestamp")) {
                 LOGGER.warn(ExaError.messageBuilder("W-CWA-21").message("Skipping points due to timeshift. ").message(
@@ -60,32 +50,37 @@ class ExasolEventMetricsReader extends AbstractExasolStatisticsTableMetricReader
         }
     }
 
-    private List<ExasolMetricDatum> executeSystemTableQuery(final List<ExasolEvent> metrics,
-            final PreparedStatement statement) throws SQLException {
+    private List<ExasolMetricDatum> executeSystemTableQuery(final PreparedStatement statement) throws SQLException {
         final List<ExasolMetricDatum> result = new ArrayList<>();
-        final Map<String, ExasolEvent> wantedEventTypes = metrics.stream()
-                .collect(toMap(ExasolEvent::getDbEventType, Function.identity()));
         try (ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
-                final String eventType = resultSet.getString("EVENT_TYPE");
-                final ExasolEvent event = wantedEventTypes.get(eventType);
-                if (event == null) {
-                    continue;
-                }
                 final String clusterName = resultSet.getString("CLUSTER_NAME");
-                final Instant timestamp = resultSet.getTimestamp("UTC_MEASURE_TIME", this.utcCalendar).toInstant();
-                result.add(new ExasolMetricDatum(event.getMetricsName(), ExasolUnit.COUNT, timestamp, 1, clusterName));
+                final Instant timestamp = resultSet.getTimestamp("UTC_END_TIME", this.utcCalendar).toInstant();
+                final double backupDurationSeconds = resultSet.getDouble("backup_duration_sec");
+                result.add(new ExasolMetricDatum(ExasolBackupDurationReaderFactory.METRIC_NAME, ExasolUnit.SECONDS,
+                        timestamp, backupDurationSeconds, clusterName));
             }
         }
         return result;
     }
 
     private String buildQuery() {
-        return "SELECT "
-                + "CONVERT_TZ(MEASURE_TIME, DBTIMEZONE, 'UTC', 'INVALID REJECT AMBIGUOUS REJECT') as UTC_MEASURE_TIME, t.CLUSTER_NAME, t.EVENT_TYPE "
-                + "FROM \"" + getSchema() + "\".\"" + ExasolStatisticsTable.EXA_SYSTEM_EVENTS.name() + "\"" + " t "
-                + "WHERE MEASURE_TIME >= CONVERT_TZ(?, 'UTC', DBTIMEZONE, 'INVALID REJECT AMBIGUOUS REJECT') "
-                + "AND MEASURE_TIME < CONVERT_TZ(?, 'UTC', DBTIMEZONE, 'INVALID REJECT AMBIGUOUS REJECT')";
+        return "with intermediate as ( " //
+                + "    select s.cluster_name, s.measure_time, s.event_type, " //
+                + "        lead(event_type) over (partition by cluster_name order by measure_time) end_event, " //
+                + "        lead(measure_time) over (partition by cluster_name order by measure_time) end_time " //
+                + "    from exa_system_events s " //
+                + "    where event_type like 'BACKUP%' " //
+                + ") " //
+                + "select i.cluster_name, " //
+                + "    CONVERT_TZ(i.end_time, DBTIMEZONE, 'UTC', 'INVALID REJECT AMBIGUOUS REJECT') as UTC_END_TIME, " //
+                + "    cast(seconds_between(end_time, measure_time) as decimal(10, 2)) backup_duration_sec " //
+                + "from intermediate i " //
+                + "where event_type = 'BACKUP_START' " //
+                + "    and end_event not like '%START' " //
+                + "    and i.end_time >= CONVERT_TZ(?, 'UTC', DBTIMEZONE, 'INVALID REJECT AMBIGUOUS REJECT') " //
+                + "    and i.end_time < CONVERT_TZ(?, 'UTC', DBTIMEZONE, 'INVALID REJECT AMBIGUOUS REJECT') " //
+                + "order by measure_time desc;";
     }
 
     private IllegalStateException wrapSqlException(final String query, final SQLException exception) {
