@@ -1,12 +1,14 @@
 # cloudwatch-adapter 0.3.0, released 2022-02-??
 
-Code name:
+Code name: Add metrics for backups
 
 ## Summary
 
+This release adds metrics for backup events (`EVENT_BACKUP_END`, `EVENT_BACKUP_START` and `EVENT_BACKUP_ABORTED`) and the backup duration (`BACKUP_DURATION`).
+
 ## Features
 
-* #57: Added events for successful and failed backups
+* #57: Added events for successful and failed backups as well as the backup duration
 
 ## Dependency Updates
 

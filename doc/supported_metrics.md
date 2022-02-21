@@ -45,3 +45,4 @@ For a reference check the [Exasol documentation](https://docs.exasol.com/sql_ref
 * [`EVENT_BACKUP_END`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_system_events.htm)
 * [`EVENT_BACKUP_START`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_system_events.htm)
 * [`EVENT_BACKUP_ABORTED`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_system_events.htm)
+* [`BACKUP_DURATION`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_system_events.htm)
