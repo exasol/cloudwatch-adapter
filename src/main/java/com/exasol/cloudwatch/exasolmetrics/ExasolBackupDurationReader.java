@@ -1,5 +1,7 @@
 package com.exasol.cloudwatch.exasolmetrics;
 
+import static java.util.Collections.emptyList;
+
 import java.sql.*;
 import java.time.Duration;
 import java.time.Instant;
@@ -30,6 +32,9 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
 
     @Override
     public List<ExasolMetricDatum> readMetrics(final Collection<String> metricsNames, final Instant ofMinute) {
+        if (!metricsNames.contains(ExasolBackupDurationReaderFactory.METRIC_NAME)) {
+            return emptyList();
+        }
         final Instant start = ofMinute.truncatedTo(ChronoUnit.MINUTES);
         final Instant end = start.plus(Duration.ofMinutes(1));
         final String query = buildQuery();
@@ -37,7 +42,7 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
             LOGGER.debug("Query events between {} and {}", start, end);
             statement.setTimestamp(1, Timestamp.from(start), this.utcCalendar);
             statement.setTimestamp(2, Timestamp.from(end), this.utcCalendar);
-            return executeSystemTableQuery(statement);
+            return executeQuery(statement);
         } catch (final SQLException exception) {
             if (exception.getMessage().contains("ambigous timestamp")) {
                 LOGGER.warn(ExaError.messageBuilder("W-CWA-34").message("Skipping points due to timeshift. ").message(
@@ -50,7 +55,7 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
         }
     }
 
-    private List<ExasolMetricDatum> executeSystemTableQuery(final PreparedStatement statement) throws SQLException {
+    private List<ExasolMetricDatum> executeQuery(final PreparedStatement statement) throws SQLException {
         final List<ExasolMetricDatum> result = new ArrayList<>();
         try (ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
@@ -69,7 +74,7 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
                 + "    select s.cluster_name, s.measure_time, s.event_type, " //
                 + "        lead(event_type) over (partition by cluster_name order by measure_time) end_event, " //
                 + "        lead(measure_time) over (partition by cluster_name order by measure_time) end_time " //
-                + "    from exa_system_events s " //
+                + "    from \"" + getSchema() + "\".exa_system_events s " //
                 + "    where event_type like 'BACKUP%' " //
                 + ") " //
                 + "select i.cluster_name, " //
