@@ -36,7 +36,6 @@ import org.testcontainers.utility.DockerImageName;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.exasol.cloudwatch.configuration.MockEnvironmentVariableProvider;
-import com.exasol.cloudwatch.fingerprint.FingerprintExtractor;
 import com.exasol.containers.ExasolContainer;
 
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
@@ -74,7 +73,7 @@ class CloudWatchAdapterIT {
     }
 
     private static String getCertificateFingerprint() {
-        return FingerprintExtractor.extractFingerprint(EXASOL.getJdbcUrl()).orElse(null);
+        return EXASOL.getTlsCertificateFingerprint().orElse(null);
     }
 
     @AfterAll
