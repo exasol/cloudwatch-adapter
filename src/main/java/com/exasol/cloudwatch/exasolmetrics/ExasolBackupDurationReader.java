@@ -40,7 +40,7 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
             return executeSystemTableQuery(statement);
         } catch (final SQLException exception) {
             if (exception.getMessage().contains("ambigous timestamp")) {
-                LOGGER.warn(ExaError.messageBuilder("W-CWA-21").message("Skipping points due to timeshift. ").message(
+                LOGGER.warn(ExaError.messageBuilder("W-CWA-34").message("Skipping points due to timeshift. ").message(
                         "Since the Exasol database stores the logs with dates in the DBTIMEZONE there are ambiguous logs during the timeshift.")
                         .mitigation("The only thing you can do is to change your DBTIMEZONE to UTC.").toString());
                 return List.of();
@@ -84,7 +84,7 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
     }
 
     private IllegalStateException wrapSqlException(final String query, final SQLException exception) {
-        return new IllegalStateException(ExaError.messageBuilder("F-CWA-22")
+        return new IllegalStateException(ExaError.messageBuilder("F-CWA-35")
                 .message("Failed to execute query ({{query}}) on system table.", query).ticketMitigation().toString(),
                 exception);
     }
