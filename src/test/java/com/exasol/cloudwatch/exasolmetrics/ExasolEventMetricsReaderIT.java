@@ -168,7 +168,7 @@ class ExasolEventMetricsReaderIT {
             assertAll( //
                     () -> assertThat(result, empty()), //
                     () -> assertThat(stdOutStream.getCapturedData(), containsString(
-                            "WARN  ExasolEventMetricsReader - W-CWA-21: Skipping points due to timeshift")) //
+                            "WARN  ExasolEventMetricsReader - W-CWA-34: Skipping points due to timeshift")) //
             );
         }
     }
@@ -177,7 +177,7 @@ class ExasolEventMetricsReaderIT {
     void failsWithSqlExceptionWhenTableIsMissing() throws SQLException {
         final IllegalStateException exception = assertThrows(IllegalStateException.class,
                 () -> runReader(NOW, "EVENT_BACKUP_START"));
-        assertThat(exception.getMessage(), startsWith("F-CWA-22: Failed to execute query"));
+        assertThat(exception.getMessage(), startsWith("F-CWA-35: Failed to execute query"));
         assertThat(exception.getCause().getMessage(),
                 startsWith("object \"MOCK_SCHEMA\".\"EXA_SYSTEM_EVENTS\" not found"));
     }
