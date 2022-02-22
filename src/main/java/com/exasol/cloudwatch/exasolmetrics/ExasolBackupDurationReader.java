@@ -82,8 +82,8 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
      * <li>Maximum timestamp of the BACKUP_END or BACKUP_ABORTED event (excluded)</li>
      * </ol>
      *
-     * The query uses and {@code INTERMEDIATE} query {@code eventsWithNextEvent} which a backup event and its following
-     * backup event (ordered by time). It returns the following columns:
+     * The query uses an {@code INTERMEDIATE} query which returns a backup event and its following backup event (ordered
+     * by time). It returns the following columns:
      * <ol>
      * <li>{@code cluster_name}: Name of the Exasol cluster</li>
      * <li>{@code measure_time}: Timestamp of the first event</li>
