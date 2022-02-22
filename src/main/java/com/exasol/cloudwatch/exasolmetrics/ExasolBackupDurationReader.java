@@ -69,6 +69,31 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
         return result;
     }
 
+    /**
+     * Creates a query that fetches backup durations. It returns the following columns:
+     * <ol>
+     * <li>{@code cluster_name}: Name of the Exasol cluster</li>
+     * <li>{@code utc_end_time}: UTC timestamp when the backup finished</li>
+     * <li>{@code backup_duration_sec}: Duration of the backup in seconds</li>
+     * </ol>
+     * The query has two arguments:
+     * <ol>
+     * <li>Minimum timestamp of the BACKUP_END or BACKUP_ABORTED event (included)</li>
+     * <li>Maximum timestamp of the BACKUP_END or BACKUP_ABORTED event (excluded)</li>
+     * </ol>
+     *
+     * The query uses and {@code INTERMEDIATE} query {@code eventsWithNextEvent} which a backup event and its following
+     * backup event (ordered by time). It returns the following columns:
+     * <ol>
+     * <li>{@code cluster_name}: Name of the Exasol cluster</li>
+     * <li>{@code measure_time}: Timestamp of the first event</li>
+     * <li>{@code event_type}: Type of the first event</li>
+     * <li>{@code next_event_event}: Type of the next event</li>
+     * <li>{@code next_event_time}: Timestamp of th enext event</li>
+     * </ol>
+     *
+     * @return query for fetching backup durations
+     */
     private String buildQuery() {
         return "WITH INTERMEDIATE AS ( " //
                 + "    SELECT s.cluster_name, s.measure_time, s.event_type, " //
@@ -78,7 +103,7 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
                 + "    WHERE event_type LIKE 'BACKUP%' " //
                 + ") " //
                 + "SELECT cluster_name, " //
-                + "    CONVERT_TZ(next_event_time, DBTIMEZONE, 'UTC', 'INVALID REJECT AMBIGUOUS REJECT') AS UTC_END_TIME, " //
+                + "    CONVERT_TZ(next_event_time, DBTIMEZONE, 'UTC', 'INVALID REJECT AMBIGUOUS REJECT') AS utc_end_time, " //
                 + "    CAST(SECONDS_BETWEEN(next_event_time, measure_time) AS DECIMAL(10, 2)) backup_duration_sec " //
                 + "FROM INTERMEDIATE eventsWithNextEvent " //
                 + "WHERE event_type = 'BACKUP_START' " //
