@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.exasol.errorreporting.ExaError;
 
 /**
- * This {@link ExasolEventMetricsReader} reads the duration of the finished within the last minute.
+ * This {@link ExasolEventMetricsReader} reads the duration of the backup finished within the last minute if available.
  */
 class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExasolBackupDurationReader.class);
@@ -70,22 +70,22 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
     }
 
     private String buildQuery() {
-        return "with intermediate as ( " //
-                + "    select s.cluster_name, s.measure_time, s.event_type, " //
-                + "        lead(event_type, 1) over (partition by cluster_name order by measure_time) next_event_event, " //
-                + "        lead(measure_time, 1) over (partition by cluster_name order by measure_time) next_event_time " //
-                + "    from \"" + getSchema() + "\".exa_system_events s " //
-                + "    where event_type like 'BACKUP%' " //
+        return "WITH INTERMEDIATE AS ( " //
+                + "    SELECT s.cluster_name, s.measure_time, s.event_type, " //
+                + "        LEAD(event_type, 1) OVER (PARTITION BY cluster_name ORDER BY measure_time) next_event_event, " //
+                + "        LEAD(measure_time, 1) OVER (PARTITION BY cluster_name ORDER BY measure_time) next_event_time " //
+                + "    FROM \"" + getSchema() + "\".exa_system_events s " //
+                + "    WHERE event_type LIKE 'BACKUP%' " //
                 + ") " //
-                + "select i.cluster_name, " //
-                + "    CONVERT_TZ(i.end_time, DBTIMEZONE, 'UTC', 'INVALID REJECT AMBIGUOUS REJECT') as UTC_END_TIME, " //
-                + "    cast(seconds_between(end_time, measure_time) as decimal(10, 2)) backup_duration_sec " //
-                + "from intermediate i " //
-                + "where event_type = 'BACKUP_START' " //
-                + "    and end_event not like '%START' " //
-                + "    and i.end_time >= CONVERT_TZ(?, 'UTC', DBTIMEZONE, 'INVALID REJECT AMBIGUOUS REJECT') " //
-                + "    and i.end_time < CONVERT_TZ(?, 'UTC', DBTIMEZONE, 'INVALID REJECT AMBIGUOUS REJECT') " //
-                + "order by measure_time desc;";
+                + "SELECT cluster_name, " //
+                + "    CONVERT_TZ(next_event_time, DBTIMEZONE, 'UTC', 'INVALID REJECT AMBIGUOUS REJECT') AS UTC_END_TIME, " //
+                + "    CAST(SECONDS_BETWEEN(next_event_time, measure_time) AS DECIMAL(10, 2)) backup_duration_sec " //
+                + "FROM INTERMEDIATE eventsWithNextEvent " //
+                + "WHERE event_type = 'BACKUP_START' " //
+                + "    AND next_event_event NOT LIKE '%START' " //
+                + "    AND next_event_time >= CONVERT_TZ(?, 'UTC', DBTIMEZONE, 'INVALID REJECT AMBIGUOUS REJECT') " //
+                + "    AND next_event_time < CONVERT_TZ(?, 'UTC', DBTIMEZONE, 'INVALID REJECT AMBIGUOUS REJECT') " //
+                + "ORDER BY measure_time DESC;";
     }
 
     private IllegalStateException wrapSqlException(final String query, final SQLException exception) {
