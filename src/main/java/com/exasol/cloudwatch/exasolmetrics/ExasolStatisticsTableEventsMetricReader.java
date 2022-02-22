@@ -14,7 +14,6 @@ import com.exasol.errorreporting.ExaError;
  * data.
  */
 class ExasolStatisticsTableEventsMetricReader extends AbstractExasolStatisticsTableMetricReader {
-
     private final Clock clock;
 
     /**

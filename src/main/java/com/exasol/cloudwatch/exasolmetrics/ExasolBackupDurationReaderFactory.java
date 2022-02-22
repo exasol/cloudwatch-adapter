@@ -8,7 +8,6 @@ import java.util.Set;
  * Factory for {@link ExasolBackupDurationReader}.
  */
 class ExasolBackupDurationReaderFactory implements ExasolMetricReaderFactory {
-
     static final String METRIC_NAME = "BACKUP_DURATION";
 
     @Override

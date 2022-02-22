@@ -41,7 +41,6 @@ class ExasolEventMetricsReader extends AbstractExasolStatisticsTableMetricReader
         }
         final Instant start = ofMinute.truncatedTo(ChronoUnit.MINUTES);
         final Instant end = start.plus(Duration.ofMinutes(1));
-
         final String query = buildQuery();
         try (final PreparedStatement statement = this.connection.prepareStatement(query)) {
             LOGGER.debug("Query events between {} and {}", start, end);

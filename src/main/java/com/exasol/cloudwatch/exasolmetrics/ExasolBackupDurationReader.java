@@ -72,8 +72,8 @@ class ExasolBackupDurationReader extends AbstractExasolStatisticsTableMetricRead
     private String buildQuery() {
         return "with intermediate as ( " //
                 + "    select s.cluster_name, s.measure_time, s.event_type, " //
-                + "        lead(event_type) over (partition by cluster_name order by measure_time) end_event, " //
-                + "        lead(measure_time) over (partition by cluster_name order by measure_time) end_time " //
+                + "        lead(event_type, 1) over (partition by cluster_name order by measure_time) next_event_event, " //
+                + "        lead(measure_time, 1) over (partition by cluster_name order by measure_time) next_event_time " //
                 + "    from \"" + getSchema() + "\".exa_system_events s " //
                 + "    where event_type like 'BACKUP%' " //
                 + ") " //
