@@ -57,7 +57,7 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
     @Override
     public Void handleRequest(final ScheduledEvent event, final Context context) {
         if ((event == null) || (event.getTime() == null)) {
-            throw new IllegalArgumentException(ExaError.messageBuilder("W-CWA-32")
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-CWA-32")
                     .message("Scheduled event not available, lambda was not started by a scheduled event.")
                     .mitigation("Please start the lambda via a scheduled event or provide the correct event as input.")
                     .toString());
