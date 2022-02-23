@@ -1,4 +1,4 @@
-# cloudwatch-adapter 1.0.0, released 2022-02-22
+# cloudwatch-adapter 1.0.0, released 2022-02-23
 
 Code name: Add metrics for backups
 
