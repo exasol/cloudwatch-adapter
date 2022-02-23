@@ -2,3 +2,4 @@ error-tags:
   CWA:
     packages:
       - com.exasol.cloudwatch
+    highest-index: 35

@@ -2,9 +2,9 @@ package com.exasol.cloudwatch;
 
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
-
 import com.exasol.cloudwatch.exasolmetrics.ExasolMetricProvider;
+
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("java:S3577") // ame does not contain Test since not a real test
 class ReadmeGenerator {
@@ -16,12 +16,13 @@ class ReadmeGenerator {
     @Test
     void printMetrics() {
         final ExasolMetricProvider exasolMetricProvider = new ExasolMetricProvider();
-        System.out.println(exasolMetricProvider.getSupportedMetrics().stream()
-                .map(metric -> this.buildMarkdownLink(metric, exasolMetricProvider)).collect(Collectors.joining(", ")));
+        System.out.println("* " + exasolMetricProvider.getSupportedMetrics().stream()
+                .map(metric -> this.buildMarkdownLink(metric, exasolMetricProvider))
+                .collect(Collectors.joining("\n* ")));
     }
 
     private String buildMarkdownLink(final String metric, final ExasolMetricProvider exasolMetricProvider) {
         return exasolMetricProvider.getDocLinkForMetric(metric).map(s -> "[`" + metric + "`](" + s + ")")
-                .orElse(metric);
+                .orElseGet(() -> "`" + metric + "`");
     }
 }

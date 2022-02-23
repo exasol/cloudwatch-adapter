@@ -1,24 +1,23 @@
 package com.exasol.cloudwatch.exasolmetrics;
 
 import java.sql.Connection;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
- * Factory for {@link ExasolStatisticsTableEventsMetricReader}.
+ * Factory for {@link ExasolBackupDurationReader}.
  */
-class ExasolStatisticsTableEventsMetricReaderFactory implements ExasolMetricReaderFactory {
+class ExasolBackupDurationReaderFactory implements ExasolMetricReaderFactory {
+    static final String METRIC_NAME = "BACKUP_DURATION";
 
     @Override
     public Set<String> getSupportedMetrics() {
-        return Arrays.stream(ExasolStatisticsTableEventsMetric.values()).map(Enum::name).collect(Collectors.toSet());
+        return Set.of(METRIC_NAME);
     }
 
     @Override
     public ExasolMetricReader getReader(final Connection connection, final String schemaOverride) {
-        return new ExasolStatisticsTableEventsMetricReader(connection, schemaOverride);
+        return new ExasolBackupDurationReader(connection, schemaOverride);
     }
 
     @Override

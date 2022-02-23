@@ -1,24 +1,23 @@
 package com.exasol.cloudwatch.exasolmetrics;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.sql.Connection;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
- * Factory for {@link ExasolStatisticsTableEventsMetricReader}.
+ * Factory for {@link ExasolEventMetricsReader}.
  */
-class ExasolStatisticsTableEventsMetricReaderFactory implements ExasolMetricReaderFactory {
+class ExasolEventMetricsReaderFactory implements ExasolMetricReaderFactory {
 
     @Override
     public Set<String> getSupportedMetrics() {
-        return Arrays.stream(ExasolStatisticsTableEventsMetric.values()).map(Enum::name).collect(Collectors.toSet());
+        return Arrays.stream(ExasolEvent.values()).map(ExasolEvent::getMetricsName).collect(toSet());
     }
 
     @Override
     public ExasolMetricReader getReader(final Connection connection, final String schemaOverride) {
-        return new ExasolStatisticsTableEventsMetricReader(connection, schemaOverride);
+        return new ExasolEventMetricsReader(connection, schemaOverride);
     }
 
     @Override

@@ -56,6 +56,12 @@ public class CloudWatchAdapter implements RequestHandler<ScheduledEvent, Void> {
 
     @Override
     public Void handleRequest(final ScheduledEvent event, final Context context) {
+        if ((event == null) || (event.getTime() == null)) {
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-CWA-32")
+                    .message("Scheduled event not available, lambda was not started by a scheduled event.")
+                    .mitigation("Please start the lambda via a scheduled event or provide the correct event as input.")
+                    .toString());
+        }
         final Instant eventTime = Instant.ofEpochMilli(event.getTime().getMillis());
         // [impl->dsn~report-minute-before-event~1]
         final Instant minuteToReport = eventTime.minus(Duration.ofMinutes(1));

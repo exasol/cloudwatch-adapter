@@ -1,7 +1,9 @@
 package com.exasol.cloudwatch.exasolmetrics;
 
 import java.sql.Connection;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -21,7 +23,10 @@ class ExasolStatisticsTableRegularMetricReaderFactory implements ExasolMetricRea
 
     @Override
     public Optional<String> getDocLinkForMetric(final String metric) {
-        return Optional
-                .of("https://docs.exasol.com/sql_references/metadata/statistical_system_table.htm#EXA_SYSTEM_EVENTS");
+        return Arrays.stream(ExasolStatisticsTableRegularMetric.values())//
+                .filter(eachMetric -> eachMetric.name().equals(metric))//
+                .map(eachMetric -> "https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/"
+                        + eachMetric.getTable().name().toLowerCase() + ".htm")
+                .findAny();
     }
 }

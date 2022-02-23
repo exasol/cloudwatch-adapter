@@ -41,6 +41,7 @@ class ExasolCredentialsReader {
      * @param secretArn arn of the secret
      * @return read {@link ExasolCredentials}
      */
+    // [impl->dsn~exasol-credentials-from-secrets-manager~1]
     ExasolCredentials readExasolCredentials(final String secretArn) {
         try (final SecretsManagerClient secretsManagerClient = this.awsClientFactory.getSecretsManagerClient()) {
             return readExasolCredentials(secretArn, secretsManagerClient);

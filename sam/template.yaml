@@ -9,7 +9,7 @@ Metadata:
     LicenseUrl: ../LICENSE
     ReadmeUrl: ../README.md
     HomePageUrl: https://github.com/exasol/cloudwatch-adapter
-    SemanticVersion: 0.1.0
+    SemanticVersion: 0.3.0
     SourceCodeUrl: https://github.com/exasol/cloudwatch-adapter
 
 Globals:
@@ -20,7 +20,7 @@ Parameters:
   Metrics:
     Type: 'String'
     Description: "Comma separated list of the metrics to report. See https://github.com/exasol/cloudwatch-adapter for all available metrics."
-    Default: "RAW_OBJECT_SIZE, MEM_OBJECT_SIZE, AUXILIARY_SIZE, STATISTICS_SIZE, RECOMMENDED_DB_RAM_SIZE, STORAGE_SIZE, USE, TEMP_SIZE , OBJECT_COUNT, LOAD, CPU, TEMP_DB_RAM, PERSISTENT_DB_RAM, HDD_READ, HDD_WRITE, LOCAL_READ_SIZE , LOCAL_READ_DURATION, LOCAL_WRITE_DURATION, CACHE_READ_SIZE, CACHE_READ_DURATION, CACHE_WRITE_SIZE, CACHE_WRITE_DURATION, REMOTE_READ_SIZE, REMOTE_READ_DURATION , REMOTE_WRITE_SIZE, REMOTE_WRITE_DURATION, NET, SWAP, USERS, QUERIES, NODES, DB_RAM_SIZE"
+    Default: "RAW_OBJECT_SIZE, MEM_OBJECT_SIZE, AUXILIARY_SIZE, STATISTICS_SIZE, RECOMMENDED_DB_RAM_SIZE, STORAGE_SIZE, USE, TEMP_SIZE, OBJECT_COUNT, LOAD, CPU, TEMP_DB_RAM, PERSISTENT_DB_RAM, HDD_READ, HDD_WRITE, LOCAL_READ_SIZE, LOCAL_READ_DURATION, LOCAL_WRITE_DURATION, CACHE_READ_SIZE, CACHE_READ_DURATION, CACHE_WRITE_SIZE, CACHE_WRITE_DURATION, REMOTE_READ_SIZE, REMOTE_READ_DURATION, REMOTE_WRITE_SIZE, REMOTE_WRITE_DURATION, NET, SWAP, USERS, QUERIES, NODES, DB_RAM_SIZE, EVENT_BACKUP_END, EVENT_BACKUP_START, EVENT_BACKUP_ABORTED, BACKUP_DURATION"
   ExaolDeploymentName:
     Type: 'String'
     Description: "A name describing the Exasol installation you want to monitor. The adapter adds this name as a dimension to the metrics in cloudwatch. This will help you to distinguish the data if you monitor more than one Exasol deployment."
