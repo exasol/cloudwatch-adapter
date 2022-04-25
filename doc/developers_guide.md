@@ -8,7 +8,7 @@ The timestamp is required as payload for the lambda:
 
 ```json
 {
-    "time": "2021-12-01T11:05:53"
+  "time": "2021-12-01T11:05:53"
 }
 ```
 
@@ -23,3 +23,8 @@ aws lambda invoke --function-name $lambda_name --invocation-type RequestResponse
 ## Release
 
 Release this adapter according to this [tutorial](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-publishing-applications.html).
+
+Steps:
+
+* Update semantic version in sam/template.yml
+* 
