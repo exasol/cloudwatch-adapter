@@ -44,6 +44,6 @@ jobs:
           name: packedTemplate
           path: sam/packed.yml
       - name: Create issue for manual release
-      - uses: JasonEtco/create-an-issue@v2
+        uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
