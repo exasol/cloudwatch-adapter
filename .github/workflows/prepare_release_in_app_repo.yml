@@ -33,6 +33,7 @@ jobs:
           echo "testcontainers.reuse.enable=true" >> ~/.testcontainers.properties
       - name: Build SAM package
         run: |
+          mvn package
           cd sam
           sam package --s3-bucket persistent-cloudwatch-adapter-releases --region eu-central-1 > packaged.yml
         env:
