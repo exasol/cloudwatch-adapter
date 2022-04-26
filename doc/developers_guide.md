@@ -27,4 +27,6 @@ Release this adapter according to this [tutorial](https://docs.aws.amazon.com/se
 Steps:
 
 * Update semantic version in `sam/template.yml`
-* 
+* Make a release on GitHub
+* Download packed SAM template from the `Prepare SAM release` GitHub action
+* Send it to someone who can publish it in the `Exasol AG` AWS account
