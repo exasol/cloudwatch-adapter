@@ -34,9 +34,9 @@ jobs:
       - name: Build SAM package
         run: |
           cd sam
-          sam package --s3-bucket cloudwatch-adapter-releases --region eu-central-1 > packaged.yml
+          sam package --s3-bucket persistent-cloudwatch-adapter-releases --region eu-central-1 > packaged.yml
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.RELEASE_AWS_ACCESS_KEY_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.RELEASE_AWS_ACCESS_KEY_ID }} # The user is defined by the ci-isolation stack.
           AWS_SECRET_ACCESS_KEY: ${{ secrets.RELEASE_AWS_SECRET_ACCESS_KEY }}
       - name: Upload packed template
         uses: actions/upload-artifact@v3
