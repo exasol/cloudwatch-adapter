@@ -1,7 +1,9 @@
 name: Prepare SAM release
 
 on:
-  - push
+  push:
+    tags:
+      - '*'
 
 permissions:
   contents: read
