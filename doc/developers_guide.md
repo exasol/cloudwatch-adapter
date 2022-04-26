@@ -26,5 +26,5 @@ Release this adapter according to this [tutorial](https://docs.aws.amazon.com/se
 
 Steps:
 
-* Update semantic version in sam/template.yml
+* Update semantic version in `sam/template.yml`
 * 
