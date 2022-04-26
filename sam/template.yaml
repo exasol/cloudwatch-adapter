@@ -9,7 +9,7 @@ Metadata:
     LicenseUrl: ../LICENSE
     ReadmeUrl: ../README.md
     HomePageUrl: https://github.com/exasol/cloudwatch-adapter
-    SemanticVersion: 0.3.0
+    SemanticVersion: 1.0.1
     SourceCodeUrl: https://github.com/exasol/cloudwatch-adapter
 
 Globals:
@@ -68,3 +68,6 @@ Resources:
             Schedule: rate(1 minute)
             Description: Minutely trigger for the CloudWatch adapter
             Enabled: True
+            RetryPolicy:
+              MaximumRetryAttempts: 0
+              MaximumEventAgeInSeconds: 60
