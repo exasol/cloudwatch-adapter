@@ -29,7 +29,8 @@ jobs:
           echo "testcontainers.reuse.enable=true" >> ~/.testcontainers.properties
       - name: Build SAM package
         run: |
-          mvn --batch-mode package
+          mvn --batch-mode package\
+            -Dproject-keeper.skip=true 
           cd sam
           sam package --s3-bucket persistent-cloudwatch-adapter-releases --region eu-central-1 > packed.yml
         env:
