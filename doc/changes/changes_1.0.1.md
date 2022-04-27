@@ -1,4 +1,4 @@
-# cloudwatch-adapter 1.0.1, released 2022-04-26
+# cloudwatch-adapter 1.0.1, released 2022-04-27
 
 Code name: Added RetryCount property
 
