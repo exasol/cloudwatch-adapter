@@ -4,7 +4,12 @@ Code name: Dependency Updates
 
 ## Summary
 
-In this release we updated dependencies and by that fixed the following security vulnerabilities: `CVE-2022-24823`, `sonatype-2020-0026`, `CVE-2021-22569`, `CVE-2020-36518`.
+In this release we updated dependencies and by that fixed the following security vulnerabilities:
+
+* CVE-2022-24823
+* CVE-2021-22569
+* CVE-2020-36518
+* sonatype-2020-0026
 
 ## Bug Fixes
 
