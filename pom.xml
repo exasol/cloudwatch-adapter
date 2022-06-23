@@ -4,17 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>cloudwatch-adapter</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>cloudwatch-adapter</name>
     <description>Makes Exasol database monitoring data available in AWS CloudWatch</description>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>11</java.version>
-        <surefire.and.failsafe.plugin.version>3.0.0-M3</surefire.and.failsafe.plugin.version>
-        <vscjdbc.version>8.0.0</vscjdbc.version>
-        <org.testcontainers.version>1.16.3</org.testcontainers.version>
-        <log4j.version>2.17.1</log4j.version>
+        <org.testcontainers.version>1.17.2</org.testcontainers.version>
+        <log4j.version>2.17.2</log4j.version>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml,target/site/jacoco-it/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
@@ -49,7 +44,7 @@
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.17.133</version>
+                <version>2.17.216</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -59,10 +54,12 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>cloudwatch</artifactId>
+            <version>2.17.216</version>
         </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>secretsmanager</artifactId>
+            <version>2.17.216</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
@@ -142,13 +139,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.3.1</version>
+            <version>4.6.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>test-db-builder-java</artifactId>
-            <version>3.3.1</version>
+            <version>3.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.itsallcode</groupId>
@@ -165,13 +162,13 @@
             <!-- Required by org.testcontainer:localstack -->
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.162</version>
+            <version>1.12.245</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.9</version>
+            <version>3.10</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -198,25 +195,8 @@
             </plugin>
             <plugin>
                 <groupId>com.exasol</groupId>
-                <artifactId>artifact-reference-checker-maven-plugin</artifactId>
-                <version>0.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <excludes>
-                        <exclude>/doc/changes/*</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>2.4.6</version>
                 <executions>
                     <execution>
                         <goals>
@@ -224,13 +204,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <groupId>org.apache.maven.plugins</groupId>
-                <configuration>
-                    <finalName>exasol-cloudwatch-adapter</finalName>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -274,13 +247,23 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.ossindex.maven</groupId>
+                <artifactId>ossindex-maven-plugin</artifactId>
+                <configuration>
+                    <excludeVulnerabilityIds>
+                        <!-- This issue is mitigated in the AWS SDK. See https://github.com/exasol/cloudwatch-adapter/issues/72 -->
+                        <excludeVulnerabilityId>sonatype-2020-0026</excludeVulnerabilityId>
+                    </excludeVulnerabilityIds>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <url>https://github.com/exasol/cloudwatch-adapter/</url>
     <parent>
         <artifactId>cloudwatch-adapter-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>
