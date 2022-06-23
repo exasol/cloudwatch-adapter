@@ -27,10 +27,12 @@ In this release we updated dependencies and by that fixed the following security
 
 ### Plugin Dependency Updates
 
+* Removed `com.exasol:artifact-reference-checker-maven-plugin:0.4.0`
 * Updated `com.exasol:error-code-crawler-maven-plugin:1.1.0` to `1.1.1`
 * Updated `com.exasol:project-keeper-maven-plugin:2.3.2` to `2.4.6`
+* Removed `org.apache.maven.plugins:maven-assembly-plugin:3.3.0`
 * Updated `org.apache.maven.plugins:maven-compiler-plugin:3.9.0` to `3.10.1`
-* Updated `org.apache.maven.plugins:maven-jar-plugin:3.2.0` to `3.2.2`
+* Updated `org.apache.maven.plugins:maven-jar-plugin:3.2.0` to `2.4`
 * Updated `org.codehaus.mojo:versions-maven-plugin:2.8.1` to `2.10.0`
 * Updated `org.jacoco:jacoco-maven-plugin:0.8.7` to `0.8.8`
 * Updated `org.sonatype.ossindex.maven:ossindex-maven-plugin:3.1.0` to `3.2.0`
