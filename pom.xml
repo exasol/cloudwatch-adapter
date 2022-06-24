@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>cloudwatch-adapter</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <name>cloudwatch-adapter</name>
     <description>Makes Exasol database monitoring data available in AWS CloudWatch</description>
     <properties>
@@ -44,7 +44,7 @@
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.17.216</version>
+                <version>2.17.217</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -54,17 +54,17 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>cloudwatch</artifactId>
-            <version>2.17.216</version>
+            <version>2.17.217</version>
         </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>secretsmanager</artifactId>
-            <version>2.17.216</version>
+            <version>2.17.217</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>exasol-jdbc</artifactId>
-            <version>7.1.4</version>
+            <version>7.1.11</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
@@ -127,7 +127,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>exasol-testcontainers</artifactId>
-            <version>6.1.1</version>
+            <version>6.1.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -145,7 +145,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>test-db-builder-java</artifactId>
-            <version>3.3.2</version>
+            <version>3.3.3</version>
         </dependency>
         <dependency>
             <groupId>org.itsallcode</groupId>
@@ -211,6 +211,7 @@
                 <version>3.2.4</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <finalName>exasol-cloudwatch-adapter</finalName>
                 </configuration>
                 <executions>
                     <execution>
@@ -263,7 +264,7 @@
     <parent>
         <artifactId>cloudwatch-adapter-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>
