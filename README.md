@@ -48,8 +48,8 @@ From within the VPC it can however not access the default Endpoints for AWS Clou
 
 To add them, go to the [AWS VPC Console](https://console.aws.amazon.com/vpc/) / Endpoints. There create endpoints for the following AWS services:
 
-* com.amazonaws.<REGION>.monitoring
-* com.amazonaws.<REGION>.secretsmanager
+* `com.amazonaws.<REGION>.monitoring`
+* `com.amazonaws.<REGION>.secretsmanager`
 
 Make sure that you select the VPC, Subnet and Security group of your Exasol database.
 
