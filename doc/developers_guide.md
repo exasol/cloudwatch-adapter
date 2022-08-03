@@ -12,7 +12,7 @@ The timestamp is required as payload for the lambda:
 }
 ```
 
-The timestamp must be between now (because of clock synchronisation) and two weeks in the past (restriction for CloudWatch events).
+The timestamp must be between now (because of clock synchronization) and two weeks in the past (restriction for CloudWatch events).
 
 You can invoke the lambda like this:
 
