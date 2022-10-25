@@ -4,7 +4,7 @@ Code name: Fix vulnerabilities in test dependency
 
 ## Summary
 
-This release fixes CVE-2022-42003 and CVE-2022-42004 in test dependency `com.fasterxml.jackson.core:jackson-databind`.
+This release upgrades test dependency `com.fasterxml.jackson.core:jackson-databind:2.12.6.1` to `2.14.0-rc2` to fix CVE-2022-42003 and CVE-2022-42004.
 
 ## Features
 
