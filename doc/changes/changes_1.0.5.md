@@ -16,6 +16,7 @@ This release fixes CVE-2022-42003 and CVE-2022-42004 in test dependency `com.fas
 
 * Updated `com.exasol:error-reporting-java:0.4.1` to `1.0.0`
 * Updated `com.exasol:test-db-builder-java:3.3.3` to `3.4.1`
+* Added `com.fasterxml.jackson.core:jackson-databind:2.14.0-rc2`
 * Updated `org.apache.logging.log4j:log4j-api:2.18.0` to `2.19.0`
 * Updated `org.apache.logging.log4j:log4j-core:2.18.0` to `2.19.0`
 * Added `org.apache.logging.log4j:log4j-slf4j-impl:2.19.0`
@@ -27,8 +28,7 @@ This release fixes CVE-2022-42003 and CVE-2022-42004 in test dependency `com.fas
 
 * Updated `com.amazonaws:aws-java-sdk-s3:1.12.274` to `1.12.327`
 * Updated `com.exasol:exasol-testcontainers:6.1.2` to `6.3.0`
-* Added `org.junit.jupiter:junit-jupiter-api:5.9.1`
-* Removed `org.junit.jupiter:junit-jupiter:5.9.0`
+* Updated `org.junit.jupiter:junit-jupiter:5.9.0` to `5.9.1`
 * Updated `org.mockito:mockito-core:4.6.1` to `4.8.1`
 * Updated `org.testcontainers:junit-jupiter:1.17.3` to `1.17.5`
 * Updated `org.testcontainers:localstack:1.17.3` to `1.17.5`
