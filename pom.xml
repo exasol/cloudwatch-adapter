@@ -216,6 +216,8 @@
                     <excludeVulnerabilityIds>
                         <!-- This issue in io.netty:netty-handler is mitigated in the AWS SDK. See https://github.com/exasol/cloudwatch-adapter/issues/72 -->
                         <excludeVulnerabilityId>sonatype-2020-0026</excludeVulnerabilityId>
+                        <!-- Ignore Uncontrolled Resource Consumption in com.fasterxml.jackson.core:jackson-core:jar as this project does not read data from untrusted sources. -->
+                        <excludeVulnerabilityId>sonatype-2022-6438</excludeVulnerabilityId>
                     </excludeVulnerabilityIds>
                 </configuration>
             </plugin>
