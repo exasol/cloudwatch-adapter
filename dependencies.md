@@ -69,7 +69,7 @@
 [7]: https://logging.apache.org/log4j/2.x/log4j-api/
 [8]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [9]: https://logging.apache.org/log4j/2.x/log4j-core/
-[10]: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/
+[10]: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl.html
 [11]: https://javaee.github.io/jsonp
 [12]: https://oss.oracle.com/licenses/CDDL+GPL-1.1
 [13]: https://github.com/exasol/test-db-builder-java/
