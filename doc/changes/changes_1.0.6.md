@@ -1,4 +1,4 @@
-# cloudwatch-adapter 1.0.6, released 2023-03-15
+# cloudwatch-adapter 1.0.6, released 2023-03-16
 
 Code name: Remove outdated maven.exasol.com
 
