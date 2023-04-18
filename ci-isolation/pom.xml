@@ -5,23 +5,27 @@
 
     <groupId>com.exasol.adapter.document.files.ciisolation</groupId>
     <artifactId>ci-isolation</artifactId>
-    <version>0.1.1</version>
+    <version>0.0.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cdk.version>1.197.0</cdk.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>ci-isolation-aws</artifactId>
-            <version>1.0.3</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
-            <artifactId>s3</artifactId>
-            <version>${cdk.version}</version>
+            <artifactId>aws-cdk-lib</artifactId>
+            <version>2.75.0</version>
+        </dependency>
+        <dependency>
+            <groupId>software.constructs</groupId>
+            <artifactId>constructs</artifactId>
+            <version>10.1.314</version>
         </dependency>
     </dependencies>
 

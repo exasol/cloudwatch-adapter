@@ -9,10 +9,9 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import javax.json.*;
-
 import org.testcontainers.containers.localstack.LocalStackContainer;
 
+import jakarta.json.*;
 import software.amazon.awssdk.services.cloudwatch.model.Dimension;
 
 /**

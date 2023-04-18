@@ -8,7 +8,7 @@ import com.exasol.ciisolation.aws.PolicyReader;
 import com.exasol.ciisolation.aws.ciuser.CiUserStack;
 import com.google.gson.GsonBuilder;
 
-import software.amazon.awscdk.core.*;
+import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.iam.PolicyStatement;
 import software.amazon.awscdk.services.s3.*;
 import software.constructs.Construct;

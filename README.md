@@ -89,9 +89,5 @@ If the adapter does not work properly, first check its log output. For that go t
 The design of this adapter ensures that points are never written twice, which would lead to wrong statistics. It does, however not assure that all points are written. In case of temporary errors with the Exasol database or the CloudWatch API, it can occur that data points are missing.
 
 * [Changelog](doc/changes/changelog.md)
+* [Developers Guide](doc/developers_guide.md)
 * [Dependencies](dependencies.md)
-
-## Information for Developers
-
-You can also modify this adapter and deploy it directly. To do so, [install the AWS SAM cli](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html), go to the `sam/` directory and run `sam deploy --guided`.
-

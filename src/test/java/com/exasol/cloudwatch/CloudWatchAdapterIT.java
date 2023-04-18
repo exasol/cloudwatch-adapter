@@ -101,7 +101,7 @@ class CloudWatchAdapterIT {
         try (final ExaStatisticsTableMock statisticsTable = new ExaStatisticsTableMock(connection)) {
             final Instant now = Instant.now();
             final IllegalStateException exception = assertThrows(IllegalStateException.class,
-                    () -> runAdapter(secretArnWithoutFingerprint, ExaStatisticsTableMock.SCHEMA, "QUERIES", now));
+                    () -> runAdapter(secretArnWithoutFingerprint, "QUERIES", now));
             assertAll(
                     () -> assertThat(exception.getMessage(),
                             equalTo("E-CWA-2: Failed to connect to the Exasol database.")),
@@ -117,13 +117,12 @@ class CloudWatchAdapterIT {
             final Instant now = Instant.now();
             statisticsTable.addRows(Stream.of(new ExaStatisticsTableMock.Row(
                     now.minus(Duration.ofMinutes(1)).minus(Duration.ofSeconds(1)), "MAIN", 10, 1)));
-            runAdapter(ExaStatisticsTableMock.SCHEMA, "QUERIES", now);
+            runAdapter("QUERIES", now);
             final List<Metric> metrics = listCurrentDeploymentsMetrics();
+            assertThat(metrics.size(), equalTo(1));
             final Metric firstMetric = metrics.get(0);
             final List<Dimension> dimensions = firstMetric.dimensions();
-            assertAll(//
-                    () -> assertThat(metrics.size(), equalTo(1)),
-                    () -> assertThat(firstMetric.metricName(), equalTo("QUERIES")),
+            assertAll(() -> assertThat(firstMetric.metricName(), equalTo("QUERIES")),
                     () -> assertThat(firstMetric.namespace(), equalTo("Exasol")), () -> assertThat(dimensions,
                             hasItem(Dimension.builder().name("Cluster Name").value("MAIN").build()))//
             );
@@ -135,7 +134,7 @@ class CloudWatchAdapterIT {
         try (final ExaStatisticsTableMock statisticsTable = new ExaStatisticsTableMock(connection)) {
             final Instant now = Instant.now();
             final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                    () -> runAdapter(ExaStatisticsTableMock.SCHEMA, "UNKNOWN", now));
+                    () -> runAdapter("UNKNOWN", now));
             assertThat(exception.getMessage(), startsWith("E-CWA-31"));
         }
     }
@@ -145,7 +144,7 @@ class CloudWatchAdapterIT {
         try (final ExaStatisticsTableMock statisticsTable = new ExaStatisticsTableMock(connection)) {
             final Instant now = Instant.now();
             mockLogs(statisticsTable, now, 5, 0);
-            runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now);
+            runAdapter("USERS", now);
             final SortedMap<Instant, Double> writtenPoints = localstackCloudWatchRaw.readMetrics("USERS",
                     expectedDimensions());
             assertAll(//
@@ -164,9 +163,9 @@ class CloudWatchAdapterIT {
         try (final ExaStatisticsTableMock statisticsTable = new ExaStatisticsTableMock(connection)) {
             final Instant now = Instant.now();
             mockLogs(statisticsTable, now, 5, 0);
-            runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now.minus(Duration.ofMinutes(2)));
-            runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now.minus(Duration.ofMinutes(1)));
-            runAdapter(ExaStatisticsTableMock.SCHEMA, "USERS", now);
+            runAdapter("USERS", now.minus(Duration.ofMinutes(2)));
+            runAdapter("USERS", now.minus(Duration.ofMinutes(1)));
+            runAdapter("USERS", now);
             final SortedMap<Instant, Double> writtenPoints = localstackCloudWatchRaw.readMetrics("USERS",
                     expectedDimensions());
             assertThat(writtenPoints.size(), equalTo(3));
@@ -196,20 +195,19 @@ class CloudWatchAdapterIT {
         return cloudWatch.listMetrics(listRequest).metrics();
     }
 
-    private void runAdapter(final String overrideSecretArn, final String schemaOverride, final String metrics,
-            final Instant forMinute) {
+    private void runAdapter(final String overrideSecretArn, final String metrics, final Instant forMinute) {
         final MockEnvironmentVariableProvider mockEnvironment = new MockEnvironmentVariableProvider();
         mockEnvironment.put("EXASOL_CONNECTION_SECRET_ARN", overrideSecretArn);
         mockEnvironment.put("EXASOL_DEPLOYMENT_NAME", this.uniqueDeploymentName);
         mockEnvironment.put("METRICS", metrics);
         final ScheduledEvent event = new ScheduledEvent();
         event.setTime(new DateTime(forMinute.toEpochMilli()));
-        final CloudWatchAdapter adapter = new CloudWatchAdapter(schemaOverride, localStackTestInterface,
+        final CloudWatchAdapter adapter = new CloudWatchAdapter(ExaStatisticsTableMock.SCHEMA, localStackTestInterface,
                 mockEnvironment);
         adapter.handleRequest(event, mock(Context.class));
     }
 
-    private void runAdapter(final String schemaOverride, final String metrics, final Instant forMinute) {
-        runAdapter(CloudWatchAdapterIT.secretArn, schemaOverride, metrics, forMinute);
+    private void runAdapter(final String metrics, final Instant forMinute) {
+        runAdapter(CloudWatchAdapterIT.secretArn, metrics, forMinute);
     }
 }
