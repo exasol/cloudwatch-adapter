@@ -1,14 +1,12 @@
-# Cloudwatch Adapter 1.1.0, released 2023-04-18
+# Cloudwatch Adapter 1.0.7, released 2023-??-??
 
-Code name: Migrate to AWS CDK v2
+Code name:
 
 ## Summary
 
-This release migrates to AWS CDK v2. Version 1 is deprecated by June 2023 so we need to upgrade to the latest version.
+## Refactoring
 
-## Features
-
-* #85: Migrated to AWS CDK v2
+* #85: Migrated CI isolation to AWS CDK v2
 
 ## Dependency Updates
 
