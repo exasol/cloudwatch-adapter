@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.json.*;
-
 import com.exasol.cloudwatch.AwsClientFactory;
 import com.exasol.errorreporting.ExaError;
 
+import jakarta.json.*;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;

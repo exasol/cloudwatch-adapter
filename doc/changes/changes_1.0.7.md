@@ -13,8 +13,15 @@ Code name:
 ### Compile Dependency Updates
 
 * Updated `com.exasol:exasol-jdbc:7.1.17` to `7.1.19`
+* Added `jakarta.json:jakarta.json-api:2.1.1`
+* Removed `javax.json:javax.json-api:1.1.4`
+* Removed `org.glassfish:javax.json:1.1.4`
 * Updated `software.amazon.awssdk:cloudwatch:2.20.24` to `2.20.48`
 * Updated `software.amazon.awssdk:secretsmanager:2.20.24` to `2.20.48`
+
+### Runtime Dependency Updates
+
+* Added `org.eclipse.parsson:parsson:1.1.1`
 
 ### Test Dependency Updates
 

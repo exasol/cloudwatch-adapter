@@ -6,10 +6,9 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 import java.io.*;
 import java.time.Instant;
 
-import javax.json.*;
-
 import org.testcontainers.containers.localstack.LocalStackContainer;
 
+import jakarta.json.*;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;

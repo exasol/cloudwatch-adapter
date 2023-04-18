@@ -12,9 +12,6 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 import java.io.IOException;
 import java.net.URI;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,6 +23,8 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.exasol.cloudwatch.*;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
