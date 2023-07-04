@@ -68,7 +68,7 @@
 [0]: https://aws.amazon.com/sdkforjava
 [1]: https://aws.amazon.com/apache2.0
 [2]: http://www.exasol.com
-[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/7.1.19/exasol-jdbc-7.1.19-license.txt
+[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/7.1.20/exasol-jdbc-7.1.20-license.txt
 [4]: https://github.com/exasol/error-reporting-java/
 [5]: https://github.com/exasol/error-reporting-java/blob/main/LICENSE
 [6]: https://aws.amazon.com/lambda/
