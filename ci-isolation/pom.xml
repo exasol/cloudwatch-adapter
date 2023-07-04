@@ -15,17 +15,17 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>ci-isolation-aws</artifactId>
-            <version>2.0.0</version>
+            <version>2.0.1</version>
         </dependency>
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
             <artifactId>aws-cdk-lib</artifactId>
-            <version>2.75.0</version>
+            <version>2.86.0</version>
         </dependency>
         <dependency>
             <groupId>software.constructs</groupId>
             <artifactId>constructs</artifactId>
-            <version>10.1.314</version>
+            <version>10.2.68</version>
         </dependency>
     </dependencies>
 
