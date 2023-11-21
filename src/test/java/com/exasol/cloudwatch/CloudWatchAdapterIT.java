@@ -54,9 +54,9 @@ class CloudWatchAdapterIT {
     private static Connection connection;
     private static CloudWatchClient cloudWatch;
     private static LocalStackTestInterface localStackTestInterface;
-    private String uniqueDeploymentName;
     private static LocalstackCloudWatchRaw localstackCloudWatchRaw;
     private static String secretArn;
+    private String uniqueDeploymentName;
 
     @BeforeAll
     static void beforeAll() throws SQLException, IOException {
