@@ -12,6 +12,8 @@ This release fixes vulnerabilities in the following dependencies:
 * `org.apache.commons:commons-compress` in test
     * CVE-2023-42503, severity CWE-20: Improper Input Validation (5.5)
 
+The release also runs integration tests with Exasol DB version 8.
+
 ## Security
 
 * #89: Fix vulnerabilities in dependencies

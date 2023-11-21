@@ -3,5 +3,7 @@ sources:
     path: pom.xml
     modules:
       - integration_tests
-linkReplacements:
-  - "https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/|https://logging.apache.org/log4j/2.x/log4j-slf4j-impl.html"
+build:
+  exasolDbVersions:
+    - "7.1.24"
+    - "8.23.1"
