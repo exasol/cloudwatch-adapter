@@ -1,4 +1,4 @@
-# Cloudwatch Adapter 1.0.9, released 2024-01-17
+# Cloudwatch Adapter 1.0.9, released 2024-01-18
 
 Code name: Fix CVE-2024-21634 in test dependency `software.amazon.ion:ion-java`
 
