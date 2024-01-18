@@ -9,7 +9,7 @@ Metadata:
     LicenseUrl: ../LICENSE
     ReadmeUrl: ../README.md
     HomePageUrl: https://github.com/exasol/cloudwatch-adapter
-    SemanticVersion: 1.0.8
+    SemanticVersion: 1.0.9
     SourceCodeUrl: https://github.com/exasol/cloudwatch-adapter
 
 Globals:
