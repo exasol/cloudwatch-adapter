@@ -1,12 +1,15 @@
-# Cloudwatch Adapter 1.0.10, released 2024-??-??
+# Cloudwatch Adapter 1.0.10, released 2024-03-14
 
-Code name:
+Code name: Fix CVE-2024-26308 and CVE-2024-25710 in test dependency
 
 ## Summary
 
-## Features
+This release fixed CVE-2024-26308 and CVE-2024-25710 in test dependency `org.apache.commons:commons-compress:1.24.0`.
 
-* ISSUE_NUMBER: description
+## Security
+
+* #95: Fixed CVE-2024-26308 in `org.apache.commons:commons-compress:jar:1.24.0:test`
+* #94: Fixed CVE-2024-25710 in `org.apache.commons:commons-compress:jar:1.24.0:test`
 
 ## Dependency Updates
 
