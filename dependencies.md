@@ -7,7 +7,7 @@
 | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | [AWS Java SDK :: Services :: Amazon CloudWatch][0]   | [Apache License, Version 2.0][1]                                                                               |
 | [AWS Java SDK :: Services :: AWS Secrets Manager][0] | [Apache License, Version 2.0][1]                                                                               |
-| [EXASolution JDBC Driver][2]                         | [EXAClient License][3]                                                                                         |
+| [Exasol JDBC Driver][2]                              | [EXAClient License][3]                                                                                         |
 | [error-reporting-java][4]                            | [MIT License][5]                                                                                               |
 | [AWS Lambda Java Core Library][6]                    | [Apache License, Version 2.0][1]                                                                               |
 | [AWS Lambda Java Events Library][6]                  | [Apache License, Version 2.0][1]                                                                               |
@@ -62,8 +62,8 @@
 
 [0]: https://aws.amazon.com/sdkforjava
 [1]: https://aws.amazon.com/apache2.0
-[2]: http://www.exasol.com
-[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/7.1.20/exasol-jdbc-7.1.20-license.txt
+[2]: http://www.exasol.com/
+[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/24.0.0/exasol-jdbc-24.0.0-license.txt
 [4]: https://github.com/exasol/error-reporting-java/
 [5]: https://github.com/exasol/error-reporting-java/blob/main/LICENSE
 [6]: https://aws.amazon.com/lambda/

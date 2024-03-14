@@ -3,8 +3,8 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit",
     "source.generate.finalModifiers": "explicit",
-    "source.fixAll": true
-  },
+    "source.fixAll": "explicit"
+},
   "java.saveActions.organizeImports": true,
   "java.sources.organizeImports.starThreshold": 3,
   "java.sources.organizeImports.staticStarThreshold": 3,
