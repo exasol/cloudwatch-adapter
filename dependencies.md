@@ -52,7 +52,7 @@
 | [Versions Maven Plugin][39]                             | [Apache License, Version 2.0][8]      |
 | [duplicate-finder-maven-plugin Maven Mojo][40]          | [Apache License 2.0][41]              |
 | [Maven Failsafe Plugin][42]                             | [Apache-2.0][8]                       |
-| [JaCoCo :: Maven Plugin][43]                            | [Eclipse Public License 2.0][44]      |
+| [JaCoCo :: Maven Plugin][43]                            | [EPL-2.0][44]                         |
 | [error-code-crawler-maven-plugin][45]                   | [MIT License][46]                     |
 | [Reproducible Build Maven Plugin][47]                   | [Apache 2.0][37]                      |
 | [Exec Maven Plugin][48]                                 | [Apache License 2][8]                 |
@@ -63,7 +63,7 @@
 [0]: https://aws.amazon.com/sdkforjava
 [1]: https://aws.amazon.com/apache2.0
 [2]: http://www.exasol.com/
-[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/24.0.0/exasol-jdbc-24.0.0-license.txt
+[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/24.1.0/exasol-jdbc-24.1.0-license.txt
 [4]: https://github.com/exasol/error-reporting-java/
 [5]: https://github.com/exasol/error-reporting-java/blob/main/LICENSE
 [6]: https://aws.amazon.com/lambda/
