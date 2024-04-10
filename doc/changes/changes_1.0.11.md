@@ -1,12 +1,14 @@
 # Cloudwatch Adapter 1.0.11, released 2024-04-10
 
-Code name:
+Code name: Fix CVE-2024-29025 in io.netty:netty-codec-http:jar:4.1.107.Final:runtime
 
 ## Summary
 
-## Features
+This release fixes CVE-2024-29025 in `io.netty:netty-codec-http:jar:4.1.107.Final:runtime`.
 
-* ISSUE_NUMBER: description
+## Security
+
+* #97: Fixed CVE-2024-29025 in `io.netty:netty-codec-http:jar:4.1.107.Final:runtime`
 
 ## Dependency Updates
 
