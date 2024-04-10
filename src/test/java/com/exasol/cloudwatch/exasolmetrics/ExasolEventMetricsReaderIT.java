@@ -27,6 +27,7 @@ import com.exasol.containers.ExasolContainer;
 
 @Testcontainers
 @ExtendWith(SystemOutGuard.class)
+@SuppressWarnings("try") // Auto-closeable resource mockTable is never referenced in body of try statement
 class ExasolEventMetricsReaderIT {
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
