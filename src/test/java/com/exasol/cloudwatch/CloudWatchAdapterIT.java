@@ -42,6 +42,7 @@ import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
 import software.amazon.awssdk.services.cloudwatch.model.*;
 
 @Testcontainers
+@SuppressWarnings("try") // Auto-closeable resource statisticsTable is never referenced in body of try statement
 // [itest->dsn~env-var-for-metrics-selection~1]
 class CloudWatchAdapterIT {
     @Container
