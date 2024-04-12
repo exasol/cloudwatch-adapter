@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>cloudwatch-adapter</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.12</version>
     <name>cloudwatch-adapter</name>
     <description>Makes Exasol database monitoring data available in AWS CloudWatch</description>
     <url>https://github.com/exasol/cloudwatch-adapter/</url>
     <properties>
         <org.testcontainers.version>1.19.7</org.testcontainers.version>
         <log4j.version>2.23.1</log4j.version>
-        <aws.sdk.version>2.25.28</aws.sdk.version>
+        <aws.sdk.version>2.25.30</aws.sdk.version>
     </properties>
     <dependencies>
         <dependency>
@@ -125,7 +125,7 @@
             <!-- Required by org.testcontainer:localstack -->
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.698</version>
+            <version>1.12.700</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -225,7 +225,7 @@
     <parent>
         <artifactId>cloudwatch-adapter-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>1.0.11</version>
+        <version>1.0.12</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>
