@@ -5,5 +5,5 @@ sources:
       - integration_tests
 build:
   exasolDbVersions:
-    - "7.1.26"
-    # Version 8 not yet supported, see https://github.com/exasol/cloudwatch-adapter/issues/91
+    - "8.27.0"
+    - "7.1.27"

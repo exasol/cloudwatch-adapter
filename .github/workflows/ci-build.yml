@@ -15,8 +15,7 @@ jobs:
         shell: bash
       }
     permissions: {
-      contents: read,
-      checks: write
+      contents: read
     }
     concurrency: {
       group: '${{ github.workflow }}-${{ github.ref }}-${{ matrix.exasol_db_version }}',
@@ -26,11 +25,12 @@ jobs:
       fail-fast: false
       matrix:
         exasol_db_version: [
-          7.1.26
+          8.27.0,
+          7.1.27
         ]
         
     env: {
-      DEFAULT_EXASOL_DB_VERSION: 7.1.26
+      DEFAULT_EXASOL_DB_VERSION: 8.27.0
     }
     steps:
       - name: Free Disk Space

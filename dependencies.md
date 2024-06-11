@@ -43,7 +43,7 @@
 | Dependency                                              | License                               |
 | ------------------------------------------------------- | ------------------------------------- |
 | [SonarQube Scanner for Maven][30]                       | [GNU LGPL 3][31]                      |
-| [Apache Maven Toolchains Plugin][32]                    | [Apache License, Version 2.0][8]      |
+| [Apache Maven Toolchains Plugin][32]                    | [Apache-2.0][8]                       |
 | [Apache Maven Compiler Plugin][33]                      | [Apache-2.0][8]                       |
 | [Apache Maven Enforcer Plugin][34]                      | [Apache-2.0][8]                       |
 | [Maven Flatten Plugin][35]                              | [Apache Software Licenese][8]         |

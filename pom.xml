@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>cloudwatch-adapter</artifactId>
-    <version>1.0.11</version>
+    <version>1.1.0</version>
     <name>cloudwatch-adapter</name>
     <description>Makes Exasol database monitoring data available in AWS CloudWatch</description>
     <url>https://github.com/exasol/cloudwatch-adapter/</url>
     <properties>
-        <org.testcontainers.version>1.19.7</org.testcontainers.version>
+        <org.testcontainers.version>1.19.8</org.testcontainers.version>
         <log4j.version>2.23.1</log4j.version>
-        <aws.sdk.version>2.25.28</aws.sdk.version>
+        <aws.sdk.version>2.25.70</aws.sdk.version>
     </properties>
     <dependencies>
         <dependency>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-events</artifactId>
-            <version>3.11.4</version>
+            <version>3.11.5</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>exasol-testcontainers</artifactId>
-            <version>7.0.1</version>
+            <version>7.1.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.11.0</version>
+            <version>5.12.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -125,7 +125,7 @@
             <!-- Required by org.testcontainer:localstack -->
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.698</version>
+            <version>1.12.740</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -169,7 +169,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>4.3.0</version>
+                <version>4.3.3</version>
                 <executions>
                     <execution>
                         <goals>
@@ -225,7 +225,7 @@
     <parent>
         <artifactId>cloudwatch-adapter-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>1.0.11</version>
+        <version>1.1.0</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>
