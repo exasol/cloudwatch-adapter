@@ -18,6 +18,7 @@ class ExaSystemEventsMockTable implements AutoCloseable {
     private final Connection exasolConnection;
     private final Statement statement;
     private final Calendar timeZoneCalendar;
+    private final String dbVersion;
 
     ExaSystemEventsMockTable(final Connection exasolConnection) throws SQLException {
         this(exasolConnection, TimeZone.getTimeZone("UTC"));
@@ -30,6 +31,15 @@ class ExaSystemEventsMockTable implements AutoCloseable {
         this.statement.executeUpdate(
                 "CREATE TABLE " + MOCK_SCHEMA + "." + EXA_SYSTEM_EVENTS + " LIKE EXA_STATISTICS." + EXA_SYSTEM_EVENTS);
         this.timeZoneCalendar = Calendar.getInstance(timeZone);
+        this.dbVersion = getDbVersion(statement);
+    }
+
+    private static String getDbVersion(final Statement stmt) throws SQLException {
+        try (ResultSet rs = stmt
+                .executeQuery("select PARAM_VALUE from SYS.EXA_METADATA where PARAM_NAME='databaseProductVersion'")) {
+            assertTrue(rs.next());
+            return rs.getString(1);
+        }
     }
 
     static ExaSystemEventsMockTable forDbTimeZone(final Connection exasolConnection) throws SQLException {
@@ -61,23 +71,40 @@ class ExaSystemEventsMockTable implements AutoCloseable {
 
     void insert(final Instant measureTime, final double dbRamSize, final int nodes, final String clusterName)
             throws SQLException {
-        insert(measureTime, null, dbRamSize, nodes, clusterName);
+        insert(measureTime, null, dbRamSize, nodes, clusterName, null);
+    }
+
+    void insert(final Instant measureTime, final double dbRamSize, final int nodes, final String clusterName,
+            final int vcpu) throws SQLException {
+        insert(measureTime, null, dbRamSize, nodes, clusterName, vcpu);
     }
 
     void insert(final Instant measureTime, final String clusterName, final String eventType) throws SQLException {
-        insert(measureTime, eventType, 0, 0, clusterName);
+        insert(measureTime, eventType, 0, 0, clusterName, null);
     }
 
     private void insert(final Instant measureTime, final String eventType, final double dbRamSize, final int nodes,
-            final String clusterName) throws SQLException {
-        final PreparedStatement insertStatement = this.exasolConnection.prepareStatement(
-                "INSERT INTO " + MOCK_SCHEMA + "." + EXA_SYSTEM_EVENTS + " VALUES(?, ?, ?, '',? ,? , '')");
-        insertStatement.setString(1, clusterName);
-        insertStatement.setTimestamp(2, Timestamp.from(measureTime), this.timeZoneCalendar);
-        insertStatement.setString(3, eventType);
-        insertStatement.setInt(4, nodes);
-        insertStatement.setDouble(5, dbRamSize);
-        insertStatement.executeUpdate();
+            final String clusterName, final Integer vcpu) throws SQLException {
+        String sql = "INSERT INTO " + MOCK_SCHEMA + "." + EXA_SYSTEM_EVENTS + " VALUES(?, ?, ?, '',? ,? , ''";
+        if (isExasol8()) {
+            sql += ",?";
+        }
+        sql += ")";
+        try (final PreparedStatement insertStatement = this.exasolConnection.prepareStatement(sql)) {
+            insertStatement.setString(1, clusterName);
+            insertStatement.setTimestamp(2, Timestamp.from(measureTime), this.timeZoneCalendar);
+            insertStatement.setString(3, eventType);
+            insertStatement.setInt(4, nodes);
+            insertStatement.setDouble(5, dbRamSize);
+            if (isExasol8()) {
+                insertStatement.setObject(6, vcpu);
+            }
+            insertStatement.executeUpdate();
+        }
+    }
+
+    private boolean isExasol8() {
+        return dbVersion.startsWith("8");
     }
 
     @Override

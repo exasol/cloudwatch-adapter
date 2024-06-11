@@ -36,7 +36,7 @@ class ExasolBackupDurationReaderIT {
     private Connection exasolConnection;
 
     @BeforeEach
-    void beforeEach() throws SQLException {
+    void beforeEach() {
         this.exasolConnection = EXASOL.createConnection();
     }
 
@@ -61,7 +61,7 @@ class ExasolBackupDurationReaderIT {
         }
     }
 
-    private List<ExasolMetricDatum> runReaderWithoutEvent(final Instant someWhen) throws SQLException {
+    private List<ExasolMetricDatum> runReaderWithoutEvent(final Instant someWhen) {
         return runReader(someWhen, emptyList());
     }
 
@@ -220,20 +220,20 @@ class ExasolBackupDurationReaderIT {
     }
 
     @Test
-    void failsWithSqlExceptionWhenTableIsMissing() throws SQLException {
+    void failsWithSqlExceptionWhenTableIsMissing() {
         final IllegalStateException exception = assertThrows(IllegalStateException.class, () -> runReader(NOW));
         assertThat(exception.getMessage(), startsWith("F-CWA-35: Failed to execute query"));
-        assertThat(exception.getCause().getMessage(),
-                startsWith("object \"MOCK_SCHEMA\".\"EXA_SYSTEM_EVENTS\" not found"));
+        assertThat(exception.getCause().getMessage().replace("\"", ""),
+                startsWith("object MOCK_SCHEMA.EXA_SYSTEM_EVENTS not found"));
     }
 
-    private void assertNoBackupDuration(final Instant someWhen) throws SQLException {
-        assertThat(runReader(NOW), hasSize(0));
+    private void assertNoBackupDuration(final Instant someWhen) {
+        assertThat(runReader(someWhen), hasSize(0));
     }
 
     private void assertBackupDuration(final Instant someWhen, final String expectedCluster,
-            final Instant expectedTimestamp, final double expectedDuration) throws SQLException {
-        final List<ExasolMetricDatum> metrics = runReader(NOW);
+            final Instant expectedTimestamp, final double expectedDuration) {
+        final List<ExasolMetricDatum> metrics = runReader(someWhen);
         assertThat(metrics, hasSize(1));
         assertMetricDatum(metrics.get(0), expectedCluster, expectedTimestamp, expectedDuration);
     }
@@ -247,11 +247,11 @@ class ExasolBackupDurationReaderIT {
                 () -> assertThat("backup duration", actualMetricDatum.getValue(), closeTo(expectedDuration, 0.000001)));
     }
 
-    private List<ExasolMetricDatum> runReader(final Instant someWhen) throws SQLException {
+    private List<ExasolMetricDatum> runReader(final Instant someWhen) {
         return runReader(someWhen, List.of("BACKUP_DURATION"));
     }
 
-    private List<ExasolMetricDatum> runReader(final Instant someWhen, final List<String> events) throws SQLException {
+    private List<ExasolMetricDatum> runReader(final Instant someWhen, final List<String> events) {
         final ExasolMetricReader reader = new ExasolBackupDurationReaderFactory().getReader(EXASOL.createConnection(),
                 ExaSystemEventsMockTable.MOCK_SCHEMA);
         return reader.readMetrics(events, someWhen);

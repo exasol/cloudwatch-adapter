@@ -38,7 +38,7 @@ class ExasolEventMetricsReaderIT {
     private Connection exasolConnection;
 
     @BeforeEach
-    void beforeEach() throws SQLException {
+    void beforeEach() {
         this.exasolConnection = EXASOL.createConnection();
     }
 
@@ -175,19 +175,19 @@ class ExasolEventMetricsReaderIT {
     }
 
     @Test
-    void failsWithSqlExceptionWhenTableIsMissing() throws SQLException {
+    void failsWithSqlExceptionWhenTableIsMissing() {
         final IllegalStateException exception = assertThrows(IllegalStateException.class,
                 () -> runReader(NOW, "EVENT_BACKUP_START"));
         assertThat(exception.getMessage(), startsWith("F-CWA-22: Failed to execute query"));
-        assertThat(exception.getCause().getMessage(),
-                startsWith("object \"MOCK_SCHEMA\".\"EXA_SYSTEM_EVENTS\" not found"));
+        assertThat(exception.getCause().getMessage().replace("\"", ""),
+                startsWith("object MOCK_SCHEMA.EXA_SYSTEM_EVENTS not found"));
     }
 
-    private List<ExasolMetricDatum> runReader(final Instant someWhen, final String... events) throws SQLException {
+    private List<ExasolMetricDatum> runReader(final Instant someWhen, final String... events) {
         return runReader(someWhen, asList(events));
     }
 
-    private List<ExasolMetricDatum> runReader(final Instant someWhen, final List<String> events) throws SQLException {
+    private List<ExasolMetricDatum> runReader(final Instant someWhen, final List<String> events) {
         final ExasolMetricReader reader = new ExasolEventMetricsReaderFactory().getReader(EXASOL.createConnection(),
                 ExaSystemEventsMockTable.MOCK_SCHEMA);
         return reader.readMetrics(events, someWhen);

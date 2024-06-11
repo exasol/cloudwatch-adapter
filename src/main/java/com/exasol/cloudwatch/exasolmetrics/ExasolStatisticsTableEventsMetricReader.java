@@ -68,13 +68,31 @@ class ExasolStatisticsTableEventsMetricReader extends AbstractExasolStatisticsTa
             final ResultSet resultSet) throws SQLException {
         final Instant now = this.clock.instant();
         final List<ExasolMetricDatum> result = new ArrayList<>();
+        final Set<String> availableColumnLabels = getColumnLabels(resultSet);
         while (resultSet.next()) {
             for (final ExasolStatisticsTableEventsMetric metric : metrics) {
+                if (!availableColumnLabels.contains(metric.name())) {
+                    throw new IllegalStateException(ExaError.messageBuilder("F-CWA-36").message(
+                            "Column {{schema name|uq}}.{{table name|uq}}.{{column|uq}} not available for metric {{metric name}}.")
+                            .parameter("schema name", getSchema())
+                            .parameter("table name", ExasolStatisticsTable.EXA_SYSTEM_EVENTS)
+                            .parameter("column", metric.name()).parameter("metric name", metric.name())
+                            .mitigation("Ensure that the Exasol DB version supports this metric.").toString());
+                }
                 result.add(new ExasolMetricDatum(metric.name(), metric.getUnit(), now,
                         resultSet.getDouble(metric.name()), resultSet.getString("CLUSTER_NAME")));
             }
         }
         return result;
+    }
+
+    private Set<String> getColumnLabels(final ResultSet resultSet) throws SQLException {
+        final Set<String> columnLabels = new HashSet<>();
+        final ResultSetMetaData metaData = resultSet.getMetaData();
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            columnLabels.add(metaData.getColumnLabel(i));
+        }
+        return columnLabels;
     }
 
     /**
