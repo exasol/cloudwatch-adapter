@@ -6,4 +6,4 @@ sources:
 build:
   exasolDbVersions:
     - "8.27.0"
-    - "7.1.27"
+    - "7.1.26"
