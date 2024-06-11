@@ -50,6 +50,11 @@ Resources:
         ApplyOn: PublishedVersions
       EphemeralStorage:
         Size: 512
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroup
+        SubnetIds:
+          - !Ref SubnetId
       Environment:
         Variables:
           EXASOL_DEPLOYMENT_NAME: !Ref ExasolDeploymentName
