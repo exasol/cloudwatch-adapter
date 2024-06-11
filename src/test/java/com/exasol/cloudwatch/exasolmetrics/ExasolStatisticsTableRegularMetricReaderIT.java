@@ -43,7 +43,7 @@ class ExasolStatisticsTableRegularMetricReaderIT {
     private static Connection connection;
 
     @BeforeAll
-    static void beforeAll() throws SQLException {
+    static void beforeAll() {
         connection = EXASOL.createConnection();
     }
 
