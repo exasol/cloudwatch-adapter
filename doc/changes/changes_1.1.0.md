@@ -4,7 +4,7 @@ Code name: Support Exasol v8
 
 ## Summary
 
-This release adds support for Exasol v8.
+This release adds support for Exasol v8. It also enables [SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html) for the AWS Lambda function to speedup execution.
 
 ## Features
 

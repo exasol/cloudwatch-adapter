@@ -46,11 +46,10 @@ Resources:
       Handler: com.exasol.cloudwatch.CloudWatchAdapter
       Runtime: java11
       MemorySize: 512
-      VpcConfig:
-        SecurityGroupIds:
-          - !Ref SecurityGroup
-        SubnetIds:
-          - !Ref SubnetId
+      SnapStart:
+        ApplyOn: PublishedVersions
+      EphemeralStorage:
+        Size: 512
       Environment:
         Variables:
           EXASOL_DEPLOYMENT_NAME: !Ref ExasolDeploymentName
