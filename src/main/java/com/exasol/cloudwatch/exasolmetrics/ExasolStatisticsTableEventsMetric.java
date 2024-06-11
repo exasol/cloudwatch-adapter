@@ -10,7 +10,8 @@ import static com.exasol.cloudwatch.exasolmetrics.ExasolUnit.GIBIBYTES;
  */
 enum ExasolStatisticsTableEventsMetric {
     NODES(COUNT, 4), //
-    DB_RAM_SIZE(GIBIBYTES, 4);
+    DB_RAM_SIZE(GIBIBYTES, 4), //
+    VCPU(COUNT, 4);
 
     private final ExasolUnit unit;
     private final int reportIntervalMinutes;

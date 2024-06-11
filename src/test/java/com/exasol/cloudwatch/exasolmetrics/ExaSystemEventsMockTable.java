@@ -74,6 +74,11 @@ class ExaSystemEventsMockTable implements AutoCloseable {
         insert(measureTime, null, dbRamSize, nodes, clusterName, null);
     }
 
+    void insert(final Instant measureTime, final double dbRamSize, final int nodes, final String clusterName,
+            final int vcpu) throws SQLException {
+        insert(measureTime, null, dbRamSize, nodes, clusterName, vcpu);
+    }
+
     void insert(final Instant measureTime, final String clusterName, final String eventType) throws SQLException {
         insert(measureTime, eventType, 0, 0, clusterName, null);
     }

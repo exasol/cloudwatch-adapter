@@ -5,6 +5,8 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -29,7 +31,7 @@ class ExasolStatisticsTableEventsMetricReaderIT {
     private static final Instant NOW = Instant.parse("2007-12-03T10:15:30.00Z");
 
     @BeforeAll
-    static void beforeAll() throws SQLException {
+    static void beforeAll() {
         exasolConnection = EXASOL.createConnection();
     }
 
@@ -71,6 +73,49 @@ class ExasolStatisticsTableEventsMetricReaderIT {
                     () -> assertThat(result.get(1).getValue(), equalTo(100.0)), //
                     () -> assertThat(result.get(1).getTimestamp(), equalTo(NOW)));
         }
+    }
+
+    @Test
+    void testVcpuMetricOnExasol8() throws SQLException {
+        assumeExasol8();
+        try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable(exasolConnection)) {
+            final Instant someWhen = Instant.ofEpochSecond(0);
+            mockTable.insert(someWhen, 10, 2, "MAIN");
+            mockTable.insert(someWhen.plus(Duration.ofHours(1)), 100, 4, "MAIN", 7);
+            mockTable.insert(someWhen.minus(Duration.ofHours(1)), 5, 1, "MAIN", 3);
+            final List<ExasolMetricDatum> result = runReader(someWhen, "VCPU");
+            assertAll( //
+                    () -> assertThat(result, hasSize(1)), //
+                    () -> assertThat(result.get(0).getMetricName(), equalTo("VCPU")), //
+                    () -> assertThat(result.get(0).getClusterName(), equalTo("MAIN")), //
+                    () -> assertThat(result.get(0).getUnit(), equalTo(ExasolUnit.COUNT)), //
+                    () -> assertThat(result.get(0).getValue(), equalTo(7.0)), //
+                    () -> assertThat(result.get(0).getTimestamp(), equalTo(NOW)));
+        }
+    }
+
+    @Test
+    void testVcpuMetricFailsOnExasol71() throws SQLException {
+        assumeExasol71();
+        try (final ExaSystemEventsMockTable mockTable = new ExaSystemEventsMockTable(exasolConnection)) {
+            final Instant someWhen = Instant.ofEpochSecond(0);
+            mockTable.insert(someWhen, 10, 2, "MAIN");
+            mockTable.insert(someWhen.plus(Duration.ofHours(1)), 100, 4, "MAIN", 7);
+            mockTable.insert(someWhen.minus(Duration.ofHours(1)), 5, 1, "MAIN", 3);
+            final IllegalStateException exception = assertThrows(IllegalStateException.class,
+                    () -> runReader(someWhen, "VCPU"));
+            assertThat(exception.getMessage(), equalTo(
+                    "F-CWA-36: Column MOCK_SCHEMA.EXA_SYSTEM_EVENTS.VCPU not available for metric 'VCPU'. Ensure that the Exasol DB version supports this metric."));
+        }
+    }
+
+    private void assumeExasol8() {
+        assumeTrue(EXASOL.getDockerImageReference().getMajor() >= 8);
+    }
+
+    private void assumeExasol71() {
+        assumeTrue(
+                EXASOL.getDockerImageReference().getMajor() == 7 && EXASOL.getDockerImageReference().getMinor() == 1);
     }
 
     @Test

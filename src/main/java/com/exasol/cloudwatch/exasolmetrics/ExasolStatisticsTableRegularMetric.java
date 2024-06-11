@@ -39,7 +39,8 @@ enum ExasolStatisticsTableRegularMetric {
     USERS(EXA_USAGE_LAST_DAY, COUNT), //
     QUERIES(EXA_USAGE_LAST_DAY, COUNT), //
     NODES(EXA_SYSTEM_EVENTS, COUNT), //
-    DB_RAM_SIZE(EXA_SYSTEM_EVENTS, GIBIBYTES);
+    DB_RAM_SIZE(EXA_SYSTEM_EVENTS, GIBIBYTES), //
+    VCPU(EXA_SYSTEM_EVENTS, COUNT);
 
     private final ExasolStatisticsTable table;
     private final ExasolUnit unit;

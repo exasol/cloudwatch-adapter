@@ -27,6 +27,7 @@ Currently, this adapter supports the following metrics.
 * [`AUXILIARY_SIZE`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_db_size_last_day.htm)
 * [`REMOTE_WRITE_DURATION`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_monitor_last_day.htm)
 * [`DB_RAM_SIZE`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_system_events.htm)
+* [`VCPU`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_system_events.htm) (only for Exasol v8 and later)
 * [`LOCAL_READ_DURATION`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_monitor_last_day.htm)
 * [`REMOTE_WRITE_SIZE`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_monitor_last_day.htm)
 * [`STATISTICS_SIZE`](https://docs.exasol.com/db/latest/sql_references/system_tables/statistical/exa_db_size_last_day.htm)
