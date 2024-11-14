@@ -14,7 +14,7 @@
 | [AWS Lambda Java Log4j 2.x Libraries][6]             | [Apache License, Version 2.0][1]                                                                               |
 | [Apache Log4j API][7]                                | [Apache-2.0][8]                                                                                                |
 | [Apache Log4j Core][9]                               | [Apache-2.0][8]                                                                                                |
-| [Apache Log4j SLF4J Binding][10]                     | [Apache-2.0][8]                                                                                                |
+| [SLF4J 1 Binding for Log4j API][10]                  | [Apache-2.0][8]                                                                                                |
 | [Jakarta JSON Processing API][11]                    | [Eclipse Public License 2.0][12]; [GNU General Public License, version 2 with the GNU Classpath Exception][13] |
 | [Test Database Builder for Java][14]                 | [MIT License][15]                                                                                              |
 | [JUnit5 System Extensions][16]                       | [Eclipse Public License v2.0][17]                                                                              |
@@ -23,7 +23,7 @@
 
 | Dependency                                      | License                           |
 | ----------------------------------------------- | --------------------------------- |
-| [Hamcrest][18]                                  | [BSD License 3][19]               |
+| [Hamcrest][18]                                  | [BSD-3-Clause][19]                |
 | [JUnit Jupiter (Aggregator)][20]                | [Eclipse Public License v2.0][21] |
 | [Test containers for Exasol on Docker][22]      | [MIT License][23]                 |
 | [Testcontainers :: JUnit Jupiter Extension][24] | [MIT][25]                         |
@@ -63,7 +63,7 @@
 [0]: https://aws.amazon.com/sdkforjava
 [1]: https://aws.amazon.com/apache2.0
 [2]: http://www.exasol.com/
-[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/24.1.0/exasol-jdbc-24.1.0-license.txt
+[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/24.2.0/exasol-jdbc-24.2.0-license.txt
 [4]: https://github.com/exasol/error-reporting-java/
 [5]: https://github.com/exasol/error-reporting-java/blob/main/LICENSE
 [6]: https://aws.amazon.com/lambda/
@@ -79,7 +79,7 @@
 [16]: https://github.com/itsallcode/junit5-system-extensions
 [17]: http://www.eclipse.org/legal/epl-v20.html
 [18]: http://hamcrest.org/JavaHamcrest/
-[19]: http://opensource.org/licenses/BSD-3-Clause
+[19]: https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE
 [20]: https://junit.org/junit5/
 [21]: https://www.eclipse.org/legal/epl-v20.html
 [22]: https://github.com/exasol/exasol-testcontainers/
