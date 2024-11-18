@@ -23,6 +23,7 @@ import com.exasol.containers.ExasolContainer;
 @Testcontainers
 class ExasolStatisticsTableEventsMetricReaderIT {
     @Container
+    @SuppressWarnings("resource") // Will be closed by @Testcontainers
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
 

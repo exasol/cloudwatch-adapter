@@ -22,6 +22,7 @@ import com.exasol.cloudwatch.LocalstackContainerWithReuse;
 class AdapterConfigurationReaderIT {
 
     @Container
+    @SuppressWarnings("resource") // Will be closed by @Testcontainers
     private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalstackContainerWithReuse(
             DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices(SECRETSMANAGER);
     private static LocalStackTestInterface localStackTestInterface;

@@ -46,9 +46,11 @@ import software.amazon.awssdk.services.cloudwatch.model.*;
 // [itest->dsn~env-var-for-metrics-selection~1]
 class CloudWatchAdapterIT {
     @Container
+    @SuppressWarnings("resource") // Will be closed by @Testcontainers
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
     @Container
+    @SuppressWarnings("resource") // Will be closed by @Testcontainers
     private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalstackContainerWithReuse(
             DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices(CLOUDWATCH, SECRETSMANAGER);
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudWatchAdapterIT.class);
