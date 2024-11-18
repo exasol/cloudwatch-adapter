@@ -5,5 +5,5 @@ sources:
       - integration_tests
 build:
   exasolDbVersions:
-    - "8.27.0"
-    - "7.1.26"
+    - "8.32.0"
+    - "7.1.30"

@@ -34,6 +34,7 @@ import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 // [itest->dsn~exasol-credentials-from-secrets-manager~1]
 class ExasolCredentialsReaderIT {
     @Container
+    @SuppressWarnings("resource") // Will be closed by @Testcontainers
     private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalstackContainerWithReuse(
             DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices(SECRETSMANAGER);
     private static LocalStackTestInterface localStackTestInterface;

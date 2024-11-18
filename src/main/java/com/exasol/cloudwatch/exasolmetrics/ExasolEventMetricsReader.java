@@ -48,11 +48,11 @@ class ExasolEventMetricsReader extends AbstractExasolStatisticsTableMetricReader
             statement.setTimestamp(2, Timestamp.from(end), this.utcCalendar);
             return executeSystemTableQuery(metrics, statement);
         } catch (final SQLException exception) {
-            if (exception.getMessage().contains("ambigous timestamp")) {
+            if (ExceptionClassifier.isAmbiguousTimestampException(exception)) {
                 LOGGER.warn(ExaError.messageBuilder("W-CWA-21").message("Skipping points due to timeshift. ").message(
                         "Since the Exasol database stores the logs with dates in the DBTIMEZONE there are ambiguous logs during the timeshift.")
                         .mitigation("The only thing you can do is to change your DBTIMEZONE to UTC.").toString());
-                return List.of();
+                return emptyList();
             } else {
                 throw wrapSqlException(query, exception);
             }

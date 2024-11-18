@@ -28,6 +28,7 @@ import com.exasol.containers.ExasolContainer;
 @SuppressWarnings("try") // Auto-closeable resource mockTable is never referenced in body of try statement
 class ExasolBackupDurationReaderIT {
     @Container
+    @SuppressWarnings("resource") // Will be closed by @Testcontainers
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
     private static final Instant NOW = Instant.parse("2007-12-03T10:15:59.00Z");
