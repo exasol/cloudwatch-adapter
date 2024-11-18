@@ -1,4 +1,4 @@
-# Cloudwatch Adapter 1.1.1, released 2024-??-??
+# Cloudwatch Adapter 1.1.1, released 2024-11-18
 
 Code name: Fixed vulnerability CVE-2024-47535 in io.netty:netty-common:jar:4.1.108.Final:runtime
 
@@ -28,8 +28,8 @@ Netty is an asynchronous event-driven network application framework for rapid de
 * Updated `org.apache.logging.log4j:log4j-core:2.23.1` to `2.24.1`
 * Updated `org.apache.logging.log4j:log4j-slf4j-impl:2.23.1` to `2.24.1`
 * Updated `org.itsallcode:junit5-system-extensions:1.2.0` to `1.2.2`
-* Updated `software.amazon.awssdk:cloudwatch:2.25.70` to `2.29.12`
-* Updated `software.amazon.awssdk:secretsmanager:2.25.70` to `2.29.12`
+* Updated `software.amazon.awssdk:cloudwatch:2.25.70` to `2.29.15`
+* Updated `software.amazon.awssdk:secretsmanager:2.25.70` to `2.29.15`
 
 ### Runtime Dependency Updates
 
@@ -49,3 +49,12 @@ Netty is an asynchronous event-driven network application framework for rapid de
 ### Plugin Dependency Updates
 
 * Updated `com.exasol:project-keeper-maven-plugin:4.3.3` to `4.4.0`
+* Added `com.exasol:quality-summarizer-maven-plugin:0.2.0`
+* Updated `io.github.zlika:reproducible-build-maven-plugin:0.16` to `0.17`
+* Updated `org.apache.maven.plugins:maven-clean-plugin:2.5` to `3.4.0`
+* Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.2.5` to `3.5.1`
+* Updated `org.apache.maven.plugins:maven-install-plugin:2.4` to `3.1.3`
+* Updated `org.apache.maven.plugins:maven-resources-plugin:2.6` to `3.3.1`
+* Updated `org.apache.maven.plugins:maven-site-plugin:3.3` to `3.9.1`
+* Updated `org.apache.maven.plugins:maven-surefire-plugin:3.2.5` to `3.5.1`
+* Updated `org.codehaus.mojo:versions-maven-plugin:2.16.2` to `2.17.1`
