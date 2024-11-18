@@ -31,6 +31,7 @@ import com.exasol.containers.ExasolContainer;
 @ExtendWith(SystemOutGuard.class)
 class ExasolStatisticsTableRegularMetricReaderIT {
     @Container
+    @SuppressWarnings("resource") // Will be closed by @Testcontainers annotation
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
     private static final String CLUSTER_NAME = "MAIN";
@@ -79,8 +80,8 @@ class ExasolStatisticsTableRegularMetricReaderIT {
         stdOutStream.capture();
         final List<ExasolMetricDatum> result = runQueryForMinuteOnMockTable(minuteToQuery);
         assertAll(//
-                () -> assertThat(result, empty()),
-                () -> assertThat(stdOutStream.getCapturedData(), containsString("W-CWA-12"))//
+                () -> assertThat(result, empty()), () -> assertThat(stdOutStream.getCapturedData(),
+                        containsString("W-CWA-12: Skipping points due to timeshift"))//
         );
     }
 
