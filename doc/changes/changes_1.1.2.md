@@ -1,12 +1,16 @@
-# Cloudwatch Adapter 1.1.2, released 2025-??-??
+# Cloudwatch Adapter 1.1.2, released 2025-02-13
 
-Code name:
+Code name: Fixed CVE-2025-24970 and CVE-2025-25193
 
 ## Summary
 
-## Features
+This update fixes CVE-2025-24970 and CVE-2025-25193 in transitive `netty` dependency.
+It also updates other dependencies.
 
-* ISSUE_NUMBER: description
+## Security
+
+* #104: CVE-2025-24970
+* #105: CVE-2025-25193
 
 ## Dependency Updates
 
