@@ -29,7 +29,6 @@
 | [Testcontainers :: JUnit Jupiter Extension][24] | [MIT][25]                         |
 | [mockito-core][26]                              | [MIT][27]                         |
 | [Testcontainers :: Localstack][24]              | [MIT][25]                         |
-| [AWS Java SDK for Amazon S3][0]                 | [Apache License, Version 2.0][1]  |
 | [EqualsVerifier \| release normal jar][28]      | [Apache License, Version 2.0][8]  |
 
 ## Runtime Dependencies
@@ -68,7 +67,7 @@
 [0]: https://aws.amazon.com/sdkforjava
 [1]: https://aws.amazon.com/apache2.0
 [2]: http://www.exasol.com/
-[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/24.2.0/exasol-jdbc-24.2.0-license.txt
+[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/24.2.1/exasol-jdbc-24.2.1-license.txt
 [4]: https://github.com/exasol/error-reporting-java/
 [5]: https://github.com/exasol/error-reporting-java/blob/main/LICENSE
 [6]: https://aws.amazon.com/lambda/
