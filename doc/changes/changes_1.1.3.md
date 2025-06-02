@@ -28,7 +28,9 @@ This issue has been fixed quite a while back now, but the OSSIndex unfortunately
 
 * Updated `com.exasol:exasol-testcontainers:7.1.3` to `7.1.5`
 * Updated `nl.jqno.equalsverifier:equalsverifier:3.19` to `3.19.4`
-* Updated `org.junit.jupiter:junit-jupiter:5.11.4` to `5.13.0`
+* Added `org.junit.jupiter:junit-jupiter-api:5.13.0`
+* Added `org.junit.jupiter:junit-jupiter-params:5.13.0`
+* Removed `org.junit.jupiter:junit-jupiter:5.11.4`
 * Updated `org.mockito:mockito-core:5.15.2` to `5.18.0`
 * Updated `org.testcontainers:junit-jupiter:1.20.4` to `1.21.1`
 * Updated `org.testcontainers:localstack:1.20.4` to `1.21.1`

@@ -11,6 +11,7 @@
         <org.testcontainers.version>1.21.1</org.testcontainers.version>
         <log4j.version>2.24.3</log4j.version>
         <aws.sdk.version>2.31.54</aws.sdk.version>
+        <junit-jupiter.version>5.13.0</junit-jupiter.version>
     </properties>
     <dependencies>
         <dependency>
@@ -83,8 +84,14 @@
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.13.0</version>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -24,7 +24,8 @@
 | Dependency                                      | License                           |
 | ----------------------------------------------- | --------------------------------- |
 | [Hamcrest][18]                                  | [BSD-3-Clause][19]                |
-| [JUnit Jupiter (Aggregator)][20]                | [Eclipse Public License v2.0][21] |
+| [JUnit Jupiter API][20]                         | [Eclipse Public License v2.0][21] |
+| [JUnit Jupiter Params][20]                      | [Eclipse Public License v2.0][21] |
 | [Test containers for Exasol on Docker][22]      | [MIT License][23]                 |
 | [Testcontainers :: JUnit Jupiter Extension][24] | [MIT][25]                         |
 | [mockito-core][26]                              | [MIT][27]                         |
