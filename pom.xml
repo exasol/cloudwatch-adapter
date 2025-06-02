@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>cloudwatch-adapter</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
     <name>cloudwatch-adapter</name>
     <description>Makes Exasol database monitoring data available in AWS CloudWatch</description>
     <url>https://github.com/exasol/cloudwatch-adapter/</url>
@@ -162,7 +162,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>4.5.0</version>
+                <version>5.1.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -218,7 +218,7 @@
     <parent>
         <artifactId>cloudwatch-adapter-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>1.1.2</version>
+        <version>1.1.3</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>

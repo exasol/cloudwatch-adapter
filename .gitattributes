@@ -7,6 +7,7 @@
 .github/workflows/dependencies_update.yml   linguist-generated=true
 .github/workflows/release.yml               linguist-generated=true
 dependencies.md                             linguist-generated=true
+SECURITY.md                                 linguist-generated=true
 pk_generated_parent.pom                     linguist-generated=true
 doc/changes/changelog.md                    linguist-generated=true
 .settings/org.eclipse.jdt.core.prefs        linguist-generated=true
