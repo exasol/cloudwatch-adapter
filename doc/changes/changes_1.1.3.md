@@ -10,6 +10,10 @@ Code name:
 
 ## Dependency Updates
 
+### Compile Dependency Updates
+
+* Updated `com.exasol:exasol-jdbc:24.2.1` to `25.2.3`
+
 ### Plugin Dependency Updates
 
 * Updated `com.exasol:project-keeper-maven-plugin:4.5.0` to `5.1.0`

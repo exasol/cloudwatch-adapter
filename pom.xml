@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>exasol-jdbc</artifactId>
-            <version>24.2.1</version>
+            <version>25.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
@@ -140,6 +140,7 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -158,6 +159,16 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.ossindex.maven</groupId>
+                <artifactId>ossindex-maven-plugin</artifactId>
+                <configuration>
+                    <excludeVulnerabilityIds>
+                        <!-- False positive in OSS Index for Exasol's JDBC driver because the fix version is missing. -->
+                        <exclude>CVE-2024-55551</exclude>
+                    </excludeVulnerabilityIds>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.exasol</groupId>
