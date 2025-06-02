@@ -62,7 +62,7 @@
 | [error-code-crawler-maven-plugin][53]                   | [MIT License][54]                           |
 | [Git Commit Id Maven Plugin][55]                        | [GNU Lesser General Public License 3.0][56] |
 | [Project Keeper Maven plugin][57]                       | [The MIT License][58]                       |
-| [Apache Maven Shade Plugin][59]                         | [Apache License, Version 2.0][8]            |
+| [Apache Maven Shade Plugin][59]                         | [Apache-2.0][8]                             |
 | [OpenFastTrace Maven Plugin][60]                        | [GNU General Public License v3.0][61]       |
 
 [0]: https://aws.amazon.com/sdkforjava
