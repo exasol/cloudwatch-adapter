@@ -12,7 +12,21 @@ Code name:
 
 ### Compile Dependency Updates
 
+* Updated `com.amazonaws:aws-lambda-java-core:1.2.3` to `1.3.0`
+* Updated `com.amazonaws:aws-lambda-java-events:3.14.0` to `3.15.0`
 * Updated `com.exasol:exasol-jdbc:24.2.1` to `25.2.3`
+* Updated `com.exasol:test-db-builder-java:3.6.0` to `3.6.1`
+* Updated `software.amazon.awssdk:cloudwatch:2.30.19` to `2.31.54`
+* Updated `software.amazon.awssdk:secretsmanager:2.30.19` to `2.31.54`
+
+### Test Dependency Updates
+
+* Updated `com.exasol:exasol-testcontainers:7.1.3` to `7.1.5`
+* Updated `nl.jqno.equalsverifier:equalsverifier:3.19` to `3.19.4`
+* Updated `org.junit.jupiter:junit-jupiter:5.11.4` to `5.13.0`
+* Updated `org.mockito:mockito-core:5.15.2` to `5.18.0`
+* Updated `org.testcontainers:junit-jupiter:1.20.4` to `1.21.1`
+* Updated `org.testcontainers:localstack:1.20.4` to `1.21.1`
 
 ### Plugin Dependency Updates
 
