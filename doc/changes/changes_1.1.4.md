@@ -1,4 +1,4 @@
-# Cloudwatch Adapter 1.1.4, released 2025-08-27
+# Cloudwatch Adapter 1.1.4, released 2025-08-28
 
 Code name: Fixes for vulnerabilities CVE-2025-48924 and CVE-2025-55163
 
