@@ -2,16 +2,31 @@ package com.exasol.cloudwatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.localstack.LocalStackContainer;
+import org.testcontainers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.TestcontainersConfiguration;
 
 public class LocalstackContainerWithReuse extends LocalStackContainer {
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalstackContainerWithReuse.class);
 
-    public LocalstackContainerWithReuse(final DockerImageName dockerImageName) {
+    private LocalstackContainerWithReuse(final DockerImageName dockerImageName) {
         super(dockerImageName);
-        withReuse(true);
+    }
+
+    public static LocalstackContainerWithReuse create(final DockerImageName dockerImageName) {
+        final LocalstackContainerWithReuse container = new LocalstackContainerWithReuse(dockerImageName);
+        container.withReuse(true);
+        return container;
+    }
+
+    /**
+     * Enable debugging in the localstack container.
+     * 
+     * @return {@code this} for method chaining
+     */
+    public LocalstackContainerWithReuse enableDebugging() {
+        this.withEnv("DEBUG", "1");
+        return this;
     }
 
     @Override

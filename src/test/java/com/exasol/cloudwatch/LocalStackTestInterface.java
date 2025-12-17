@@ -1,12 +1,9 @@
 package com.exasol.cloudwatch;
 
-import static org.testcontainers.containers.localstack.LocalStackContainer.Service.CLOUDWATCH;
-import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
-
 import java.io.*;
 import java.time.Instant;
 
-import org.testcontainers.containers.localstack.LocalStackContainer;
+import org.testcontainers.localstack.LocalStackContainer;
 
 import jakarta.json.*;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -27,19 +24,22 @@ public class LocalStackTestInterface implements AwsClientFactory {
 
     @Override
     public CloudWatchClient getCloudWatchClient() {
-        return CloudWatchClient.builder().endpointOverride(container.getEndpointOverride(CLOUDWATCH))
+        return CloudWatchClient.builder().endpointOverride(container.getEndpoint())
                 .region(Region.of(container.getRegion()))
-                .credentialsProvider(StaticCredentialsProvider
-                        .create(AwsBasicCredentials.create(container.getAccessKey(), container.getSecretKey())))
+                .credentialsProvider(getContainerCredentialsProvider())
                 .build();
+    }
+
+    private StaticCredentialsProvider getContainerCredentialsProvider() {
+        return StaticCredentialsProvider
+                .create(AwsBasicCredentials.create(container.getAccessKey(), container.getSecretKey()));
     }
 
     @Override
     public SecretsManagerClient getSecretsManagerClient() {
-        return SecretsManagerClient.builder().endpointOverride(this.container.getEndpointOverride(SECRETSMANAGER))
+        return SecretsManagerClient.builder().endpointOverride(this.container.getEndpoint())
                 .region(Region.of(container.getRegion()))
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(this.container.getAccessKey(), this.container.getSecretKey())))
+                .credentialsProvider(getContainerCredentialsProvider())
                 .build();
     }
 

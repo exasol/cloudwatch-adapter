@@ -9,8 +9,6 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
-import static org.testcontainers.containers.localstack.LocalStackContainer.Service.CLOUDWATCH;
-import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -28,9 +26,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -51,8 +49,8 @@ class CloudWatchAdapterIT {
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
     @Container
     @SuppressWarnings("resource") // Will be closed by @Testcontainers
-    private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalstackContainerWithReuse(
-            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices(CLOUDWATCH, SECRETSMANAGER);
+    private static final LocalStackContainer LOCAL_STACK_CONTAINER = LocalstackContainerWithReuse.create(
+            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices("cloudwatch", "secretsmanager");
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudWatchAdapterIT.class);
     private static Connection connection;
     private static CloudWatchClient cloudWatch;
@@ -93,9 +91,9 @@ class CloudWatchAdapterIT {
     }
 
     @CsvSource(nullValues = { "NULL" }, value = {
-            "NULL, .*TLS connection to host (.*) failed: PKIX path building failed.*",
-            "'', .*TLS connection to host (.*) failed: PKIX path building failed.*",
-            "'  ', .*TLS connection to host (.*) failed: PKIX path building failed.*",
+            "NULL, .*TLS connection to host (.*) failed:.*PKIX path building failed.*",
+            "'', .*TLS connection to host (.*) failed:.*PKIX path building failed.*",
+            "'  ', .*TLS connection to host (.*) failed:.*PKIX path building failed.*",
             "'invalid-fingerprint', .*Fingerprint did not match. The fingerprint provided: INVALID-FINGERPRINT.*" })
     @ParameterizedTest
     void testConnectionWithWrongCertificateFingerprintFails(final String fingerprint,

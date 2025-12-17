@@ -1,7 +1,6 @@
 package com.exasol.cloudwatch;
 
 import static java.util.stream.Collectors.toMap;
-import static org.testcontainers.containers.localstack.LocalStackContainer.Service.CLOUDWATCH;
 
 import java.io.*;
 import java.net.URI;
@@ -9,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 
-import org.testcontainers.containers.localstack.LocalStackContainer;
+import org.testcontainers.localstack.LocalStackContainer;
 
 import jakarta.json.*;
 import software.amazon.awssdk.services.cloudwatch.model.Dimension;
@@ -23,7 +22,7 @@ public class LocalstackCloudWatchRaw {
     private final URI backdoorApi;
 
     public LocalstackCloudWatchRaw(final LocalStackContainer localStackContainer) {
-        this.backdoorApi = localStackContainer.getEndpointOverride(CLOUDWATCH).resolve(BACKDOOR_API_PATH);
+        this.backdoorApi = localStackContainer.getEndpoint().resolve(BACKDOOR_API_PATH);
     }
 
     public SortedMap<Instant, Double> readMetrics(final String expectedMetricName, final Dimension... dimensionFilter)
