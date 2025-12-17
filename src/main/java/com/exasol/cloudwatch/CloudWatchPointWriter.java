@@ -37,9 +37,9 @@ public class CloudWatchPointWriter {
         try (final CloudWatchClient cloudwatch = this.awsClientFactory.getCloudWatchClient()) {
             for (int chunkCounter = 0; chunkCounter * CHUNK_SIZE < exasolStatisticsTableMetricData
                     .size(); chunkCounter++) {
-                final Stream<MetricDatum> chuck = exasolStatisticsTableMetricData.stream()
+                final Stream<MetricDatum> chunk = exasolStatisticsTableMetricData.stream()
                         .skip((long) chunkCounter * CHUNK_SIZE).limit(CHUNK_SIZE);
-                putPoints(cloudwatch, chuck);
+                putPoints(cloudwatch, chunk);
             }
         }
     }

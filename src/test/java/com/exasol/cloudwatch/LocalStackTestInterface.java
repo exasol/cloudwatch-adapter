@@ -26,17 +26,20 @@ public class LocalStackTestInterface implements AwsClientFactory {
     public CloudWatchClient getCloudWatchClient() {
         return CloudWatchClient.builder().endpointOverride(container.getEndpoint())
                 .region(Region.of(container.getRegion()))
-                .credentialsProvider(StaticCredentialsProvider
-                        .create(AwsBasicCredentials.create(container.getAccessKey(), container.getSecretKey())))
+                .credentialsProvider(getContainerCredentialsProvider())
                 .build();
+    }
+
+    private StaticCredentialsProvider getContainerCredentialsProvider() {
+        return StaticCredentialsProvider
+                .create(AwsBasicCredentials.create(container.getAccessKey(), container.getSecretKey()));
     }
 
     @Override
     public SecretsManagerClient getSecretsManagerClient() {
         return SecretsManagerClient.builder().endpointOverride(this.container.getEndpoint())
                 .region(Region.of(container.getRegion()))
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(this.container.getAccessKey(), this.container.getSecretKey())))
+                .credentialsProvider(getContainerCredentialsProvider())
                 .build();
     }
 
