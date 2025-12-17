@@ -1,7 +1,6 @@
 package com.exasol.cloudwatch;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.exasol.errorreporting.ExaError;
@@ -46,7 +45,7 @@ public class CloudWatchPointWriter {
 
     private void putPoints(final CloudWatchClient cloudwatch, final Stream<MetricDatum> points) {
         final PutMetricDataRequest putRequest = PutMetricDataRequest.builder().namespace(CLOUDWATCH_NAMESPACE)
-                .metricData(points.collect(Collectors.toList())).build();
+                .metricData(points.toList()).build();
         try {
             cloudwatch.putMetricData(putRequest);
         } catch (final SdkClientException exception) {
