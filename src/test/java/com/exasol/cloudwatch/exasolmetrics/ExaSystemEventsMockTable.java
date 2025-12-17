@@ -69,24 +69,24 @@ class ExaSystemEventsMockTable implements AutoCloseable {
         return timeZoneId;
     }
 
-    void insert(final Instant measureTime, final double dbRamSize, final int nodes, final String clusterName)
-            throws SQLException {
+    void insert(final Instant measureTime, final double dbRamSize, final int nodes, final String clusterName) {
         insert(measureTime, null, dbRamSize, nodes, clusterName, null);
     }
 
     void insert(final Instant measureTime, final double dbRamSize, final int nodes, final String clusterName,
-            final int vcpu) throws SQLException {
+            final int vcpu) {
         insert(measureTime, null, dbRamSize, nodes, clusterName, vcpu);
     }
 
-    void insert(final Instant measureTime, final String clusterName, final String eventType) throws SQLException {
+    void insert(final Instant measureTime, final String clusterName, final String eventType) {
         insert(measureTime, eventType, 0, 0, clusterName, null);
     }
 
     private void insert(final Instant measureTime, final String eventType, final double dbRamSize, final int nodes,
-            final String clusterName, final Integer vcpu) throws SQLException {
-        String sql = "INSERT INTO " + MOCK_SCHEMA + "." + EXA_SYSTEM_EVENTS + " VALUES(?, ?, ?, '',? ,? , ''";
-        if (isExasol8()) {
+            final String clusterName, final Integer vcpu) {
+        String sql = "INSERT INTO " + MOCK_SCHEMA + "." + EXA_SYSTEM_EVENTS
+                + " VALUES(?, ?, ?, 'DBMS_VERSION', ? ,? , 'PARAMETERS'";
+        if (isExasol8orLater()) {
             sql += ",?";
         }
         sql += ")";
@@ -96,15 +96,18 @@ class ExaSystemEventsMockTable implements AutoCloseable {
             insertStatement.setString(3, eventType);
             insertStatement.setInt(4, nodes);
             insertStatement.setDouble(5, dbRamSize);
-            if (isExasol8()) {
+            if (isExasol8orLater()) {
                 insertStatement.setObject(6, vcpu);
             }
             insertStatement.executeUpdate();
+        } catch (final SQLException e) {
+            throw new IllegalStateException(
+                    "Failed to insert into EXA_SYSTEM_EVENTS using statement '" + sql + "': " + e.getMessage(), e);
         }
     }
 
-    private boolean isExasol8() {
-        return dbVersion.startsWith("8");
+    private boolean isExasol8orLater() {
+        return dbVersion.startsWith("8") || dbVersion.matches("^20\\d\\d\\..*");
     }
 
     @Override

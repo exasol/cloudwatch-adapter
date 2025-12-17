@@ -91,9 +91,9 @@ class CloudWatchAdapterIT {
     }
 
     @CsvSource(nullValues = { "NULL" }, value = {
-            "NULL, .*TLS connection to host (.*) failed: PKIX path building failed.*",
-            "'', .*TLS connection to host (.*) failed: PKIX path building failed.*",
-            "'  ', .*TLS connection to host (.*) failed: PKIX path building failed.*",
+            "NULL, .*TLS connection to host (.*) failed:.*PKIX path building failed.*",
+            "'', .*TLS connection to host (.*) failed:.*PKIX path building failed.*",
+            "'  ', .*TLS connection to host (.*) failed:.*PKIX path building failed.*",
             "'invalid-fingerprint', .*Fingerprint did not match. The fingerprint provided: INVALID-FINGERPRINT.*" })
     @ParameterizedTest
     void testConnectionWithWrongCertificateFingerprintFails(final String fingerprint,
