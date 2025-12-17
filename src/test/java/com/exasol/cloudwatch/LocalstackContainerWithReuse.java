@@ -13,10 +13,20 @@ public class LocalstackContainerWithReuse extends LocalStackContainer {
         super(dockerImageName);
     }
 
-    public static LocalStackContainer create(final DockerImageName dockerImageName) {
+    public static LocalstackContainerWithReuse create(final DockerImageName dockerImageName) {
         final LocalstackContainerWithReuse container = new LocalstackContainerWithReuse(dockerImageName);
         container.withReuse(true);
         return container;
+    }
+
+    /**
+     * Enable debugging in the localstack container.
+     * 
+     * @return {@code this} for method chaining
+     */
+    public LocalstackContainerWithReuse enableDebugging() {
+        this.withEnv("DEBUG", "1");
+        return this;
     }
 
     @Override
