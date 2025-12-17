@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-readonly versionLine=$(grep 'SemanticVersion' sam/template.yaml)
+versionLine=$(grep 'SemanticVersion' sam/template.yaml)
+readonly versionLine
 
 if [[ $versionLine == *"$1"* ]]; then # the * acts as wildcard --> it's a contains
   echo "Version in sam/template.yaml is valid"

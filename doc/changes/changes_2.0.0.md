@@ -1,10 +1,10 @@
-# Cloudwatch Adapter 1.1.5, released 2025-12-16
+# Cloudwatch Adapter 2.0.0, released 2025-12-17
 
 Code name: Fixed vulnerability CVE-2025-58056 in io.netty:netty-codec-http:jar:4.1.124.Final:runtime and CVE-2025-58057 in io.netty:netty-codec:jar:4.1.124.Final:runtime
 
 ## Summary
 
-This release fixes the following vulnerability:
+This release upgrades the Java version to Java 21 and fixes the following vulnerability:
 
 ### CVE-2025-58056 (CWE-444) in dependency `io.netty:netty-codec-http:jar:4.1.124.Final:runtime`
 Netty is an asynchronous event-driven network application framework for development of maintainable high performance protocol servers and clients. In versions 4.1.124.Final, and 4.2.0.Alpha3 through 4.2.4.Final, Netty incorrectly accepts standalone newline characters (LF) as a chunk-size line terminator, regardless of a preceding carriage return (CR), instead of requiring CRLF per HTTP/1.1 standards. When combined with reverse proxies that parse LF differently (treating it as part of the chunk extension), attackers can craft requests that the proxy sees as one request but Netty processes as two, enabling request smuggling attacks. This is fixed in versions 4.1.125.Final and 4.2.5.Final.
@@ -34,11 +34,11 @@ netty-codec - Improper Handling of Highly Compressed Data (Data Amplification)
 * Updated `com.exasol:error-reporting-java:1.0.1` to `1.0.2`
 * Updated `com.exasol:exasol-jdbc:25.2.3` to `25.2.5`
 * Updated `com.exasol:test-db-builder-java:3.6.1` to `3.6.4`
-* Updated `org.apache.logging.log4j:log4j-api:2.24.3` to `2.25.2`
-* Updated `org.apache.logging.log4j:log4j-core:2.24.3` to `2.25.2`
-* Updated `org.apache.logging.log4j:log4j-slf4j-impl:2.24.3` to `2.25.2`
-* Updated `software.amazon.awssdk:cloudwatch:2.31.54` to `2.40.9`
-* Updated `software.amazon.awssdk:secretsmanager:2.31.54` to `2.40.9`
+* Updated `org.apache.logging.log4j:log4j-api:2.24.3` to `2.25.3`
+* Updated `org.apache.logging.log4j:log4j-core:2.24.3` to `2.25.3`
+* Updated `org.apache.logging.log4j:log4j-slf4j-impl:2.24.3` to `2.25.3`
+* Updated `software.amazon.awssdk:cloudwatch:2.31.54` to `2.40.10`
+* Updated `software.amazon.awssdk:secretsmanager:2.31.54` to `2.40.10`
 
 ### Test Dependency Updates
 

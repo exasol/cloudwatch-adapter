@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,9 +15,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.exasol.cloudwatch.*;
@@ -35,8 +34,8 @@ import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 class ExasolCredentialsReaderIT {
     @Container
     @SuppressWarnings("resource") // Will be closed by @Testcontainers
-    private static final LocalStackContainer LOCAL_STACK_CONTAINER = new LocalstackContainerWithReuse(
-            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices(SECRETSMANAGER);
+    private static final LocalStackContainer LOCAL_STACK_CONTAINER = LocalstackContainerWithReuse.create(
+            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices("secretsmanager");
     private static LocalStackTestInterface localStackTestInterface;
     private static ExasolCredentialsReader credentialsReader;
 

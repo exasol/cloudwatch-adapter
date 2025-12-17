@@ -60,8 +60,8 @@ jobs:
         with:
           distribution: temurin
           java-version: |-
-            11
             17
+            21
           cache: maven
           server-id: ossindex
           server-username: OSSINDEX_USERNAME
@@ -154,20 +154,20 @@ jobs:
         with: {
           fetch-depth: 0
         }
-      - name: Set up JDK 17
+      - name: Set up JDK 25
         id: setup-java
         uses: actions/setup-java@v5
         with: {
           distribution: temurin,
-          java-version: '17',
+          java-version: '25',
           cache: maven,
           server-id: ossindex,
           server-username: OSSINDEX_USERNAME,
           server-password: OSSINDEX_API_TOKEN
         }
-      - name: Run tests and build with Maven 17
+      - name: Run tests and build with Maven 25
         id: build-next-java
-        run: mvn --batch-mode clean package -DtrimStackTrace=false -Djava.version=17
+        run: mvn --batch-mode clean package -DtrimStackTrace=false -Djava.version=25
         env: {
           OSSINDEX_USERNAME: '${{ secrets.OSSINDEX_USERNAME }}',
           OSSINDEX_API_TOKEN: '${{ secrets.OSSINDEX_API_TOKEN }}'
@@ -202,8 +202,8 @@ jobs:
         with:
           distribution: temurin
           java-version: |-
-            11
             17
+            21
           cache: maven
       - name: Check if release is needed
         id: check-release
