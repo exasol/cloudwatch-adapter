@@ -37,8 +37,8 @@ netty-codec - Improper Handling of Highly Compressed Data (Data Amplification)
 * Updated `org.apache.logging.log4j:log4j-api:2.24.3` to `2.25.3`
 * Updated `org.apache.logging.log4j:log4j-core:2.24.3` to `2.25.3`
 * Updated `org.apache.logging.log4j:log4j-slf4j-impl:2.24.3` to `2.25.3`
-* Updated `software.amazon.awssdk:cloudwatch:2.31.54` to `2.40.10`
-* Updated `software.amazon.awssdk:secretsmanager:2.31.54` to `2.40.10`
+* Updated `software.amazon.awssdk:cloudwatch:2.31.54` to `2.40.5`
+* Updated `software.amazon.awssdk:secretsmanager:2.31.54` to `2.40.5`
 
 ### Test Dependency Updates
 
