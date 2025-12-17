@@ -3,6 +3,7 @@ sources:
     path: pom.xml
     modules:
       - integration_tests
+      - mockito_agent
 build:
   exasolDbVersions:
     - "2025.1.8"
