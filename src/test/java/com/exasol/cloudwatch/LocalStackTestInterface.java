@@ -1,10 +1,10 @@
 package com.exasol.cloudwatch;
 
 import java.io.*;
+import java.net.URI;
 import java.time.Instant;
 
-import org.testcontainers.localstack.LocalStackContainer;
-
+import io.floci.testcontainers.FlociContainer;
 import jakarta.json.*;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -16,18 +16,22 @@ import software.amazon.awssdk.services.secretsmanager.model.DeleteSecretRequest;
 
 public class LocalStackTestInterface implements AwsClientFactory {
 
-    private final LocalStackContainer container;
+    private final FlociContainer container;
 
-    public LocalStackTestInterface(final LocalStackContainer container) {
+    public LocalStackTestInterface(final FlociContainer container) {
         this.container = container;
     }
 
     @Override
     public CloudWatchClient getCloudWatchClient() {
-        return CloudWatchClient.builder().endpointOverride(container.getEndpoint())
+        return CloudWatchClient.builder().endpointOverride(getEndpoint())
                 .region(Region.of(container.getRegion()))
                 .credentialsProvider(getContainerCredentialsProvider())
                 .build();
+    }
+
+    private URI getEndpoint() {
+        return URI.create(container.getEndpoint());
     }
 
     private StaticCredentialsProvider getContainerCredentialsProvider() {
@@ -37,7 +41,7 @@ public class LocalStackTestInterface implements AwsClientFactory {
 
     @Override
     public SecretsManagerClient getSecretsManagerClient() {
-        return SecretsManagerClient.builder().endpointOverride(this.container.getEndpoint())
+        return SecretsManagerClient.builder().endpointOverride(getEndpoint())
                 .region(Region.of(container.getRegion()))
                 .credentialsProvider(getContainerCredentialsProvider())
                 .build();

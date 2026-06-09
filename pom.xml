@@ -11,8 +11,7 @@
         <java.version>21</java.version>
         <org.testcontainers.version>2.0.5</org.testcontainers.version>
         <log4j.version>2.26.0</log4j.version>
-        <!-- Upgrading to >= 2.40.6 triggers a bug in localstack: https://github.com/localstack/localstack/issues/13538 -->
-        <aws.sdk.version>2.40.5</aws.sdk.version>
+        <aws.sdk.version>2.46.6</aws.sdk.version>
         <junit-jupiter.version>6.1.0</junit-jupiter.version>
     </properties>
         <dependencyManagement>
@@ -137,9 +136,9 @@
             <version>1.2.3</version>
         </dependency>
         <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers-localstack</artifactId>
-            <version>${org.testcontainers.version}</version>
+            <groupId>io.floci</groupId>
+            <artifactId>testcontainers-floci</artifactId>
+            <version>2.9.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

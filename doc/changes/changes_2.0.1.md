@@ -43,6 +43,8 @@ This release fixes the following vulnerabilities in dependencies:
 * Updated `org.apache.logging.log4j:log4j-core:2.25.3` to `2.26.0`
 * Updated `org.apache.logging.log4j:log4j-slf4j-impl:2.25.3` to `2.26.0`
 * Updated `org.itsallcode:junit5-system-extensions:1.2.2` to `1.2.3`
+* Updated `software.amazon.awssdk:cloudwatch:2.40.5` to `2.46.6`
+* Updated `software.amazon.awssdk:secretsmanager:2.40.5` to `2.46.6`
 
 ### Runtime Dependency Updates
 
@@ -51,12 +53,13 @@ This release fixes the following vulnerabilities in dependencies:
 ### Test Dependency Updates
 
 * Updated `com.exasol:exasol-testcontainers:7.2.2` to `7.3.0`
+* Added `io.floci:testcontainers-floci:2.9.0`
 * Updated `nl.jqno.equalsverifier:equalsverifier:4.2.5` to `4.5`
 * Updated `org.junit.jupiter:junit-jupiter-api:6.0.1` to `6.1.0`
 * Updated `org.junit.jupiter:junit-jupiter-params:6.0.1` to `6.1.0`
 * Updated `org.mockito:mockito-core:5.21.0` to `5.23.0`
 * Updated `org.testcontainers:testcontainers-junit-jupiter:2.0.3` to `2.0.5`
-* Updated `org.testcontainers:testcontainers-localstack:2.0.3` to `2.0.5`
+* Removed `org.testcontainers:testcontainers-localstack:2.0.3`
 
 ### Plugin Dependency Updates
 

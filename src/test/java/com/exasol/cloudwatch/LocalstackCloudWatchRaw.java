@@ -8,8 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 
-import org.testcontainers.localstack.LocalStackContainer;
-
+import io.floci.testcontainers.FlociContainer;
 import jakarta.json.*;
 import software.amazon.awssdk.services.cloudwatch.model.Dimension;
 
@@ -21,8 +20,8 @@ public class LocalstackCloudWatchRaw {
     private static final String BACKDOOR_API_PATH = "/_aws/cloudwatch/metrics/raw";
     private final URI backdoorApi;
 
-    public LocalstackCloudWatchRaw(final LocalStackContainer localStackContainer) {
-        this.backdoorApi = localStackContainer.getEndpoint().resolve(BACKDOOR_API_PATH);
+    public LocalstackCloudWatchRaw(final FlociContainer localStackContainer) {
+        this.backdoorApi = URI.create(localStackContainer.getEndpoint()).resolve(BACKDOOR_API_PATH);
     }
 
     public SortedMap<Instant, Double> readMetrics(final String expectedMetricName, final Dimension... dimensionFilter)

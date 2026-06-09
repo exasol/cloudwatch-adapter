@@ -11,19 +11,18 @@ import java.util.Collections;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.exasol.cloudwatch.LocalStackTestInterface;
-import com.exasol.cloudwatch.LocalstackContainerWithReuse;
+
+import io.floci.testcontainers.FlociContainer;
 
 @Testcontainers
 class AdapterConfigurationReaderIT {
 
     @Container
     @SuppressWarnings("resource") // Will be closed by @Testcontainers
-    private static final LocalStackContainer LOCAL_STACK_CONTAINER = LocalstackContainerWithReuse.create(
-            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices("secretsmanager");
+    private static final FlociContainer LOCAL_STACK_CONTAINER = new FlociContainer(DockerImageName.parse(LOCAL_STACK_IMAGE));
     private static LocalStackTestInterface localStackTestInterface;
 
     private MockEnvironmentVariableProvider mockEnvironment;

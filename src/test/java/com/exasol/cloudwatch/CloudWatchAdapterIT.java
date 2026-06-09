@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -36,6 +35,7 @@ import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.exasol.cloudwatch.configuration.MockEnvironmentVariableProvider;
 import com.exasol.containers.ExasolContainer;
 
+import io.floci.testcontainers.FlociContainer;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
 import software.amazon.awssdk.services.cloudwatch.model.*;
 
@@ -49,8 +49,8 @@ class CloudWatchAdapterIT {
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
     @Container
     @SuppressWarnings("resource") // Will be closed by @Testcontainers
-    private static final LocalStackContainer LOCAL_STACK_CONTAINER = LocalstackContainerWithReuse.create(
-            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices("cloudwatch", "secretsmanager");
+    private static final FlociContainer LOCAL_STACK_CONTAINER = new FlociContainer(
+            DockerImageName.parse(LOCAL_STACK_IMAGE));
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudWatchAdapterIT.class);
     private static Connection connection;
     private static CloudWatchClient cloudWatch;
@@ -60,7 +60,7 @@ class CloudWatchAdapterIT {
     private String uniqueDeploymentName;
 
     @BeforeAll
-    static void beforeAll() throws SQLException, IOException {
+    static void beforeAll() throws IOException {
         connection = EXASOL.createConnection();
         localStackTestInterface = new LocalStackTestInterface(LOCAL_STACK_CONTAINER);
         cloudWatch = localStackTestInterface.getCloudWatchClient();

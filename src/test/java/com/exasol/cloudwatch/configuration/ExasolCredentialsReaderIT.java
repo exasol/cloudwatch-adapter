@@ -17,11 +17,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import com.exasol.cloudwatch.*;
+import com.exasol.cloudwatch.AwsClientFactory;
+import com.exasol.cloudwatch.LocalStackTestInterface;
 
+import io.floci.testcontainers.FlociContainer;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -34,8 +35,7 @@ import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 class ExasolCredentialsReaderIT {
     @Container
     @SuppressWarnings("resource") // Will be closed by @Testcontainers
-    private static final LocalStackContainer LOCAL_STACK_CONTAINER = LocalstackContainerWithReuse.create(
-            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices("secretsmanager");
+    private static final FlociContainer LOCAL_STACK_CONTAINER = new FlociContainer(DockerImageName.parse(LOCAL_STACK_IMAGE));
     private static LocalStackTestInterface localStackTestInterface;
     private static ExasolCredentialsReader credentialsReader;
 
