@@ -3,7 +3,7 @@ package com.exasol.cloudwatch;
 import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.CLUSTER_NAME_DIMENSION_KEY;
 import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.DEPLOYMENT_DIMENSION_KEY;
 import static com.exasol.cloudwatch.TestConstants.EXASOL_DOCKER_DB_VERSION;
-import static com.exasol.cloudwatch.TestConstants.LOCAL_STACK_IMAGE;
+import static com.exasol.cloudwatch.TestConstants.FLOCI_IMAGE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -49,8 +49,8 @@ class CloudWatchAdapterIT {
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
     @Container
     @SuppressWarnings("resource") // Will be closed by @Testcontainers
-    private static final FlociContainer LOCAL_STACK_CONTAINER = new FlociContainer(
-            DockerImageName.parse(LOCAL_STACK_IMAGE));
+    private static final FlociContainer FLOCI_CONTAINER = new FlociContainer(
+            DockerImageName.parse(FLOCI_IMAGE));
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudWatchAdapterIT.class);
     private static Connection connection;
     private static CloudWatchClient cloudWatch;
@@ -61,7 +61,7 @@ class CloudWatchAdapterIT {
     @BeforeAll
     static void beforeAll() throws IOException {
         connection = EXASOL.createConnection();
-        localStackTestInterface = new LocalStackTestInterface(LOCAL_STACK_CONTAINER);
+        localStackTestInterface = new LocalStackTestInterface(FLOCI_CONTAINER);
         cloudWatch = localStackTestInterface.getCloudWatchClient();
         secretArn = createCredentials(getCertificateFingerprint());
     }
