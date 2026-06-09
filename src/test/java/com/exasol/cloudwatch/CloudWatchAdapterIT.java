@@ -16,8 +16,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -85,7 +84,7 @@ class CloudWatchAdapterIT {
 
     @BeforeEach
     void beforeEach() {
-        this.uniqueDeploymentName = "TEST-" + new Date().getTime() + "-" + ((int) (Math.random() * 1000));
+        this.uniqueDeploymentName = "TEST-" + new Date().getTime() + "-" + new Random().nextInt(1000);
         LOGGER.info("current deployment name: {}", this.uniqueDeploymentName);
     }
 
