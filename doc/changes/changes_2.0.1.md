@@ -55,8 +55,9 @@ This release fixes the following vulnerabilities in dependencies:
 * Updated `com.exasol:exasol-testcontainers:7.2.2` to `7.3.0`
 * Added `io.floci:testcontainers-floci:2.9.0`
 * Updated `nl.jqno.equalsverifier:equalsverifier:4.2.5` to `4.5`
-* Updated `org.junit.jupiter:junit-jupiter-api:6.0.1` to `6.1.0`
-* Updated `org.junit.jupiter:junit-jupiter-params:6.0.1` to `6.1.0`
+* Removed `org.junit.jupiter:junit-jupiter-api:6.0.1`
+* Removed `org.junit.jupiter:junit-jupiter-params:6.0.1`
+* Added `org.junit.jupiter:junit-jupiter:6.1.0`
 * Updated `org.mockito:mockito-core:5.21.0` to `5.23.0`
 * Updated `org.testcontainers:testcontainers-junit-jupiter:2.0.3` to `2.0.5`
 * Removed `org.testcontainers:testcontainers-localstack:2.0.3`
