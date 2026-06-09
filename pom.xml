@@ -3,17 +3,17 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>cloudwatch-adapter</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <name>cloudwatch-adapter</name>
     <description>Makes Exasol database monitoring data available in AWS CloudWatch</description>
     <url>https://github.com/exasol/cloudwatch-adapter/</url>
     <properties>
         <java.version>21</java.version>
-        <org.testcontainers.version>2.0.3</org.testcontainers.version>
-        <log4j.version>2.25.3</log4j.version>
+        <org.testcontainers.version>2.0.5</org.testcontainers.version>
+        <log4j.version>2.26.0</log4j.version>
         <!-- Upgrading to >= 2.40.6 triggers a bug in localstack: https://github.com/localstack/localstack/issues/13538 -->
         <aws.sdk.version>2.40.5</aws.sdk.version>
-        <junit-jupiter.version>6.0.1</junit-jupiter.version>
+        <junit-jupiter.version>6.1.0</junit-jupiter.version>
     </properties>
     <dependencies>
         <dependency>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>exasol-jdbc</artifactId>
-            <version>25.2.5</version>
+            <version>26.2.7</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-log4j2</artifactId>
-            <version>1.6.0</version>
+            <version>1.6.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.eclipse.parsson</groupId>
             <artifactId>parsson</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.9</version>
             <scope>runtime</scope>
         </dependency>
         <!-- test dependencies-->
@@ -99,7 +99,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>exasol-testcontainers</artifactId>
-            <version>7.2.2</version>
+            <version>7.3.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -111,18 +111,18 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.21.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>test-db-builder-java</artifactId>
-            <version>3.6.4</version>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.itsallcode</groupId>
             <artifactId>junit5-system-extensions</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -133,7 +133,7 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>4.2.5</version>
+            <version>4.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -181,7 +181,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>5.4.4</version>
+                <version>5.6.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -237,7 +237,7 @@
     <parent>
         <artifactId>cloudwatch-adapter-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>2.0.0</version>
+        <version>2.0.1</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
     <dependencyManagement>
@@ -246,7 +246,7 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-bom</artifactId>
-                <version>4.2.9.Final</version>
+                <version>4.2.15.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
