@@ -15,6 +15,18 @@
         <aws.sdk.version>2.40.5</aws.sdk.version>
         <junit-jupiter.version>6.1.0</junit-jupiter.version>
     </properties>
+        <dependencyManagement>
+        <dependencies>
+            <!--Transitive dependency override for CVE-2025-55163, direct dependency: software.amazon.awssdk:cloudwatch:2.31.54:compile-->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>4.2.15.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
@@ -152,7 +164,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.6.2</version>
+                <version>3.6.3</version>
                 <executions>
                     <execution>
                         <goals>
@@ -169,16 +181,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.ossindex.maven</groupId>
-                <artifactId>ossindex-maven-plugin</artifactId>
-                <configuration>
-                    <excludeVulnerabilityIds>
-                        <!-- False positive in OSS Index for Exasol's JDBC driver because the fix version is missing. -->
-                        <exclude>CVE-2024-55551</exclude>
-                    </excludeVulnerabilityIds>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
                 <version>5.6.2</version>
@@ -193,7 +195,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.6.2</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                     <finalName>exasol-cloudwatch-adapter</finalName>
@@ -215,7 +217,7 @@
                     <dependency>
                         <groupId>com.github.edwgiz</groupId>
                         <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
-                        <version>2.15</version>
+                        <version>2.15.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -240,16 +242,4 @@
         <version>2.0.1</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
-    <dependencyManagement>
-        <dependencies>
-            <!--Transitive dependency override for CVE-2025-55163, direct dependency: software.amazon.awssdk:cloudwatch:2.31.54:compile-->
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-bom</artifactId>
-                <version>4.2.15.Final</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>

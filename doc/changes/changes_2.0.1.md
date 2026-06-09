@@ -1,12 +1,36 @@
-# Cloudwatch Adapter 2.0.1, released 2026-??-??
+# Cloudwatch Adapter 2.0.1, released 2026-06-09
 
-Code name:
+Code name: Fix 16 vulnerabilities in dependencies
 
 ## Summary
 
-## Features
+This release fixes the following vulnerabilities in dependencies:
 
-* ISSUE_NUMBER: description
+* `io.netty:netty-transport-classes-epoll:jar:4.2.9.Final:runtime`:
+  * CVE-2026-42577 (CWE-772): Missing Release of Resource after Effective Lifetime
+* `io.netty:netty-codec-compression:jar:4.2.9.Final:runtime`
+  * CVE-2026-42583 (CWE-400): Uncontrolled Resource Consumption ('Resource Exhaustion')
+* `io.netty:netty-codec-http:jar:4.2.9.Final:runtime`:
+  * CVE-2026-33870 (CWE-444): Inconsistent Interpretation of HTTP Requests ('HTTP Request Smuggling')
+  * CVE-2026-41417 (CWE-444): Inconsistent Interpretation of HTTP Requests ('HTTP Request Smuggling')
+  * CVE-2026-42580 (CWE-190): Integer Overflow or Wraparound
+  * CVE-2026-42581 (CWE-444): Inconsistent Interpretation of HTTP Requests ('HTTP Request Smuggling')
+  * CVE-2026-42584 (CWE-444): Inconsistent Interpretation of HTTP Requests ('HTTP Request Smuggling')
+  * CVE-2026-42585 (CWE-444): Inconsistent Interpretation of HTTP Requests ('HTTP Request Smuggling')
+  * CVE-2026-42587 (CWE-400): Uncontrolled Resource Consumption ('Resource Exhaustion')
+* `org.apache.logging.log4j:log4j-core:jar:2.25.3:compile`
+  * CVE-2026-34477 (CWE-295): Improper Certificate Validation
+  * CVE-2026-34478 (CWE-117): Improper Output Neutralization for Logs
+  * CVE-2026-34479 (CWE-116): Improper Encoding or Escaping of Output
+  * CVE-2026-34480 (CWE-116): Improper Encoding or Escaping of Output
+* `io.netty:netty-codec-http2:jar:4.2.9.Final:runtime`
+  * CVE-2026-33871 (CWE-770): Allocation of Resources Without Limits or Throttling
+  * CVE-2026-42587 (CWE-400): Uncontrolled Resource Consumption ('Resource Exhaustion')
+  * CVE-2026-48043 (CWE-400): Uncontrolled Resource Consumption ('Resource Exhaustion')
+
+## Security
+
+* #118: Fixed 16 vulnerabilities in dependencies
 
 ## Dependency Updates
 
@@ -43,5 +67,7 @@ Code name:
 * Updated `org.apache.maven.plugins:maven-dependency-plugin:3.9.0` to `3.10.0`
 * Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.5.4` to `3.5.5`
 * Updated `org.apache.maven.plugins:maven-resources-plugin:3.4.0` to `3.5.0`
+* Updated `org.apache.maven.plugins:maven-shade-plugin:3.6.1` to `3.6.2`
 * Updated `org.apache.maven.plugins:maven-surefire-plugin:3.5.4` to `3.5.5`
+* Updated `org.codehaus.mojo:exec-maven-plugin:3.6.2` to `3.6.3`
 * Updated `org.codehaus.mojo:versions-maven-plugin:2.20.1` to `2.21.0`
