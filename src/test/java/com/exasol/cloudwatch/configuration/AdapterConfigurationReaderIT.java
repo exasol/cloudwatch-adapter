@@ -1,6 +1,6 @@
 package com.exasol.cloudwatch.configuration;
 
-import static com.exasol.cloudwatch.TestConstants.LOCAL_STACK_IMAGE;
+import static com.exasol.cloudwatch.TestConstants.FLOCI_IMAGE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -11,19 +11,18 @@ import java.util.Collections;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.exasol.cloudwatch.LocalStackTestInterface;
-import com.exasol.cloudwatch.LocalstackContainerWithReuse;
+
+import io.floci.testcontainers.FlociContainer;
 
 @Testcontainers
 class AdapterConfigurationReaderIT {
 
     @Container
     @SuppressWarnings("resource") // Will be closed by @Testcontainers
-    private static final LocalStackContainer LOCAL_STACK_CONTAINER = LocalstackContainerWithReuse.create(
-            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices("secretsmanager");
+    private static final FlociContainer FLOCI_CONTAINER = new FlociContainer(DockerImageName.parse(FLOCI_IMAGE));
     private static LocalStackTestInterface localStackTestInterface;
 
     private MockEnvironmentVariableProvider mockEnvironment;
@@ -31,7 +30,7 @@ class AdapterConfigurationReaderIT {
 
     @BeforeAll
     static void beforeAll() {
-        localStackTestInterface = new LocalStackTestInterface(LOCAL_STACK_CONTAINER);
+        localStackTestInterface = new LocalStackTestInterface(FLOCI_CONTAINER);
     }
 
     @BeforeEach

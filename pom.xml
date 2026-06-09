@@ -3,18 +3,29 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>cloudwatch-adapter</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <name>cloudwatch-adapter</name>
     <description>Makes Exasol database monitoring data available in AWS CloudWatch</description>
     <url>https://github.com/exasol/cloudwatch-adapter/</url>
     <properties>
         <java.version>21</java.version>
-        <org.testcontainers.version>2.0.3</org.testcontainers.version>
-        <log4j.version>2.25.3</log4j.version>
-        <!-- Upgrading to >= 2.40.6 triggers a bug in localstack: https://github.com/localstack/localstack/issues/13538 -->
-        <aws.sdk.version>2.40.5</aws.sdk.version>
-        <junit-jupiter.version>6.0.1</junit-jupiter.version>
+        <org.testcontainers.version>2.0.5</org.testcontainers.version>
+        <log4j.version>2.26.0</log4j.version>
+        <aws.sdk.version>2.46.6</aws.sdk.version>
+        <junit-jupiter.version>6.1.0</junit-jupiter.version>
     </properties>
+        <dependencyManagement>
+        <dependencies>
+            <!--Transitive dependency override for CVE-2025-55163, direct dependency: software.amazon.awssdk:cloudwatch:2.31.54:compile-->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>4.2.15.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
@@ -29,7 +40,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>exasol-jdbc</artifactId>
-            <version>25.2.5</version>
+            <version>26.2.7</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
@@ -49,7 +60,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-log4j2</artifactId>
-            <version>1.6.0</version>
+            <version>1.6.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -74,7 +85,7 @@
         <dependency>
             <groupId>org.eclipse.parsson</groupId>
             <artifactId>parsson</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.9</version>
             <scope>runtime</scope>
         </dependency>
         <!-- test dependencies-->
@@ -86,20 +97,14 @@
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit-jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>exasol-testcontainers</artifactId>
-            <version>7.2.2</version>
+            <version>7.3.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -111,29 +116,29 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.21.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>test-db-builder-java</artifactId>
-            <version>3.6.4</version>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.itsallcode</groupId>
             <artifactId>junit5-system-extensions</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers-localstack</artifactId>
-            <version>${org.testcontainers.version}</version>
+            <groupId>io.floci</groupId>
+            <artifactId>testcontainers-floci</artifactId>
+            <version>2.9.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>4.2.5</version>
+            <version>4.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -152,7 +157,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.6.2</version>
+                <version>3.6.3</version>
                 <executions>
                     <execution>
                         <goals>
@@ -169,19 +174,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.ossindex.maven</groupId>
-                <artifactId>ossindex-maven-plugin</artifactId>
-                <configuration>
-                    <excludeVulnerabilityIds>
-                        <!-- False positive in OSS Index for Exasol's JDBC driver because the fix version is missing. -->
-                        <exclude>CVE-2024-55551</exclude>
-                    </excludeVulnerabilityIds>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>5.4.4</version>
+                <version>5.6.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -193,7 +188,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.6.2</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                     <finalName>exasol-cloudwatch-adapter</finalName>
@@ -215,7 +210,7 @@
                     <dependency>
                         <groupId>com.github.edwgiz</groupId>
                         <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
-                        <version>2.15</version>
+                        <version>2.15.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -237,19 +232,7 @@
     <parent>
         <artifactId>cloudwatch-adapter-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>2.0.0</version>
+        <version>2.0.1</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
-    <dependencyManagement>
-        <dependencies>
-            <!--Transitive dependency override for CVE-2025-55163, direct dependency: software.amazon.awssdk:cloudwatch:2.31.54:compile-->
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-bom</artifactId>
-                <version>4.2.9.Final</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>

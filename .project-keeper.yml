@@ -6,6 +6,5 @@ sources:
       - mockito_agent
 build:
   exasolDbVersions:
-    - "2025.1.8"
-    - "8.29.13"
-    - "7.1.30"
+    - "2026.1.0"
+    - "2025.1.10"

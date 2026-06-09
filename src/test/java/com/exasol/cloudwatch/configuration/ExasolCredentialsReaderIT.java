@@ -1,6 +1,6 @@
 package com.exasol.cloudwatch.configuration;
 
-import static com.exasol.cloudwatch.TestConstants.LOCAL_STACK_IMAGE;
+import static com.exasol.cloudwatch.TestConstants.FLOCI_IMAGE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -17,11 +17,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import com.exasol.cloudwatch.*;
+import com.exasol.cloudwatch.AwsClientFactory;
+import com.exasol.cloudwatch.LocalStackTestInterface;
 
+import io.floci.testcontainers.FlociContainer;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -34,14 +35,13 @@ import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 class ExasolCredentialsReaderIT {
     @Container
     @SuppressWarnings("resource") // Will be closed by @Testcontainers
-    private static final LocalStackContainer LOCAL_STACK_CONTAINER = LocalstackContainerWithReuse.create(
-            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices("secretsmanager");
+    private static final FlociContainer FLOCI_CONTAINER = new FlociContainer(DockerImageName.parse(FLOCI_IMAGE));
     private static LocalStackTestInterface localStackTestInterface;
     private static ExasolCredentialsReader credentialsReader;
 
     @BeforeAll
     static void beforeAll() {
-        localStackTestInterface = new LocalStackTestInterface(LOCAL_STACK_CONTAINER);
+        localStackTestInterface = new LocalStackTestInterface(FLOCI_CONTAINER);
         credentialsReader = new ExasolCredentialsReader(localStackTestInterface);
     }
 

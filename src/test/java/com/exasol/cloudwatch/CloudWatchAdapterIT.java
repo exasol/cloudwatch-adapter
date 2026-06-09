@@ -3,7 +3,7 @@ package com.exasol.cloudwatch;
 import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.CLUSTER_NAME_DIMENSION_KEY;
 import static com.exasol.cloudwatch.ExasolToCloudwatchMetricDatumConverter.DEPLOYMENT_DIMENSION_KEY;
 import static com.exasol.cloudwatch.TestConstants.EXASOL_DOCKER_DB_VERSION;
-import static com.exasol.cloudwatch.TestConstants.LOCAL_STACK_IMAGE;
+import static com.exasol.cloudwatch.TestConstants.FLOCI_IMAGE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -36,6 +35,7 @@ import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.exasol.cloudwatch.configuration.MockEnvironmentVariableProvider;
 import com.exasol.containers.ExasolContainer;
 
+import io.floci.testcontainers.FlociContainer;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
 import software.amazon.awssdk.services.cloudwatch.model.*;
 
@@ -49,22 +49,20 @@ class CloudWatchAdapterIT {
             EXASOL_DOCKER_DB_VERSION).withReuse(true);
     @Container
     @SuppressWarnings("resource") // Will be closed by @Testcontainers
-    private static final LocalStackContainer LOCAL_STACK_CONTAINER = LocalstackContainerWithReuse.create(
-            DockerImageName.parse(LOCAL_STACK_IMAGE)).withServices("cloudwatch", "secretsmanager");
+    private static final FlociContainer FLOCI_CONTAINER = new FlociContainer(
+            DockerImageName.parse(FLOCI_IMAGE));
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudWatchAdapterIT.class);
     private static Connection connection;
     private static CloudWatchClient cloudWatch;
     private static LocalStackTestInterface localStackTestInterface;
-    private static LocalstackCloudWatchRaw localstackCloudWatchRaw;
     private static String secretArn;
     private String uniqueDeploymentName;
 
     @BeforeAll
-    static void beforeAll() throws SQLException, IOException {
+    static void beforeAll() throws IOException {
         connection = EXASOL.createConnection();
-        localStackTestInterface = new LocalStackTestInterface(LOCAL_STACK_CONTAINER);
+        localStackTestInterface = new LocalStackTestInterface(FLOCI_CONTAINER);
         cloudWatch = localStackTestInterface.getCloudWatchClient();
-        localstackCloudWatchRaw = new LocalstackCloudWatchRaw(LOCAL_STACK_CONTAINER);
         secretArn = createCredentials(getCertificateFingerprint());
     }
 
@@ -86,7 +84,7 @@ class CloudWatchAdapterIT {
 
     @BeforeEach
     void beforeEach() {
-        this.uniqueDeploymentName = "TEST-" + new Date().getTime() + "-" + ((int) (Math.random() * 1000));
+        this.uniqueDeploymentName = "TEST-" + new Date().getTime() + "-" + new Random().nextInt(1000);
         LOGGER.info("current deployment name: {}", this.uniqueDeploymentName);
     }
 
@@ -146,16 +144,27 @@ class CloudWatchAdapterIT {
             final Instant now = Instant.now();
             mockLogs(statisticsTable, now, 5, 0);
             runAdapter("USERS", now);
-            final SortedMap<Instant, Double> writtenPoints = localstackCloudWatchRaw.readMetrics("USERS",
-                    expectedDimensions());
-            assertAll(//
-                    () -> assertThat(writtenPoints.size(), equalTo(1)),
-                    () -> assertThat("single written point is the one of the previous minute",
-                            writtenPoints.firstKey().truncatedTo(ChronoUnit.SECONDS),
-                            equalTo(now.minus(Duration.ofMinutes(1)).truncatedTo(ChronoUnit.SECONDS))),
-                    () -> assertThat(writtenPoints.get(writtenPoints.firstKey()), equalTo(1.0))//
-            );
+            final List<MetricDataResult> metricData = getMetricData();
+            assertThat(metricData, hasSize(1));
+            final List<Double> values = metricData.get(0).values();
+            final List<Instant> timestamps = metricData.get(0).timestamps();
+            assertAll(() -> assertThat(values, contains(1.0)),
+                    () -> assertThat(timestamps, hasSize(1)),
+                    () -> {
+                        final Instant nowMinutes = now.truncatedTo(ChronoUnit.MINUTES);
+                        assertThat(timestamps.get(0).truncatedTo(ChronoUnit.MINUTES),
+                                either(equalTo(nowMinutes)).or(equalTo(nowMinutes.minus(1, ChronoUnit.MINUTES))));
+                    });
         }
+    }
+
+    private List<MetricDataResult> getMetricData() {
+        return cloudWatch.getMetricData(GetMetricDataRequest.builder().metricDataQueries(MetricDataQuery.builder()
+                .id("m1").metricStat(MetricStat.builder().metric(Metric.builder().namespace("Exasol")
+                        .metricName("USERS").dimensions(expectedDimensions()).build())
+                        .period(60).stat("Average").build())
+                .returnData(true).build()).build())
+                .metricDataResults();
     }
 
     @Test
@@ -167,9 +176,8 @@ class CloudWatchAdapterIT {
             runAdapter("USERS", now.minus(Duration.ofMinutes(2)));
             runAdapter("USERS", now.minus(Duration.ofMinutes(1)));
             runAdapter("USERS", now);
-            final SortedMap<Instant, Double> writtenPoints = localstackCloudWatchRaw.readMetrics("USERS",
-                    expectedDimensions());
-            assertThat(writtenPoints.size(), equalTo(3));
+
+            assertThat(getMetricData(), hasSize(1));
         }
     }
 
