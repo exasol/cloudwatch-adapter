@@ -1,10 +1,10 @@
-# Cloudwatch Adapter 2.0.2, released 2026-??-??
+# Cloudwatch Adapter 2.0.2, released 2026-07-29
 
-Code name: Fixed vulnerabilities CVE-2026-55831, CVE-2026-55833, CVE-2026-56745, CVE-2026-56746, CVE-2026-59898, CVE-2026-59899, CVE-2026-59900
+Code name: Fixed vulnerabilities CVE-2026-55831, CVE-2026-55833, CVE-2026-56745, CVE-2026-56746, CVE-2026-59898, CVE-2026-59899, CVE-2026-59900, CVE-2026-59921, CVE-2026-59901, CVE-2026-56819, CVE-2026-49844, CVE-2026-54399, CVE-2026-54428
 
 ## Summary
 
-This release fixes the following 7 vulnerabilities:
+This release fixes the following 13 vulnerabilities:
 
 ### CVE-2026-55831 (CWE-400) in dependency `io.netty:netty-codec-http:jar:4.2.15.Final:runtime`
 Netty is a network application framework for development of protocol servers and clients. Prior to 4.1.136.Final and 4.2.16.Final, Netty's SPDY SETTINGS decoder accepts a peer-declared SETTINGS entry count up to the 24-bit frame-length limit and materializes every unique setting ID in `DefaultSpdySettingsFrame`, allowing a remote SPDY/3.1 peer to send a syntactically valid roughly 2 MiB SETTINGS frame that creates 262144 map entries and amplifies network input into heap growth and ordered-map insertion work. This issue is fixed in versions 4.1.136.Final and 4.2.16.Final.
@@ -61,8 +61,72 @@ Netty - HTTP/2 Host header deduplication failure enables request routing bypass
 * https://github.com/netty/netty/releases/tag/netty-4.2.16.Final
 * https://github.com/netty/netty/security/advisories/GHSA-c69g-56f8-xwqj
 
+
+### CVE-2026-59921 (CWE-93) in dependency `io.netty:netty-codec-http:jar:4.2.15.Final:runtime`
+netty-codec-http - CRLF injection via multipart filename
+#### References
+* https://guide.sonatype.com/vulnerability/CVE-2026-59921?component-type=maven&component-name=io.netty%2Fnetty-codec-http&utm_source=ossindex-client&utm_medium=integration&utm_content=1.8.1
+* http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-59921
+* https://github.com/netty/netty/security/advisories/GHSA-gcjf-9mgh-3p7g
+
+### CVE-2026-59901 (CWE-835) in dependency `io.netty:netty-codec-compression:jar:4.2.15.Final:runtime`
+netty-codec - Bzip2Decoder infinite loop DoS via malformed stream
+#### References
+* https://guide.sonatype.com/vulnerability/CVE-2026-59901?component-type=maven&component-name=io.netty%2Fnetty-codec-compression&utm_source=ossindex-client&utm_medium=integration&utm_content=1.8.1
+* http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-59901
+* https://github.com/netty/netty/security/advisories/GHSA-558v-64gr-wgg4
+
+### CVE-2026-56819 (CWE-401) in dependency `io.netty:netty-codec-http2:jar:4.2.15.Final:runtime`
+netty-codec-http2 - Memory leak in HTTP/2 decompressor
+#### References
+* https://guide.sonatype.com/vulnerability/CVE-2026-56819?component-type=maven&component-name=io.netty%2Fnetty-codec-http2&utm_source=ossindex-client&utm_medium=integration&utm_content=1.8.1
+* http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-56819
+* https://github.com/netty/netty/security/advisories/GHSA-93wv-jw9v-4972
+
+
+### CVE-2026-49844 (CWE-116) in dependency `org.apache.logging.log4j:log4j-api:jar:2.26.0:compile`
+Improper encoding of non-finite floating-point values during MapMessage JSON serialization in Apache Log4j API produces output that is not valid JSON. This issue affects Apache Log4j API versions 2.13.1 through 2.25.4 and version 2.26.0.
+
+The fix for CVE-2026-34481 did not cover all code paths: when a MapMessage contains a non-finite IEEE 754 value (NaN, Infinity, or -Infinity), MapMessage.asJson() emits the corresponding bare token. RFC 8259 does not permit these tokens, so a conformant parser rejects the resulting document.
+
+The defect is reachable only when both of the following conditions hold:
+
+  *  The application uses the  message resolver https://logging.apache.org/log4j/2.x/manual/json-template-layout.html#event-template-resolver-message  of JsonTemplateLayout or any other layout that relies on MapMessage.asJson() or MapMessage.getFormattedMessage(new String[]{"JSON"}).
+  *  The application logs a MapMessage that contains an attacker-controlled floating-point value.
+
+An attacker who can supply a non-finite value can cause the affected layout to emit malformed JSON, which may corrupt the enclosing log record or disrupt downstream log ingestion and parsing.
+
+Users are advised to upgrade to Apache Log4j API 2.25.5 or 2.26.1, both of which emit RFC 8259-compliant JSON for non-finite values.
+#### References
+* https://guide.sonatype.com/vulnerability/CVE-2026-49844?component-type=maven&component-name=org.apache.logging.log4j%2Flog4j-api&utm_source=ossindex-client&utm_medium=integration&utm_content=1.8.1
+* http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-49844
+* https://logging.apache.org/security.html#CVE-2026-49844
+
+### CVE-2026-54399 (CWE-400) in dependency `org.apache.httpcomponents.core5:httpcore5:jar:5.4.2:runtime`
+Uncontrolled Resource Consumption vulnerability in the HTTP/1.1 message parserÂ in Apache HttpComponents Core (5.4.2 and earlier, 5.5-beta1 and earlier) allowsÂ an remote attacker to cause a denial of service through memory exhaustion by sending messages with excessive number of headers / excessive header length
+
+Sonatype's research suggests that this CVE's details differ from those defined at NVD. See https://guide.sonatype.com/vulnerability/CVE-2026-54399 for details
+#### References
+* https://guide.sonatype.com/vulnerability/CVE-2026-54399?component-type=maven&component-name=org.apache.httpcomponents.core5%2Fhttpcore5&utm_source=ossindex-client&utm_medium=integration&utm_content=1.8.1
+* http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-54399
+* https://lists.apache.org/thread/zmxh1pl2zohov5ntdh4lt85gfrlchgpy
+* http://www.openwall.com/lists/oss-security/2026/07/01/4
+
+### CVE-2026-54428 (CWE-400) in dependency `org.apache.httpcomponents.core5:httpcore5-h2:jar:5.4:runtime`
+Allocation of resources without limits or throttling in the HTTP/2 HPACK decoder in Apache HttpComponents Core (5.4.2 and earlier, 5.5-beta1 and earlier) allows an remote attacker to cause a denial of service through memory exhaustion by sending oversized compressed header blocks before the HTTP/2 SETTINGS acknowledgement causes the configured header list size limit to be applied.
+#### References
+* https://guide.sonatype.com/vulnerability/CVE-2026-54428?component-type=maven&component-name=org.apache.httpcomponents.core5%2Fhttpcore5-h2&utm_source=ossindex-client&utm_medium=integration&utm_content=1.8.1
+* http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-54428
+* https://lists.apache.org/thread/5zjp8vczvxq19pw2rvhs21q446bhl0sd
+
 ## Security
 
+* #120: Fixed vulnerability CVE-2026-49844 in dependency `org.apache.logging.log4j:log4j-api:jar:2.26.0:compile`
+* #121: Fixed vulnerability CVE-2026-54399 in dependency `org.apache.httpcomponents.core5:httpcore5:jar:5.4.2:runtime`
+* #122: Fixed vulnerability CVE-2026-54428 in dependency `org.apache.httpcomponents.core5:httpcore5-h2:jar:5.4:runtime`
+* #124: Fixed vulnerability CVE-2026-59921 in dependency `io.netty:netty-codec-http:jar:4.2.15.Final:runtime`
+* #125: Fixed vulnerability CVE-2026-59901 in dependency `io.netty:netty-codec-compression:jar:4.2.15.Final:runtime`
+* #126: Fixed vulnerability CVE-2026-56819 in dependency `io.netty:netty-codec-http2:jar:4.2.15.Final:runtime`
 * #128: Fixed vulnerability CVE-2026-55831 in dependency `io.netty:netty-codec-http:jar:4.2.15.Final:runtime`
 * #129: Fixed vulnerability CVE-2026-55833 in dependency `io.netty:netty-codec-http:jar:4.2.15.Final:runtime`
 * #130: Fixed vulnerability CVE-2026-56745 in dependency `io.netty:netty-codec-http:jar:4.2.15.Final:runtime`
