@@ -54,22 +54,21 @@
 | [Apache Maven Dependency Plugin][42]                    | [Apache-2.0][8]                             |
 | [Maven Failsafe Plugin][43]                             | [Apache-2.0][8]                             |
 | [JaCoCo :: Maven Plugin][44]                            | [EPL-2.0][45]                               |
-| [Quality Summarizer Maven Plugin][46]                   | [MIT License][47]                           |
-| [error-code-crawler-maven-plugin][48]                   | [MIT License][49]                           |
-| [Git Commit Id Maven Plugin][50]                        | [GNU Lesser General Public License 3.0][51] |
-| [Exec Maven Plugin][52]                                 | [Apache License 2][8]                       |
-| [Project Keeper Maven plugin][53]                       | [The MIT License][54]                       |
-| [Apache Maven Shade Plugin][55]                         | [Apache-2.0][8]                             |
-| [OpenFastTrace Maven Plugin][56]                        | [GNU General Public License v3.0][57]       |
-| [Apache Maven Clean Plugin][58]                         | [Apache-2.0][8]                             |
-| [Apache Maven Resources Plugin][59]                     | [Apache-2.0][8]                             |
-| [Apache Maven Install Plugin][60]                       | [Apache-2.0][8]                             |
-| [Apache Maven Site Plugin][61]                          | [Apache-2.0][8]                             |
+| [error-code-crawler-maven-plugin][46]                   | [MIT License][47]                           |
+| [Git Commit Id Maven Plugin][48]                        | [GNU Lesser General Public License 3.0][49] |
+| [Exec Maven Plugin][50]                                 | [Apache License 2][8]                       |
+| [Project Keeper Maven plugin][51]                       | [The MIT License][52]                       |
+| [Apache Maven Shade Plugin][53]                         | [Apache-2.0][8]                             |
+| [OpenFastTrace Maven Plugin][54]                        | [GNU General Public License v3.0][55]       |
+| [Apache Maven Clean Plugin][56]                         | [Apache-2.0][8]                             |
+| [Apache Maven Resources Plugin][57]                     | [Apache-2.0][8]                             |
+| [Apache Maven Install Plugin][58]                       | [Apache-2.0][8]                             |
+| [Apache Maven Site Plugin][59]                          | [Apache-2.0][8]                             |
 
 [0]: https://aws.amazon.com/sdkforjava
 [1]: https://aws.amazon.com/apache2.0
 [2]: https://www.exasol.com/
-[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/26.2.7/exasol-jdbc-26.2.7-license.txt
+[3]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/26.2.8/exasol-jdbc-26.2.8-license.txt
 [4]: https://github.com/exasol/error-reporting-java/
 [5]: https://github.com/exasol/error-reporting-java/blob/main/LICENSE
 [6]: https://aws.amazon.com/lambda/
@@ -112,19 +111,17 @@
 [43]: https://maven.apache.org/surefire/maven-failsafe-plugin/
 [44]: https://www.jacoco.org/jacoco/trunk/doc/maven.html
 [45]: https://www.eclipse.org/legal/epl-2.0/
-[46]: https://github.com/exasol/quality-summarizer-maven-plugin/
-[47]: https://github.com/exasol/quality-summarizer-maven-plugin/blob/main/LICENSE
-[48]: https://github.com/exasol/error-code-crawler-maven-plugin/
-[49]: https://github.com/exasol/error-code-crawler-maven-plugin/blob/main/LICENSE
-[50]: https://github.com/git-commit-id/git-commit-id-maven-plugin
-[51]: http://www.gnu.org/licenses/lgpl-3.0.txt
-[52]: https://www.mojohaus.org/exec-maven-plugin
-[53]: https://github.com/exasol/project-keeper/
-[54]: https://github.com/exasol/project-keeper/blob/main/LICENSE
-[55]: https://maven.apache.org/plugins/maven-shade-plugin/
-[56]: https://github.com/itsallcode/openfasttrace-maven-plugin
-[57]: https://www.gnu.org/licenses/gpl-3.0.html
-[58]: https://maven.apache.org/plugins/maven-clean-plugin/
-[59]: https://maven.apache.org/plugins/maven-resources-plugin/
-[60]: https://maven.apache.org/plugins/maven-install-plugin/
-[61]: https://maven.apache.org/plugins/maven-site-plugin/
+[46]: https://github.com/exasol/error-code-crawler-maven-plugin/
+[47]: https://github.com/exasol/error-code-crawler-maven-plugin/blob/main/LICENSE
+[48]: https://github.com/git-commit-id/git-commit-id-maven-plugin
+[49]: http://www.gnu.org/licenses/lgpl-3.0.txt
+[50]: https://www.mojohaus.org/exec-maven-plugin
+[51]: https://github.com/exasol/project-keeper/
+[52]: https://github.com/exasol/project-keeper/blob/main/LICENSE
+[53]: https://maven.apache.org/plugins/maven-shade-plugin/
+[54]: https://github.com/itsallcode/openfasttrace-maven-plugin
+[55]: https://www.gnu.org/licenses/gpl-3.0.html
+[56]: https://maven.apache.org/plugins/maven-clean-plugin/
+[57]: https://maven.apache.org/plugins/maven-resources-plugin/
+[58]: https://maven.apache.org/plugins/maven-install-plugin/
+[59]: https://maven.apache.org/plugins/maven-site-plugin/
