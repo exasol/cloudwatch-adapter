@@ -161,5 +161,6 @@ Allocation of resources without limits or throttling in the HTTP/2 HPACK decoder
 * Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.5.5` to `3.5.6`
 * Updated `org.apache.maven.plugins:maven-site-plugin:3.21.0` to `3.22.0`
 * Updated `org.apache.maven.plugins:maven-surefire-plugin:3.5.5` to `3.5.6`
+* Updated `org.itsallcode:openfasttrace-maven-plugin:2.3.0` to `2.3.1`
 * Updated `org.jacoco:jacoco-maven-plugin:0.8.14` to `0.8.15`
 * Updated `org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356` to `5.7.0.6970`
