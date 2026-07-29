@@ -7,4 +7,4 @@ sources:
 build:
   exasolDbVersions:
     - "2026.1.0"
-    - "2025.1.10"
+    - "2025.1.13"

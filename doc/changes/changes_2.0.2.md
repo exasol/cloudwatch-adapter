@@ -61,7 +61,6 @@ Netty - HTTP/2 Host header deduplication failure enables request routing bypass
 * https://github.com/netty/netty/releases/tag/netty-4.2.16.Final
 * https://github.com/netty/netty/security/advisories/GHSA-c69g-56f8-xwqj
 
-
 ### CVE-2026-59921 (CWE-93) in dependency `io.netty:netty-codec-http:jar:4.2.15.Final:runtime`
 netty-codec-http - CRLF injection via multipart filename
 #### References
@@ -82,7 +81,6 @@ netty-codec-http2 - Memory leak in HTTP/2 decompressor
 * https://guide.sonatype.com/vulnerability/CVE-2026-56819?component-type=maven&component-name=io.netty%2Fnetty-codec-http2&utm_source=ossindex-client&utm_medium=integration&utm_content=1.8.1
 * http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-56819
 * https://github.com/netty/netty/security/advisories/GHSA-93wv-jw9v-4972
-
 
 ### CVE-2026-49844 (CWE-116) in dependency `org.apache.logging.log4j:log4j-api:jar:2.26.0:compile`
 Improper encoding of non-finite floating-point values during MapMessage JSON serialization in Apache Log4j API produces output that is not valid JSON. This issue affects Apache Log4j API versions 2.13.1 through 2.25.4 and version 2.26.0.
@@ -140,18 +138,28 @@ Allocation of resources without limits or throttling in the HTTP/2 HPACK decoder
 ### Compile Dependency Updates
 
 * Updated `com.exasol:exasol-jdbc:26.2.7` to `26.2.8`
-* Updated `com.exasol:test-db-builder-java:4.0.0` to `4.0.1`
+* Updated `com.exasol:test-db-builder-java:4.0.0` to `4.0.2`
 * Updated `org.apache.logging.log4j:log4j-api:2.26.0` to `2.26.1`
 * Updated `org.apache.logging.log4j:log4j-core:2.26.0` to `2.26.1`
 * Updated `org.apache.logging.log4j:log4j-slf4j-impl:2.26.0` to `2.26.1`
-* Updated `software.amazon.awssdk:cloudwatch:2.46.6` to `2.49.3`
-* Updated `software.amazon.awssdk:secretsmanager:2.46.6` to `2.49.3`
+* Updated `software.amazon.awssdk:cloudwatch:2.46.6` to `2.49.5`
+* Updated `software.amazon.awssdk:secretsmanager:2.46.6` to `2.49.5`
 
 ### Test Dependency Updates
 
-* Updated `io.floci:testcontainers-floci:2.9.0` to `2.12.0`
+* Updated `com.exasol:exasol-testcontainers:7.3.0` to `8.0.1`
+* Updated `io.floci:testcontainers-floci:2.9.0` to `2.13.0`
 * Updated `org.junit.jupiter:junit-jupiter:6.1.0` to `6.1.2`
 
 ### Plugin Dependency Updates
 
+* Updated `com.exasol:error-code-crawler-maven-plugin:2.0.7` to `2.1.0`
 * Updated `com.exasol:project-keeper-maven-plugin:5.6.2` to `5.7.4`
+* Removed `com.exasol:quality-summarizer-maven-plugin:0.2.1`
+* Updated `org.apache.maven.plugins:maven-dependency-plugin:3.10.0` to `3.11.0`
+* Updated `org.apache.maven.plugins:maven-enforcer-plugin:3.6.2` to `3.6.3`
+* Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.5.5` to `3.5.6`
+* Updated `org.apache.maven.plugins:maven-site-plugin:3.21.0` to `3.22.0`
+* Updated `org.apache.maven.plugins:maven-surefire-plugin:3.5.5` to `3.5.6`
+* Updated `org.jacoco:jacoco-maven-plugin:0.8.14` to `0.8.15`
+* Updated `org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356` to `5.7.0.6970`
