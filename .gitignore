@@ -36,3 +36,4 @@ target
 *.old
 *.md.html
 *.flattened-pom.xml
+/.serena/
