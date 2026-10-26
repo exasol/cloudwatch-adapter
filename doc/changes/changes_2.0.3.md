@@ -6,29 +6,6 @@ Code name: Fix 21 dependency vulnerabilities
 
 Addressed reported vulnerabilities in Netty, JSch, and Apache HttpClient dependencies.
 
-- Fixes #136
-- Fixes #138
-- Fixes #140
-- Fixes #142
-- Fixes #143
-- Fixes #144
-- Fixes #146
-- Fixes #147
-- Fixes #148
-- Fixes #150
-- Fixes #151
-- Fixes #152
-- Fixes #153
-- Fixes #157
-- Fixes #158
-- Fixes #159
-- Fixes #160
-- Fixes #161
-- Fixes #162
-- Fixes #163
-- Fixes #164
-- Fixes #165
-
 ## Security
 
 * #142: Fixed CVE-2026-75595 (mutual TLS bypass) in dependency `io.netty:netty-handler:4.2.16.Final`
