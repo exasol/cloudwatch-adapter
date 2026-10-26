@@ -68,7 +68,8 @@ Addressed reported vulnerabilities in Netty, JSch, and Apache HttpClient depende
 ### Test Dependency Updates
 
 * Updated `com.exasol:exasol-testcontainers:8.0.1` to `8.0.2`
-* Updated `io.floci:testcontainers-floci:2.13.0` to `2.17.0`
+* Added `io.floci:testcontainers-floci-aws:2.17.0`
+* Removed `io.floci:testcontainers-floci:2.13.0`
 * Updated `nl.jqno.equalsverifier:equalsverifier:4.5` to `4.5.2`
 * Updated `org.junit.jupiter:junit-jupiter:6.1.2` to `6.1.3`
 * Updated `org.mockito:mockito-core:5.23.0` to `5.24.0`

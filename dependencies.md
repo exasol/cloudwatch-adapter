@@ -28,7 +28,7 @@
 | [Test containers for Exasol on Docker][20]      | [MIT License][21]                 |
 | [Testcontainers :: JUnit Jupiter Extension][22] | [MIT][23]                         |
 | [mockito-core][24]                              | [MIT][25]                         |
-| [Testcontainers Floci (relocated)][26]          | [MIT License][25]                 |
+| [Testcontainers Floci AWS][26]                  | [MIT License][25]                 |
 | [EqualsVerifier \| release normal jar][27]      | [Apache License, Version 2.0][8]  |
 
 ## Runtime Dependencies
@@ -91,7 +91,7 @@
 [23]: http://opensource.org/licenses/MIT
 [24]: https://github.com/mockito/mockito
 [25]: https://opensource.org/licenses/MIT
-[26]: https://github.com/floci-io/testcontainers-floci/testcontainers-floci
+[26]: https://github.com/floci-io/testcontainers-floci/testcontainers-floci-aws
 [27]: https://www.jqno.nl/equalsverifier
 [28]: https://github.com/eclipse-ee4j/parsson
 [29]: https://docs.sonarsource.com/sonarqube-server/latest/extension-guide/developing-a-plugin/plugin-basics/sonar-scanner-maven/sonar-maven-plugin/
